@@ -286,7 +286,7 @@ input[type=range]{accent-color:var(--red);width:100%}
       <button data-page="rivals"><span class="ic">🥊</span>Rivals</button>
       <button data-page="analytics"><span class="ic">📊</span>Analytics</button>
       <button data-page="community"><span class="ic">💬</span>Community</button>
-      <button data-page="monet"><span class="ic">💰</span>Monetization</button>
+      <button data-page="monet"><span class="ic">💵</span>Earn</button>
       <button data-page="studio"><span class="ic">🛠️</span>Studio</button>
       <button data-page="awards"><span class="ic">🏆</span>Awards</button>
     </div>
@@ -403,20 +403,39 @@ input[type=range]{accent-color:var(--red);width:100%}
           <div class="cbody" id="radarPanel"></div>
           <div style="padding:10px 14px 14px"><button class="btn primary" id="btnRadar">Run trend radar</button> <span style="color:var(--dim);font-size:12px">Scans topics, world events and rivals. Add an AI key in channel settings for live AI reports.</span></div>
         </div>
-        <div class="card">
-          <div class="chead"><h2>The algorithm, right now</h2><span style="flex:1"></span><span class="count">how the feed weighs you</span></div>
-          <div class="cbody" id="algoPanel"></div>
+        <div class="seg" id="anTabs" style="margin-bottom:12px">
+          <button data-antab="overview" class="on">Overview</button>
+          <button data-antab="reach">Reach</button>
+          <button data-antab="audience">Audience</button>
+          <button data-antab="revenue">Revenue</button>
         </div>
-        <div class="row2">
-          <div class="card"><div class="chead"><h2>Reach &amp; impressions</h2><span class="count">how the algorithm sees you</span></div><div class="cbody"><div id="anReach"></div></div></div>
-          <div class="card"><div class="chead"><h2>Views</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars" id="anViews"></div></div></div>
-          <div class="card"><div class="chead"><h2>Revenue</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars gold" id="anRev"></div></div></div>
+        <div id="anPane-overview">
+          <div class="row2">
+            <div class="card"><div class="chead"><h2>Views</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars" id="anViews"></div></div></div>
+            <div class="card"><div class="chead"><h2>Key metrics</h2></div><div class="cbody" id="anKeys"></div></div>
+          </div>
+          <div class="card"><div class="chead"><h2>Top videos</h2></div><div class="cbody" id="anTop" style="padding-top:4px"></div></div>
         </div>
-        <div class="row2">
-          <div class="card"><div class="chead"><h2>Traffic sources</h2><span style="flex:1"></span><span class="count">all time</span></div><div class="cbody" id="anTraffic"></div></div>
-          <div class="card"><div class="chead"><h2>Key metrics</h2></div><div class="cbody" id="anKeys"></div></div>
+        <div id="anPane-reach" style="display:none">
+          <div class="card">
+            <div class="chead"><h2>The algorithm, right now</h2><span style="flex:1"></span><span class="count">how the feed weighs you</span></div>
+            <div class="cbody" id="algoPanel"></div>
+          </div>
+          <div class="row2">
+            <div class="card"><div class="chead"><h2>Reach &amp; impressions</h2><span class="count">how the algorithm sees you</span></div><div class="cbody"><div id="anReach"></div></div></div>
+            <div class="card"><div class="chead"><h2>Traffic sources</h2><span style="flex:1"></span><span class="count">all time</span></div><div class="cbody" id="anTraffic"></div></div>
+          </div>
         </div>
-        <div class="card"><div class="chead"><h2>Top videos</h2></div><div class="cbody" id="anTop" style="padding-top:4px"></div></div>
+        <div id="anPane-audience" style="display:none">
+          <div class="card"><div class="chead"><h2>Audience</h2><span style="flex:1"></span><span class="count">who watches and how long</span></div><div class="cbody" id="anAudience"></div></div>
+        </div>
+        <div id="anPane-revenue" style="display:none">
+          <div class="row2">
+            <div class="card"><div class="chead"><h2>Revenue</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars gold" id="anRev"></div></div></div>
+            <div class="card"><div class="chead"><h2>Revenue summary</h2></div><div class="cbody" id="anRevStats"></div></div>
+          </div>
+          <div class="card"><div class="chead"><h2>Top earners</h2><span style="flex:1"></span><span class="count">by revenue</span></div><div class="cbody" id="anEarners" style="padding-top:4px"></div></div>
+        </div>
       </div>
 
       <!-- COMMUNITY -->
@@ -430,12 +449,17 @@ input[type=range]{accent-color:var(--red);width:100%}
       <!-- MONETIZATION -->
       <div class="page" id="page-monet">
         <div class="card">
-          <div class="chead"><h2>YouTube Partner Program</h2></div>
+          <div class="chead"><h2>Earn</h2><span style="flex:1"></span><span class="count">the partner program, two stages</span></div>
           <div class="cbody" id="monetStatus"></div>
         </div>
         <div class="row2">
           <div class="card"><div class="chead"><h2>Earning features</h2></div><div class="cbody" id="monetFeatures"></div></div>
           <div class="card"><div class="chead"><h2>Active sponsorships</h2></div><div class="cbody" id="monetSponsors"></div></div>
+        </div>
+        <div class="card" id="revCard">
+          <div class="chead"><h2>Revenue</h2><span style="flex:1"></span><span class="count">where the money came from</span></div>
+          <div class="cbody" id="revSummary"></div>
+          <div class="cbody" id="revLedger" style="padding-top:0"></div>
         </div>
         <div class="card" id="offersCard" style="display:none">
           <div class="chead"><h2>Inbox offers</h2></div>
@@ -760,6 +784,7 @@ function freshGame(){
   totalViews:0,totalWatchH:0,totalLikes:0,totalComments:0,totalRevenue:0,totalImpressions:0,
   energy:100,skill:0,xp:0,level:1,uploads:0,streak:0,bestStreak:0,lastUploadDay:-9,
   monetized:false,monetApplied:false,monetReviewDays:0,
+  fanFunded:false,fanApplied:false,fanReviewDays:0,revLog:[],adsOn:true,anTab:"overview",watchFix:0,
   features:{superthanks:false,memberships:false,merch:false},
   team:{editor:0,thumb:0,writer:0},sponsorsAccepted:0,
   videos:[],nextId:1,trending:"gaming",trendDays:3,
@@ -771,7 +796,7 @@ function freshGame(){
   series:{topic:null,daysLeft:0},
   equipment:{camera:0,mic:0,editing:0,studio:0},
   strikes:0,gameOver:false,uploadsToday:0,pendingPoll:false,boostNext:false,
-  dayStats:{views:0,watchH:0,rev:0,subs:0,imp:0},
+  dayStats:{views:0,watchH:0,rev:0,subs:0,imp:0,fan:0,ads:0},
   tickHours:0,sortMode:"newest",channelName:"",handle:"",rebrandDay:null,ideaBoost:0,totalDislikes:0,
   satisfaction:0.5,weeklyStreak:0,uploadsWeek:0,following:[],rivals:makeRivals(),collabPending:null,
   collabCooldowns:{},collabOffers:[],nextOfferId:1,collabCount:0,likedRv:[],watchTab:"all",worldEvents:[],nextEventId:1,eventCd:2,heatHist:[],radar:{lastDay:-99,report:null},seriesList:[],seriesNextId:1,seriesDone:{}};
@@ -833,7 +858,7 @@ function seedLaunch(v){
  v.views+=sv;v.dayViews=(v.dayViews||0)+sv;G.totalViews+=sv;G.dayStats.views+=sv;
  G.traffic.browse+=sv*v.tmix.browse;G.traffic.suggested+=sv*v.tmix.suggested;G.traffic.search+=sv*v.tmix.search;G.traffic.external+=sv*v.tmix.external;G.traffic.shorts+=sv*v.tmix.shorts;
  const sl=sv*v.likeRate;v.likes+=sl;v.commentsN+=sv*v.commentRate;G.totalLikes+=sl;G.totalComments+=sv*v.commentRate;
- const sw=sv*v.lenMin/60*v.avd;v.watchH+=sw;G.totalWatchH+=sw;G.dayStats.watchH+=sw;
+ const sw=sv*v.lenMin/60*v.avd;v.watchH+=sw;if(v.format!=="short"){G.totalWatchH+=sw;G.dayStats.watchH=(G.dayStats.watchH||0)+sw;}
  G.subsF+=sv*v.conv;G.dayStats.subs+=sv*v.conv;G.subs=Math.floor(G.subsF);G.xp+=sv/250;checkLevel();
 }
 function releaseScheduled(){
@@ -1076,14 +1101,15 @@ function accrue(v,hours){
  const dis=dv*0.004;v.dislikes+=dis;G.totalDislikes=(G.totalDislikes||0)+dis;
  G.totalLikes+=likes;G.totalComments+=comments;
  const watch=dv*v.lenMin/60*v.avd;
- v.watchH+=watch;G.totalWatchH+=watch;G.dayStats.watchH+=watch;
+ v.watchH+=watch;
+ if(v.format!=="short"){G.totalWatchH+=watch;G.dayStats.watchH=(G.dayStats.watchH||0)+watch;}
  let rev=0;
- if(G.monetized&&!v.limitedAds&&v.claimDays<=0){
+ if(G.monetized&&G.adsOn!==false&&!v.limitedAds&&v.claimDays<=0){
   rev=v.format==="short"?dv*v.cpm*0.06/1000:dv*v.cpm/1000;
  }
  if(v.claimDays>0){} // claimed: no ad revenue on this video
  rev*=CPM_SEASON[gameDate().getMonth()]||1;
- v.revenue+=rev;G.totalRevenue+=rev;G.money+=rev;G.dayStats.rev+=rev;
+ v.revenue+=rev;G.totalRevenue+=rev;G.money+=rev;G.dayStats.rev+=rev;G.dayStats.ads=(G.dayStats.ads||0)+rev;
  const subs=dv*v.conv;
  G.subsF+=subs;G.dayStats.subs+=subs;G.subs=Math.floor(G.subsF);
  G.xp+=dv/250;checkLevel();
@@ -1315,8 +1341,28 @@ function advanceDay(){
  let passive=0;
  if(G.features.memberships){const m=Math.floor(G.subs*0.004);passive+=m*4.99/30;}
  if(G.features.merch){passive+=G.subs*0.0006;}
- if(G.features.superthanks&&Math.random()<0.5){const d=Math.round(rnd(2,10)+G.subs*0.0002);passive+=d;feed("A viewer sent a Super Thanks of $"+d,"good");}
- if(passive>1){G.money+=passive;G.totalRevenue+=passive;G.dayStats.rev+=passive;}
+ if(G.features.superthanks&&G.fanFunded){
+  const chance=Math.min(0.9,0.25+G.dayStats.views/30000);
+  const nT=Math.random()<chance?(Math.random()<0.3?2:1):0;
+  for(let ti=0;ti<nT;ti++){
+   const tip=pickSuperThanks();
+   const net=Math.round(tip*0.7*100)/100;
+   passive+=net;
+   const vt=topVideo();
+   feed("A viewer sent a $"+tip+" Super Thanks on \""+(vt?vt.title:"your latest")+"\" — you keep $"+net.toFixed(2)+" after YouTube's 30% cut.","good");
+   G.dayStats.fan=(G.dayStats.fan||0)+net;
+   if(tip>=50&&vt){G.comments.push({id:G.nextCmtId++,vid:vt.id,vidTitle:vt.title,user:CMT_NAMES[Math.floor(Math.random()*CMT_NAMES.length)],text:"Just sent you a Super Thanks. Best channel on here, keep going!",kind:"pos",hearted:false,pinned:false,day:G.day});}
+  }
+ }
+ if(passive>1){G.money+=passive;G.totalRevenue+=passive;G.dayStats.rev+=passive;G.dayStats.fan=(G.dayStats.fan||0)+passive;}
+ // partner program: fan-funding review
+ if(G.fanApplied&&!G.fanFunded){
+  G.fanReviewDays--;
+  if(G.fanReviewDays<=0){G.fanFunded=true;G.features.superthanks=true;
+   feed("You're in the YouTube Partner Program! Fan funding is live: viewers can now send Super Thanks on your videos.","gold");
+   toast("<b>In the partner program.</b> Super Thanks is on. Ads unlock at 1,000 subs and 4,000 watch hours.","gold");
+  }
+ }
  // monetization review
  if(G.monetApplied&&!G.monetized){
   G.monetReviewDays--;
@@ -1354,6 +1400,8 @@ function advanceDay(){
  if(G.series.daysLeft>0)G.series.daysLeft--;
  // summary
  const s=G.dayStats;
+ G.revLog=(G.revLog||[]).concat([{d:G.day,ads:Math.round((G.dayStats.ads||0)*100)/100,fan:Math.round((G.dayStats.fan||0)*100)/100,total:Math.round(G.dayStats.rev*100)/100}]);
+ if(G.revLog.length>60)G.revLog=G.revLog.slice(-60);
  toast("<b>"+dateStr()+"</b> — +"+fmt(s.views)+" views, +"+fmt(Math.round(s.watchH))+" watch hrs, +"+fmt(s.subs)+" subs, +"+money(s.rev),"good");
  G.dayStats={views:0,watchH:0,rev:0,subs:0,imp:0};
  G.eventMods={spotlight:null,wave:0,viewMult:1,sale:false};G.moraleHit=0;
@@ -1372,7 +1420,7 @@ const EVENT_POOL=[
  {id:"spotlight",minSubs:0,w:2,make:g=>{const v=pickVideo();if(v){g.eventMods.spotlight={video:v};return "The algorithm picked up \""+v.title+"\" — big push today.";}},
   cls:"hot"},
  {id:"trendwave",minSubs:0,w:2,make:g=>{g.eventMods.wave=1;return "A wider trend wave is pushing "+topicById(g.trending).name+" extra hard.";},cls:"hot"},
- {id:"fanmail",minSubs:100,w:2,make:g=>{const amt=Math.max(5,Math.round((5+g.subs*0.01)*(0.5+Math.random())));g.money+=amt;g.totalRevenue+=amt;g.dayStats.rev+=amt;return "A fan sent a $"+amt+" tip with a nice message.";},cls:"good"},
+ {id:"fanmail",minSubs:100,w:2,make:g=>{const amt=Math.max(5,Math.round((5+g.subs*0.01)*(0.5+Math.random())));g.money+=amt;g.totalRevenue+=amt;g.dayStats.rev+=amt;g.dayStats.fan=(g.dayStats.fan||0)+amt;return "A fan sent a $"+amt+" tip with a nice message.";},cls:"good"},
  {id:"hater",minSubs:50,w:2,make:g=>{g.moraleHit=1;return "A comment war broke out. You feel rattled (next upload scores slightly lower).";},cls:"bad"},
  {id:"copycat",minSubs:500,w:1,make:g=>{const v=topVideo();if(v){const extra=v.views*0.12;v.views+=extra;g.totalViews+=extra;g.dayStats.views+=extra;return "A bigger channel reacted to \""+v.title+"\" — traffic surged.";}},
   cls:"hot"},
@@ -1424,7 +1472,12 @@ function genComments(){
  while(G.comments.length>40)G.comments.shift();
 }
 function checkMonetEligibility(){
- if(G.monetized||G.monetApplied)return;
+ if(!G.fanFunded||G.monetized||G.monetApplied)return;
+ if(fullStageEligible()){
+  G.monetApplied=true;G.monetReviewDays=1;
+  feed("You hit 1,000 subscribers and 4,000 public watch hours. Full monetization is being set up — ads start after a short review.","gold");
+  toast("<b>Full monetization unlocked.</b> Ads start after a short review.","gold");
+ }
 }
 
 /* ============================== ACTIONS ============================== */
@@ -1532,12 +1585,22 @@ function declineOffer(id){
  const o=G.offers[i];G.offers.splice(i,1);
  feed("Declined: "+o.title,"");saveGame();renderAll();
 }
-function applyMonetization(){
- if(G.monetized||G.monetApplied)return;
- if(G.subs<1000||G.totalWatchH<4000)return toast("You don't meet the requirements yet.","bad");
- G.monetApplied=true;G.monetReviewDays=3;
- feed("Application submitted to the partner program. Review takes about 3 days.","gold");
- toast("Application sent — review takes about 3 days.","gold");
+function fanStageEligible(){return G.subs>=500&&G.totalWatchH>=2000&&uploads90()>=3;}
+function fullStageEligible(){return G.subs>=1000&&G.totalWatchH>=4000;}
+function uploads90(){return G.videos.filter(v=>v.released!==false&&G.day-v.day<=90).length;}
+function pickSuperThanks(){const r=Math.random()*100;return r<60?2:(r<85?5:(r<97?10:50));}
+function applyFanFunding(){
+ if(G.fanFunded||G.fanApplied)return;
+ if(!fanStageEligible())return toast("You don't meet the requirements yet.","bad");
+ G.fanApplied=true;G.fanReviewDays=2;
+ feed("Application submitted to the YouTube Partner Program. Review takes about 2 days.","gold");
+ toast("<b>Application sent.</b> The partner team reviews your channel for about 2 days.","gold");
+ saveGame();renderAll();
+}
+function toggleAds(){
+ if(!G.monetized)return toast("Full monetization isn't active yet.","bad");
+ G.adsOn=!G.adsOn;
+ feed("Ads "+(G.adsOn?"turned back on.":"turned off. Your videos stop earning ad revenue until you switch them back on."),"");
  saveGame();renderAll();
 }
 function toggleFeature(f){
@@ -1711,6 +1774,18 @@ function migrateG(d){
  if(!d.seriesList)d.seriesList=[];
  if(d.seriesNextId==null)d.seriesNextId=1;
  if(!d.seriesDone)d.seriesDone={};
+ if(d.fanFunded==null)d.fanFunded=!!d.monetized;
+ if(d.fanApplied==null)d.fanApplied=false;
+ if(d.fanReviewDays==null)d.fanReviewDays=0;
+ if(!d.revLog)d.revLog=[];
+ if(d.adsOn==null)d.adsOn=true;
+ if(d.anTab==null)d.anTab="overview";
+ if(d.watchFix==null)d.watchFix=0;
+ if(d.watchFix<2){
+  if(d.monetApplied&&!d.monetized&&!d.fanFunded){d.fanApplied=true;d.fanReviewDays=d.monetReviewDays||2;d.monetApplied=false;d.monetReviewDays=0;}
+  if(d.videos&&d.videos.length){const sw=d.videos.filter(v=>v.format==="short").reduce((a,v)=>a+(v.watchH||0),0);if(sw>0)d.totalWatchH=Math.max(0,(d.totalWatchH||0)-sw);}
+  d.watchFix=2;
+ }
  return d;
 }
 function loadGame(){
@@ -1865,7 +1940,8 @@ function chartHtml(arr,cls){
 function renderMilestone(){
  const el=$("milestone");
  const milestones=[
-  {label:"1,000 subscribers & 4,000 watch hours",now:Math.min(G.subs/1000,1)*50+Math.min(G.totalWatchH/4000,1)*50,done:G.subs>=1000&&G.totalWatchH>=4000,note:G.subs+"/1,000 subs · "+fmt(Math.round(G.totalWatchH))+"/4,000 hrs"},
+  {label:"Fan funding: 500 subs & 2,000 watch hours",now:Math.min(G.subs/500,1)*40+Math.min(G.totalWatchH/2000,1)*40+Math.min(uploads90()/3,1)*20,done:G.fanFunded,note:G.fanFunded?"In the program · Super Thanks live":fmt(G.subs)+"/500 subs · "+fmt(Math.round(G.totalWatchH))+"/2,000 hrs"},
+  {label:"Full monetization: 1,000 subs & 4,000 watch hours",now:Math.min(G.subs/1000,1)*50+Math.min(G.totalWatchH/4000,1)*50,done:G.monetized,note:G.monetized?"Ads running":fmt(G.subs)+"/1,000 subs · "+fmt(Math.round(G.totalWatchH))+"/4,000 hrs"},
   {label:"10,000 subscribers",now:G.subs/10000,done:G.subs>=10000,note:fmt(G.subs)+"/10K"},
   {label:"100,000 subscribers (Silver Play Button)",now:G.subs/100000,done:G.subs>=100000,note:fmt(G.subs)+"/100K"},
   {label:"1,000,000 subscribers (Gold Play Button)",now:G.subs/1000000,done:G.subs>=1000000,note:fmt(G.subs)+"/1M"}
@@ -1951,7 +2027,7 @@ function renderAnalytics(){
   '<div style="font-size:12px;color:var(--faint);margin-top:6px">Impressions come first; CTR and how long people stay decide whether the algorithm serves more.</div>';}}
  $("anViews").innerHTML=chartHtml(G.hist.views,"");
  $("anRev").innerHTML=chartHtml(G.hist.rev,"gold");
- renderTraffic();renderKeys();
+ renderTraffic();renderKeys();renderAudience();renderRevStats();renderEarners();anShow(G.anTab||"overview");
  const top=[...G.videos].sort((a,b)=>b.views-a.views).slice(0,8);
  $("anTop").innerHTML=top.length?top.map(v=>
   '<div class="vrow" data-vid="'+v.id+'" style="grid-template-columns:70px 1fr 130px 90px">'+
@@ -1978,30 +2054,111 @@ function renderCommunity(){
    '</div></div></div>'
  ).join("");
 }
+function anShow(t){
+ if(!t)return;
+ G.anTab=t;
+ document.querySelectorAll("#anTabs button").forEach(b=>b.classList.toggle("on",b.dataset.antab===t));
+ ["overview","reach","audience","revenue"].forEach(k=>{const p=$("anPane-"+k);if(p)p.style.display=k===t?"":"none";});
+}
+function renderAudience(){
+ const el=$("anAudience");if(!el)return;
+ const totalViews=G.totalViews||0;
+ const likePct=totalViews>0?G.totalLikes/totalViews*100:0;
+ const cmt1k=totalViews>0?G.totalComments/totalViews*1000:0;
+ const watchPerView=totalViews>0?G.totalWatchH/totalViews*60:0;
+ const shorts=G.videos.filter(v=>v.format==="short").reduce((a,v)=>a+v.views,0);
+ el.innerHTML='<div class="statgrid">'+
+  '<div class="stat"><div class="lbl">Returning viewers</div><div class="val">'+(totalViews>0?Math.min(60,Math.round(8+Math.min(G.subs,50000)/1000*4))+"%":"—")+'</div><div class="sub">estimate from subs vs reach</div></div>'+
+  '<div class="stat"><div class="lbl">Avg minutes viewed</div><div class="val">'+(watchPerView>0?watchPerView.toFixed(1)+" min":"—")+'</div><div class="sub">long-form, all time</div></div>'+
+  '<div class="stat"><div class="lbl">Total watch hours</div><div class="val">'+fmt(Math.round(G.totalWatchH))+'</div><div class="sub">long-form only; Shorts don\'t count</div></div>'+
+  '<div class="stat"><div class="lbl">Likes per 100 views</div><div class="val">'+(likePct>0?likePct.toFixed(2):"—")+'</div><div class="sub">satisfaction proxy</div></div>'+
+  '<div class="stat"><div class="lbl">Comments per 1k views</div><div class="val">'+(cmt1k>0?cmt1k.toFixed(1):"—")+'</div><div class="sub">community signal</div></div>'+
+  '<div class="stat"><div class="lbl">Shorts views</div><div class="val">'+fmt(Math.round(shorts))+'</div><div class="sub">all time</div></div>'+
+ '</div>';
+}
+function revStats(){
+ const log=G.revLog||[];
+ const sum=n=>log.slice(-n).reduce((a,r)=>a+(r.total||0),0);
+ const fan28=log.slice(-28).reduce((a,r)=>a+(r.fan||0),0);
+ const ads28=Math.max(0,log.slice(-28).reduce((a,r)=>a+(r.ads||0),0));
+ const denom=log.length>=7?28:Math.max(1,log.length);
+ return{last7:sum(7),last28:sum(28),fan28,ads28,proj:sum(28)/denom*30,rpm:rpmAll()};
+}
+function renderRevStats(){
+ const el=$("anRevStats");if(!el)return;
+ const s=revStats();
+ el.innerHTML='<div class="kv"><span class="k">Last 7 days</span><span class="v">'+money(s.last7)+'</span></div>'+
+  '<div class="kv"><span class="k">Last 28 days</span><span class="v">'+money(s.last28)+'</span></div>'+
+  '<div class="kv"><span class="k">Ads · tips (28 days)</span><span class="v">'+money(s.ads28)+' · '+money(s.fan28)+'</span></div>'+
+  '<div class="kv"><span class="k">Projected next 30 days</span><span class="v">'+money(s.proj)+'</span></div>'+
+  '<div class="kv"><span class="k">Estimated RPM</span><span class="v">'+(s.rpm>0?"$"+s.rpm.toFixed(2):"not monetized")+'</span></div>'+
+  '<div style="color:var(--faint);font-size:12px;margin-top:6px">RPM is what lands after YouTube\'s 45% cut of ad revenue and the 30% cut of Super Thanks. Q4 pays best; January slumps.</div>';
+}
+function renderEarners(){
+ const el=$("anEarners");if(!el)return;
+ const top=[...G.videos].filter(v=>v.revenue>0).sort((a,b)=>b.revenue-a.revenue).slice(0,6);
+ el.innerHTML=top.length?top.map(v=>{
+  const r=v.views>0?v.revenue/v.views*1000:0;
+  return '<div class="vrow" data-vid="'+v.id+'" style="grid-template-columns:70px 1fr 200px">'+
+   '<div class="thumb" style="width:70px;height:42px;font-size:17px">'+topicById(v.topic).icon+(v.format==="short"?'<span class="sfm">SHORT</span>':'<span class="dur">'+durStr(v.lenMin)+'</span>')+'</div>'+
+   '<div class="vtitle" style="-webkit-line-clamp:1">'+esc(v.title)+'</div>'+
+   '<div style="font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint)">'+money(v.revenue)+' · '+(r>0?"$"+r.toFixed(2)+" RPM":"—")+'</div>'+
+  '</div>';}).join(""):'<div class="empty">No revenue yet. It shows up here once the program pays.</div>';
+}
+function reqRow(label,now,need){const pct=need>0?clamp(now/need*100,2,100):100;
+ return '<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+label+'</span><b>'+fmt(Math.floor(now))+' / '+fmt(need)+'</b></div><div class="progress"><i style="width:'+pct+'%"></i></div></div>';}
+function rpmAll(){return G.totalViews>0?G.totalRevenue/G.totalViews*1000:0;}
+function dayLabel(d){const dt=new Date(gameDate().getTime());dt.setDate(dt.getDate()-(G.day-d));return dt.toLocaleDateString("en-US",{month:"short",day:"numeric"});}
 function renderMonet(){
  const el=$("monetStatus");
- if(G.monetized){
-  el.innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:6px">✓ In the partner program</div>'+
-   '<div style="color:var(--dim);font-size:13px;line-height:1.7">Ads run on your videos. Your RPM shifts with the season: advertisers pay the most in November and December and pull back in January and February. Videos with copyright claims or limited ads earn less.</div>';
- }else if(G.monetApplied){
-  el.innerHTML='<div style="font-weight:700;margin-bottom:6px">Application under review</div>'+
-   '<div style="color:var(--dim);font-size:13px;margin-bottom:8px">About '+G.monetReviewDays+' day'+(G.monetReviewDays===1?"":"s")+' left. Keep uploading.</div>';
+ let html="";
+ if(!G.fanFunded&&!G.fanApplied){
+  html='<div style="font-weight:600;margin-bottom:6px">Join the YouTube Partner Program</div>'+
+  '<div style="color:var(--dim);font-size:13px;margin-bottom:10px">Stage one unlocks fan funding. Full ad monetization comes automatically later, at 1,000 subs and 4,000 watch hours.</div>'+
+  reqRow("Subscribers",G.subs,500)+reqRow("Public watch hours",Math.round(G.totalWatchH),2000)+reqRow("Uploads in the last 90 days",uploads90(),3)+
+  (fanStageEligible()?'<button class="btn primary" id="btnApplyFan" style="margin-top:12px">Apply now</button>':'<div style="color:var(--faint);font-size:12px;margin-top:10px">Shorts add very little watch time, just like the real platform. Long-form builds hours fastest.</div>');
+ }else if(!G.fanFunded){
+  html='<div class="chip" style="background:rgba(255,201,77,.15);color:var(--gold)">Under review</div>'+
+  '<div style="margin-top:10px;font-weight:600">The partner team is reviewing your channel</div>'+
+  '<div style="color:var(--dim);font-size:13px;margin-top:4px">About '+Math.max(0,G.fanReviewDays)+' day'+(G.fanReviewDays===1?"":"s")+' left. Keep uploading.</div>';
  }else{
-  const subP=clamp(G.subs/1000*100,2,100),wP=clamp(G.totalWatchH/4000*100,2,100);
-  el.innerHTML='<div style="font-weight:600;margin-bottom:8px">Requirements</div>'+
-   '<div style="font-size:13px;margin-bottom:2px">Subscribers: '+fmt(G.subs)+' / 1,000</div><div class="progress"><i style="width:'+subP+'%"></i></div>'+
-   '<div style="font-size:13px;margin:10px 0 2px">Public watch hours: '+fmt(Math.round(G.totalWatchH))+' / 4,000</div><div class="progress"><i style="width:'+wP+'%"></i></div>'+
-   '<button class="btn primary" id="btnApplyMonet" style="margin-top:14px" '+(G.subs>=1000&&G.totalWatchH>=4000?"":"disabled")+'>Apply</button>'+
-   '<div style="color:var(--faint);font-size:12px;margin-top:8px">Until then, your money comes from sponsors, tips and your own pockets. Watch every hour you earn: the counter in Analytics is the same one the program checks.</div>';
+  html='<div class="chip" style="background:rgba(74,222,128,.18);color:var(--green)">In the YouTube Partner Program</div>'+
+  '<div style="margin-top:14px;font-weight:600">Fan funding</div>'+
+  '<div class="kv"><span class="k">Super Thanks</span><span class="v">'+(G.features.superthanks?"on":"off")+'</span></div>'+
+  '<div style="color:var(--faint);font-size:12px">Viewers tip $2, $5, $10 or $50 on any video. You keep 70%; YouTube takes 30%.</div>'+
+  '<div style="margin-top:14px;font-weight:600">Full monetization</div>';
+  if(G.monetized){
+   html+='<div class="kv"><span class="k">Ads</span><span class="v">'+(G.adsOn!==false?"running":"paused")+'</span></div>'+
+   (G.adsOn!==false?'<button class="btn slim" id="btnAdsOff" style="margin:6px 0">Turn ads off</button>':'<button class="btn slim" id="btnAdsOn" style="margin:6px 0">Turn ads back on</button>')+
+   '<div style="color:var(--faint);font-size:12px;margin-top:4px">Channel RPM: '+(rpmAll()>0?"$"+rpmAll().toFixed(2)+" per 1,000 views":"—")+', after YouTube\'s 45% share. Ad rates peak in November and December and slump in January.</div>';
+  }else{
+   html+=reqRow("Subscribers",G.subs,1000)+reqRow("Public watch hours",Math.round(G.totalWatchH),4000)+
+   '<div style="color:var(--faint);font-size:12px;margin-top:6px">Ads turn on automatically once you clear both. No second application.</div>';
+  }
  }
+ el.innerHTML=html;
  const f=$("monetFeatures");
- const feats=[["superthanks","Super Thanks","Viewers tip you directly",500],["memberships","Channel memberships","Fans pay $4.99/month, you keep a cut",30000],["merch","Merch shelf","Passive merch income under your videos",10000]];
+ const feats=[["superthanks","Super Thanks","Tips of $2, $5, $10 or $50 on your videos; you keep 70%",0,G.fanFunded],
+  ["memberships","Channel memberships","Fans pay $4.99/month, you keep a cut",30000,G.monetized],
+  ["merch","Merch shelf","Passive merch income under your videos",10000,G.monetized]];
  f.innerHTML=feats.map(x=>{
   const on=G.features[x[0]];
-  const ok=G.monetized&&G.subs>=x[3];
-  return'<div class="shopitem"><span class="ic">💵</span><div class="grow"><div class="sn">'+x[1]+'</div><div class="sd">'+x[2]+' · needs '+fmt(x[3])+' subs'+(ok?"":(G.monetized?" — locked":" — join the partner program first"))+'</div></div>'+
+  const ok=x[4]&&G.subs>=x[3];
+  const why=ok?"":(x[4]?(x[3]?" — needs "+fmt(x[3])+" subs":""):" — join the partner program first");
+  return'<div class="shopitem"><span class="ic">'+(x[0]==="superthanks"?"💚":"💵")+'</span><div class="grow"><div class="sn">'+x[1]+'</div><div class="sd">'+x[2]+why+'</div></div>'+
    '<button class="toggle '+(on?"on":"")+'" data-toggle="'+x[0]+'" '+(ok?"":"disabled")+'></button></div>';
  }).join("");
+ const s=revStats();
+ $("revSummary").innerHTML='<div class="statgrid">'+
+  '<div class="stat"><div class="lbl">Last 7 days</div><div class="val">'+money(s.last7)+'</div><div class="sub">ads + tips</div></div>'+
+  '<div class="stat"><div class="lbl">Last 28 days</div><div class="val">'+money(s.last28)+'</div><div class="sub">ads '+money(s.ads28)+' · tips '+money(s.fan28)+'</div></div>'+
+  '<div class="stat"><div class="lbl">Projected 30 days</div><div class="val">'+money(s.proj)+'</div><div class="sub">at the current pace</div></div>'+
+  '<div class="stat"><div class="lbl">Total earned</div><div class="val">'+money(G.totalRevenue)+'</div><div class="sub">since day one</div></div>'+
+ '</div>';
+ const rows=(G.revLog||[]).slice(-14).reverse().map(r=>
+  '<div style="display:grid;grid-template-columns:1fr 100px 130px 100px;gap:8px;font-variant-numeric:tabular-nums;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)">'+
+  '<span style="color:var(--dim)">'+dayLabel(r.d)+'</span><span>'+money(r.ads)+'</span><span>'+money(r.fan)+'</span><b>'+money(r.total)+'</b></div>').join("");
+ $("revLedger").innerHTML=rows?'<div style="display:grid;grid-template-columns:1fr 100px 130px 100px;gap:8px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:10px 0 4px;border-bottom:1px solid var(--line2)"><span>Date</span><span>Ads</span><span>Tips &amp; perks</span><span>Total</span></div>'+rows:'<div class="empty">No revenue days yet.</div>';
  $("monetSponsors").innerHTML=G.sponsors.length?G.sponsors.map(s=>
   '<div class="kv"><span class="k">'+esc(s.name)+' ('+s.daysLeft+' days left)</span><span class="v" style="color:var(--green)">+'+money(s.daily)+'/day</span></div>').join(""):'<div class="empty">No active sponsorships. Offers land in your inbox once you have an audience.</div>';
  const card=$("offersCard");
@@ -2171,7 +2328,7 @@ function openVideoModal(id){
    'Likes '+fmt(v.likes)+' · dislikes '+fmt(Math.round(v.dislikes))+' ('+(v.likes>0?Math.round(v.likes/(v.likes+Math.max(1,v.dislikes))*100):95)+'% like ratio)<br>'+
    'Average viewed: <b style="color:var(--txt)">'+Math.round(v.avd*100)+'%</b> (editing '+v.editScore+')<br>'+
    'SEO score: '+v.seoScore+' · tags: '+(v.tags.length?esc(v.tags.join(", ")):"none")+'<br>'+
-   (G.monetized?'Current RPM: <b style="color:var(--txt)">$'+rpmNow.toFixed(2)+'</b> per 1,000 views'+(v.limitedAds?" (limited)":"")+(v.claimDays>0?" (claimed: no ad revenue)":""):"Not earning ad revenue yet")+
+   (G.monetized?'Current RPM: <b style="color:var(--txt)">$'+rpmNow.toFixed(2)+'</b> per 1,000 views'+(v.limitedAds?" (limited)":"")+(v.claimDays>0?" (claimed: no ad revenue)":""):(G.fanFunded?"Super Thanks is live on this video; ads start at full monetization":"Not in the partner program yet"))+
    '<br>Estimated views today: <b style="color:var(--txt)">'+fmt(est)+'</b></div></div>';
  openModal("modalVideo");
 }
@@ -2446,7 +2603,10 @@ function wire(){
    if(kind==="heart")cmtHeart(cid);else if(kind==="pin")cmtPin(cid);else if(kind==="del")cmtDelete(cid);
    return;
   }
-  const apply=e.target.closest("#btnApplyMonet");if(apply){applyMonetization();return;}
+  const fa=e.target.closest("#btnApplyFan");if(fa){applyFanFunding();return;}
+  const ao=e.target.closest("#btnAdsOff");if(ao){toggleAds();return;}
+  const an2=e.target.closest("#btnAdsOn");if(an2){toggleAds();return;}
+  const at=e.target.closest("[data-antab]");if(at){anShow(at.dataset.antab);return;}
   const vid=e.target.closest("[data-vid]");if(vid){openVideoModal(+vid.dataset.vid);return;}
   const wv=e.target.closest("[data-wv]");if(wv){openWatchModal(wv.dataset.wv);return;}
   const wl=e.target.closest("[data-wlike]");if(wl){wToggleLike(wl.dataset.wlike);return;}
@@ -2489,11 +2649,11 @@ function init(){
  if(G.channelName){$("chName").textContent=G.channelName;$("chChip").style.display="flex";}
  else openModal("modalStart");
  if(G.videos.length===0){
-  toast("<b>Welcome to CreatorSim Studio.</b> Create a video, then advance days. Impressions × click-through = views; editing drives retention; 1,000 subs + 4,000 watch hours unlocks monetization.","gold");
+  toast("<b>Welcome to CreatorSim Studio.</b> Create a video, then advance days. Impressions × click-through = views; 500 subs + 2,000 watch hours joins the partner program for Super Thanks; 1,000 + 4,000 turns ads on.","gold");
  }
 }
 init();
-window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,applyMonetization,toggleFeature,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,switchProfile,createProfile,deleteProfile,renameChannel,listProfiles,openSettings,saveSettings,renderProfiles,guessHandle,curPid:()=>curPid,topicHeat,topicHeatTable,heatDelta,buildRadarReport,runRadar,aiRadar,renderRadar,releaseScheduled,renderSeries,newSeries,addSeries,seriesBinge,seriesCheck,seedLaunch,dateOffsetStr,publishVideoState:()=>pendingUpload};
+window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,toggleFeature,applyFanFunding,fanStageEligible,fullStageEligible,uploads90,toggleAds,pickSuperThanks,revStats,checkMonetEligibility,anShow,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,switchProfile,createProfile,deleteProfile,renameChannel,listProfiles,openSettings,saveSettings,renderProfiles,guessHandle,curPid:()=>curPid,topicHeat,topicHeatTable,heatDelta,buildRadarReport,runRadar,aiRadar,renderRadar,releaseScheduled,renderSeries,newSeries,addSeries,seriesBinge,seriesCheck,seedLaunch,dateOffsetStr,publishVideoState:()=>pendingUpload};
 </script>
 </body>
 </html>
