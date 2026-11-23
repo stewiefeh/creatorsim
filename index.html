@@ -725,7 +725,7 @@ function switchProfile(id){
  curPid=id;try{localStorage.setItem(CUR_PROFILE_KEY,curPid)}catch(e){}
  if(!loadGame())G=freshGame();
  if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
- renderAll();switchPage("dashboard");
+ renderAll();switchPage("dashboard");updateChip();
  const q=profileById(id);
  toast("Switched to <b>"+esc(q?q.name:"your channel")+"</b>.","good");
  if(!G.channelName)openModal("modalStart");
