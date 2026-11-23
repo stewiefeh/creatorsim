@@ -261,6 +261,7 @@ input[type=range]{accent-color:var(--red);width:100%}
 .radar-why{color:var(--dim);font-size:12px;margin:2px 0 0 160px}
 .radar-blow{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--dim)}
 .radar-empty{color:var(--dim);font-size:13px}
+.pav{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:18px;flex:none}
 .srow{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
 .sinfo{flex:1;min-width:0}.ssub{color:var(--dim);font-size:12px}
 .toast{background:var(--panel3);border:1px solid var(--line2);border-left:3px solid var(--blue);border-radius:11px;padding:11px 14px;font-size:13px;box-shadow:var(--shadow);animation:tin .25s ease}
@@ -296,7 +297,7 @@ input[type=range]{accent-color:var(--red);width:100%}
   <div class="main">
     <div class="topbar">
       <button class="btn small primary" id="btnCreateTop" title="Create a video or a Short">+ Create</button>
-      <div class="res" id="chChip" style="display:none;cursor:pointer" title="Your channels"><span class="lbl">Channel</span><span id="chName">—</span><span style="color:var(--faint)">▾</span></div>
+      <div class="res" id="chChip" style="display:none;cursor:pointer" title="Your channels"><span class="pav" id="chAv" style="width:22px;height:22px;font-size:12px;background:hsl(210,55%,30%)">🎮</span><span id="chName">—</span><span style="color:var(--faint)">▾</span></div>
       <div class="datechip"><span class="dot"></span><b id="dateTxt">Mon, Jan 5, 2026</b></div>
       <div class="res"><span class="lbl">Cash</span><span id="topMoney">$200</span></div>
       <div class="res"><span class="lbl">Energy</span><span class="energybar"><i id="energyFill" style="width:100%"></i></span><span id="energyTxt">100</span></div>
@@ -454,6 +455,7 @@ input[type=range]{accent-color:var(--red);width:100%}
         </div>
         <div class="row2">
           <div class="card"><div class="chead"><h2>Earning features</h2></div><div class="cbody" id="monetFeatures"></div></div>
+          <div class="card"><div class="chead"><h2>Merch shelf</h2><span style="flex:1"></span><span class="count">design your line</span></div><div class="cbody" id="merchPanel"></div></div>
           <div class="card"><div class="chead"><h2>Active sponsorships</h2></div><div class="cbody" id="monetSponsors"></div></div>
         </div>
         <div class="card" id="revCard">
@@ -566,10 +568,11 @@ input[type=range]{accent-color:var(--red);width:100%}
     <div class="field"><label>Handle</label><input type="text" id="setHandleInput" maxlength="30" placeholder="@yourhandle"></div>
     <div class="field"><label>Trend Radar AI key (optional)</label><input type="password" id="setAiKeyInput" placeholder="paste a Google AI Studio key for live AI reports">
     <div style="color:var(--dim);font-size:12px;margin-top:4px">Stored only in this browser, never in the save file. Leave empty to use the built-in simulated analyst.</div></div>
-    <div class="mfoot"><span></span><button class="btn primary" id="btnSaveSettings">Save</button></div>
+    <div class="field"><label>Save file</label><div style="display:flex;gap:8px"><button class="btn slim" id="btnExport">Export save</button><button class="btn slim" id="btnImport">Import save</button><input type="file" id="importFile" accept="application/json,.json" style="display:none"></div><div style="color:var(--dim);font-size:12px;margin-top:4px">Exports or restores every channel in this browser.</div></div><div class="field"><label style="color:var(--red)">Danger zone</label><div style="display:flex;gap:8px"><button class="btn slim danger" id="btnResetChannel">Reset this channel</button><button class="btn slim danger" id="btnWipeAll">Erase everything</button></div><div style="color:var(--dim);font-size:12px;margin-top:4px">Resetting keeps the channel and wipes its progress. Erasing removes every channel.</div></div><div class="mfoot"><span></span><button class="btn primary" id="btnSaveSettings">Save</button></div>
   </div>
 </div></div>
 
+<div class="modal-ov" id="modalReset"><div class="modal" style="max-width:440px"><div class="mhead"><h3 id="resetTitle">Are you sure?</h3><button class="mclose" data-close="modalReset">&#10005;</button></div><div class="mbody"><div id="resetBody" style="color:var(--dim);font-size:13.5px;line-height:1.55"></div><div class="mfoot"><span></span><button class="btn" id="btnResetCancel">Keep it</button><button class="btn danger" id="btnResetGo">Yes, erase it</button></div></div></div></div>
 <div class="toasts" id="toasts"></div>
 <script>
 "use strict";
@@ -729,7 +732,7 @@ function switchProfile(id){
 }
 function createProfile(){
  const q=newProfileObj("New channel");const ps=listProfiles();ps.push(q);saveProfiles(ps);
- curPid=null;switchProfile(q.id);
+ switchProfile(q.id);
  G=freshGame();saveGame();renderAll();
  openModal("modalStart");
 }
@@ -749,7 +752,7 @@ function renameChannel(name){
  G.channelName=name;if(!G.handle||G.handle===guessHandle(old))G.handle=guessHandle(name);
  renameProfileEntry(name);
  if(old&&old!==name){G.rebrandDay=G.day;feed("You rebranded from "+old+" to "+name+". Your audience is adjusting to the new name.","");}
- $("chName").textContent=name;$("chChip").style.display="flex";
+ updateChip();
  saveGame();renderAll();
 }
 function openProfileModal(){renderProfiles();openModal("modalProfiles");}
@@ -768,16 +771,88 @@ function saveSettings(){
  try{localStorage.setItem(AIKEY_KEY,$("setAiKeyInput").value.trim())}catch(e){}
  closeModal("modalSettings");saveGame();renderAll();toast("Settings saved.","good");
 }
+function avatarFor(name){
+ const h=name||"";let x=0;for(let i=0;i<h.length;i++)x=(x*31+h.charCodeAt(i))>>>0;
+ const em=["🎮","📹","🗠️","💻","😂","🎵","🍳","🔬","🎙️","🏃","⚡","🎬"];
+ return {ic:em[x%em.length],hue:x%360};
+}
+function profileStats(id){
+ try{const d=JSON.parse(localStorage.getItem(profileKey(id)));if(!d)return null;
+  return {subs:d.subs||0,day:d.day||0,handle:d.handle||"",name:d.channelName||""};}catch(e){return null;}
+}
+function updateChip(){
+ const a=avatarFor(G.channelName);const el=$("chAv");
+ if(el){el.textContent=a.ic;el.style.background="hsl("+a.hue+",55%,30%)";}
+ $("chName").textContent=G.channelName||"Unnamed channel";$("chChip").style.display="flex";
+}
 function renderProfiles(){
  const ps=listProfiles();const el=$("profilesBody");if(!el)return;
  el.innerHTML=ps.map(q=>{
   const cur=q.id===curPid;
-  const sub=cur&&G?fmt(G.subs)+" subs"+(G.handle?" · "+G.handle:""):"saved channel";
-  return '<div class="prow'+(cur?" cur":"")+'"><div class="pinfo"><div class="pname">'+esc(q.name)+(cur?' <span class="pcur">current</span>':"")+'</div><div class="psubs">'+sub+'</div></div>'
+  const st=cur&&G?{subs:G.subs,day:G.day,handle:G.handle,name:G.channelName}:profileStats(q.id);
+  const av=avatarFor(st&&st.name||q.name);
+  const sub=st?(fmt(st.subs)+" subs · day "+st.day+(st.handle?" · "+st.handle:"")+(st.name?"":" (unnamed)")):"empty channel";
+  return '<div class="prow'+(cur?" cur":"")+'"><span class="pav" style="background:hsl('+av.hue+',55%,30%)">'+av.ic+'</span><div class="pinfo"><div class="pname">'+esc(q.name)+(cur?' <span class="pcur">current</span>':"")+'</div><div class="psubs">'+sub+'</div></div>'
    +(cur?"":'<button class="btn slim" data-pload="'+q.id+'">Open</button>')
    +(ps.length>1?'<button class="btn danger slim" data-pdel="'+q.id+'">Delete</button>':"")
    +'</div>';}).join("");
 }
+function safeParseKey(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function exportAllSave(){
+ const ps=listProfiles();
+ return JSON.stringify({v:1,exported:new Date().toISOString(),cur:curPid,
+  profiles:ps.map(q=>({id:q.id,name:q.name,ts:q.ts,state:safeParseKey(profileKey(q.id))}))});
+}
+function exportSave(){
+ try{const data=exportAllSave();const blob=new Blob([data],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="creatorsim-save.json";
+  document.body.appendChild(a);a.click();a.remove();
+  toast("Save exported.","good");}catch(e){toast("Export failed.","bad");}
+}
+function importAllSave(text){
+ let d;try{d=JSON.parse(text)}catch(e){toast("That file didn't look like a CreatorSim save.","bad");return false;}
+ if(!d||d.v!==1||!Array.isArray(d.profiles)||!d.profiles.length){toast("That file didn't look like a CreatorSim save.","bad");return false;}
+ if(G)saveGame();
+ for(const q of d.profiles){if(!q||!q.id)continue;try{localStorage.setItem(profileKey(q.id),JSON.stringify(q.state))}catch(e){}}
+ saveProfiles(d.profiles.map(q=>({id:q.id,name:q.name||"Channel",ts:q.ts||Date.now()})));
+ curPid=d.cur&&d.profiles.some(q=>q.id===d.cur)?d.cur:d.profiles[0].id;
+ try{localStorage.setItem(CUR_PROFILE_KEY,curPid)}catch(e){}
+ closeModal("modalSettings");
+ if(!loadGame())G=freshGame();
+ updateChip();renderAll();switchPage("dashboard");
+ return true;
+}
+function onImportFile(ev){
+ const f=ev.target.files&&ev.target.files[0];ev.target.value="";if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{if(importAllSave(String(r.result)))toast("Save imported. Welcome back.","good");}catch(e){toast("Import failed.","bad");}};
+ r.readAsText(f);
+}
+let pendingReset=null;
+function openReset(kind){
+ pendingReset=kind;
+ $("resetTitle").textContent=kind==="all"?"Erase everything?":"Reset this channel?";
+ $("resetBody").innerHTML=kind==="all"
+  ?"This erases <b>every channel</b> in this browser: subscribers, videos, money, all of it. There is no undo. Export your save first if you might want it back."
+  :"This resets <b>"+esc(G.channelName||"this channel")+"</b> to day zero: no videos, no subscribers, $200. Your other channels are untouched. There is no undo.";
+ closeModal("modalSettings");openModal("modalReset");
+}
+function doReset(){
+ if(!pendingReset)return;
+ const kind=pendingReset;pendingReset=null;closeModal("modalReset");
+ if(kind==="all")wipeEverything();else resetGame();
+}
+function wipeEverything(){
+ const ps=listProfiles();for(const q of ps){try{localStorage.removeItem(profileKey(q.id))}catch(e){}}
+ try{localStorage.removeItem(PROFILES_KEY)}catch(e){}
+ try{localStorage.removeItem(CUR_PROFILE_KEY)}catch(e){}
+ curPid=null;G=null;ensureProfiles();
+ if(!loadGame())G=freshGame();
+ if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
+ saveGame();updateChip();renderAll();switchPage("dashboard");openModal("modalStart");
+ toast("Everything erased. Fresh start.","gold");
+}
+
 let G=null;
 function freshGame(){
  return {v:2,day:0,money:200,subsF:0,subs:0,
@@ -786,6 +861,7 @@ function freshGame(){
   monetized:false,monetApplied:false,monetReviewDays:0,
   fanFunded:false,fanApplied:false,fanReviewDays:0,revLog:[],adsOn:true,anTab:"overview",watchFix:0,
   features:{superthanks:false,memberships:false,merch:false},
+  merch:{designs:[]},
   team:{editor:0,thumb:0,writer:0},sponsorsAccepted:0,
   videos:[],nextId:1,trending:"gaming",trendDays:3,
   hotKw:[],feed:[],unlocked:{},comments:[],nextCmtId:1,
@@ -1340,7 +1416,7 @@ function advanceDay(){
  // passive income features
  let passive=0;
  if(G.features.memberships){const m=Math.floor(G.subs*0.004);passive+=m*4.99/30;}
- if(G.features.merch){passive+=G.subs*0.0006;}
+ if(G.features.merch){passive+=merchRevenue();}
  if(G.features.superthanks&&G.fanFunded){
   const chance=Math.min(0.9,0.25+G.dayStats.views/30000);
   const nT=Math.random()<chance?(Math.random()<0.3?2:1):0;
@@ -1612,6 +1688,49 @@ function toggleFeature(f){
  feed(names[f]+(G.features[f]?" turned on.":" turned off."),"" );
  saveGame();renderAll();
 }
+const MERCH_DESIGNS=[
+ {id:"tee",n:"Logo tee",ic:"🎽",cost:250,base:5,ap:1.0},
+ {id:"hoodie",n:"Hoodie",ic:"🧥",cost:600,base:9,ap:1.15},
+ {id:"mug",n:"Mug",ic:"☕",cost:150,base:2.5,ap:0.8},
+ {id:"cap",n:"Cap",ic:"🧢",cost:200,base:3.2,ap:0.9},
+ {id:"mat",n:"Desk mat",ic:"🖲️",cost:450,base:7.5,ap:1.3},
+ {id:"plush",n:"Plushie",ic:"🧸",cost:800,base:11,ap:1.35},
+ {id:"sticker",n:"Sticker pack",ic:"✨",cost:80,base:1.5,ap:1.2},
+ {id:"poster",n:"Poster",ic:"🖼️",cost:120,base:2,ap:0.7}
+];
+function merchRevenue(){
+ if(!G.features.merch)return 0;
+ const ds=(G.merch&&G.merch.designs)||[];
+ if(!ds.length)return G.subs*0.0006;
+ let r=0;for(const id of ds){const d=MERCH_DESIGNS.find(x=>x.id===id);if(d)r+=(G.subs/10000)*d.base*d.ap;}
+ return r;
+}
+function buyMerchDesign(id){
+ if(!G.features.merch)return toast("Turn on the merch shelf first.","bad");
+ if(!G.merch)G.merch={designs:[]};
+ if(G.merch.designs.includes(id))return;
+ if(G.merch.designs.length>=3)return toast("Three products max on the shelf. Drop one first.","bad");
+ const d=MERCH_DESIGNS.find(x=>x.id===id);if(!d)return;
+ if(G.money<d.cost)return toast("Producing "+d.n+"s costs "+money(d.cost)+". You have "+money(G.money)+".","bad");
+ G.money-=d.cost;G.merch.designs.push(id);
+ feed("You put "+d.n+"s on your merch shelf. Production set you back "+money(d.cost)+".","good");
+ saveGame();renderAll();
+}
+function removeMerchDesign(id){if(!G.merch)return;G.merch.designs=G.merch.designs.filter(x=>x!==id);saveGame();renderAll();}
+function renderMerchPanel(){
+ const el=$("merchPanel");if(!el)return;
+ if(!G.features.merch){el.innerHTML='<div class="empty">Turn on the merch shelf above (10,000 subs, partner program required) to design your line.</div>';return;}
+ const ds=(G.merch&&G.merch.designs)||[];
+ const intro=ds.length
+  ?ds.map(id=>{const d=MERCH_DESIGNS.find(x=>x.id===id);return d?d.ic+" "+d.n:"";}).join(" · ")+" on the shelf, about "+money(merchRevenue())+" a day at "+fmt(G.subs)+" subs."
+  :"Pick up to 3 products. Production costs money up front; sales scale with your subscribers and each product's appeal.";
+ let h='<div style="font-size:13px;color:var(--dim);margin-bottom:10px">'+intro+'</div>';
+ h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px">'+MERCH_DESIGNS.map(d=>{
+  const on=ds.includes(d.id);const full=ds.length>=3&&!on;
+  return '<div class="shopitem" style="opacity:'+(full?.45:1)+'"><span class="ic">'+d.ic+'</span><div class="grow"><div class="sn">'+d.n+'</div><div class="sd">+'+money((G.subs/10000)*d.base*d.ap)+'/day · appeal '+Math.round(d.ap*100)+'% · '+money(d.cost)+'</div></div>'+(on?'<button class="btn slim danger" data-mrem="'+d.id+'">Drop</button>':'<button class="btn slim primary" data-mbuy="'+d.id+'" '+(full?"disabled":"")+'>Add</button>')+'</div>';
+ }).join("")+'</div>';
+ el.innerHTML=h;
+}
 /* comment moderation */
 function cmtHeart(id){
  const c=G.comments.find(x=>x.id===id);if(!c||c.hearted)return;
@@ -1781,6 +1900,7 @@ function migrateG(d){
  if(d.adsOn==null)d.adsOn=true;
  if(d.anTab==null)d.anTab="overview";
  if(d.watchFix==null)d.watchFix=0;
+ if(!d.merch)d.merch={designs:[]};
  if(d.watchFix<2){
   if(d.monetApplied&&!d.monetized&&!d.fanFunded){d.fanApplied=true;d.fanReviewDays=d.monetReviewDays||2;d.monetApplied=false;d.monetReviewDays=0;}
   if(d.videos&&d.videos.length){const sw=d.videos.filter(v=>v.format==="short").reduce((a,v)=>a+(v.watchH||0),0);if(sw>0)d.totalWatchH=Math.max(0,(d.totalWatchH||0)-sw);}
@@ -2140,7 +2260,7 @@ function renderMonet(){
  const f=$("monetFeatures");
  const feats=[["superthanks","Super Thanks","Tips of $2, $5, $10 or $50 on your videos; you keep 70%",0,G.fanFunded],
   ["memberships","Channel memberships","Fans pay $4.99/month, you keep a cut",30000,G.monetized],
-  ["merch","Merch shelf","Passive merch income under your videos",10000,G.monetized]];
+  ["merch","Merch shelf","Design a merch line; income scales with your products and subs",10000,G.monetized]];
  f.innerHTML=feats.map(x=>{
   const on=G.features[x[0]];
   const ok=x[4]&&G.subs>=x[3];
@@ -2148,6 +2268,7 @@ function renderMonet(){
   return'<div class="shopitem"><span class="ic">'+(x[0]==="superthanks"?"💚":"💵")+'</span><div class="grow"><div class="sn">'+x[1]+'</div><div class="sd">'+x[2]+why+'</div></div>'+
    '<button class="toggle '+(on?"on":"")+'" data-toggle="'+x[0]+'" '+(ok?"":"disabled")+'></button></div>';
  }).join("");
+ renderMerchPanel();
  const s=revStats();
  $("revSummary").innerHTML='<div class="statgrid">'+
   '<div class="stat"><div class="lbl">Last 7 days</div><div class="val">'+money(s.last7)+'</div><div class="sub">ads + tips</div></div>'+
@@ -2534,6 +2655,13 @@ function wire(){
  $("btnProfileSettings").addEventListener("click",()=>{closeModal("modalProfiles");openSettings();});
  $("btnTopSettings").addEventListener("click",openSettings);
  $("btnSaveSettings").addEventListener("click",saveSettings);
+ $("btnExport").addEventListener("click",exportSave);
+ $("btnImport").addEventListener("click",()=>$("importFile").click());
+ $("importFile").addEventListener("change",onImportFile);
+ $("btnResetChannel").addEventListener("click",()=>openReset("channel"));
+ $("btnWipeAll").addEventListener("click",()=>openReset("all"));
+ $("btnResetCancel").addEventListener("click",()=>closeModal("modalReset"));
+ $("btnResetGo").addEventListener("click",doReset);
  {const ss=$("seriesSel");if(ss)ss.addEventListener("change",()=>{const sf=$("seriesNewField");if(sf)sf.style.display=ss.value==="__new"?"block":"none";});}
  $("btnRadar").addEventListener("click",aiRadar);
  $("btnNewSeries").addEventListener("click",newSeries);
@@ -2552,7 +2680,7 @@ function wire(){
  $("btnStartGo").addEventListener("click",()=>{
   const n=$("chNameInput").value.trim();
   if(!n)return toast("Give your channel a name first.","bad");
-  G.channelName=n;G.handle=guessHandle(n);renameProfileEntry(n);$("chName").textContent=n;$("chChip").style.display="flex";
+  G.channelName=n;G.handle=guessHandle(n);renameProfileEntry(n);updateChip();
   closeModal("modalStart");saveGame();
   feed("Channel \""+n+"\" is live. First upload sets the tone.","gold");
  });
@@ -2627,6 +2755,8 @@ function wire(){
     G.collabOffers=G.collabOffers.filter(x=>x.id!==o.id);
     feed("You passed on collabing with "+r.name+". No harm done.","");}
    saveGame();renderAll();return;}
+  const mb=e.target.closest("[data-mbuy]");if(mb){buyMerchDesign(mb.dataset.mbuy);return;}
+  const mr=e.target.closest("[data-mrem]");if(mr){removeMerchDesign(mr.dataset.mrem);return;}
   const wt=e.target.closest("[data-wtab]");if(wt){G.watchTab=wt.dataset.wtab;renderWatch();return;}
  });
  // live number refresh
@@ -2646,14 +2776,14 @@ function init(){
  if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
  sortViewsOn=G.sortMode==="views";
  wire();renderAll();
- if(G.channelName){$("chName").textContent=G.channelName;$("chChip").style.display="flex";}
- else openModal("modalStart");
+ updateChip();
+ if(!G.channelName)openModal("modalStart");
  if(G.videos.length===0){
   toast("<b>Welcome to CreatorSim Studio.</b> Create a video, then advance days. Impressions × click-through = views; 500 subs + 2,000 watch hours joins the partner program for Super Thanks; 1,000 + 4,000 turns ads on.","gold");
  }
 }
 init();
-window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,toggleFeature,applyFanFunding,fanStageEligible,fullStageEligible,uploads90,toggleAds,pickSuperThanks,revStats,checkMonetEligibility,anShow,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,switchProfile,createProfile,deleteProfile,renameChannel,listProfiles,openSettings,saveSettings,renderProfiles,guessHandle,curPid:()=>curPid,topicHeat,topicHeatTable,heatDelta,buildRadarReport,runRadar,aiRadar,renderRadar,releaseScheduled,renderSeries,newSeries,addSeries,seriesBinge,seriesCheck,seedLaunch,dateOffsetStr,publishVideoState:()=>pendingUpload};
+window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,toggleFeature,applyFanFunding,fanStageEligible,fullStageEligible,uploads90,toggleAds,pickSuperThanks,revStats,checkMonetEligibility,anShow,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,switchProfile,createProfile,deleteProfile,renameChannel,listProfiles,openSettings,saveSettings,renderProfiles,guessHandle,curPid:()=>curPid,topicHeat,topicHeatTable,heatDelta,buildRadarReport,runRadar,aiRadar,renderRadar,releaseScheduled,renderSeries,newSeries,addSeries,seriesBinge,seriesCheck,seedLaunch,dateOffsetStr,publishVideoState:()=>pendingUpload,merchRevenue,buyMerchDesign,removeMerchDesign,renderMerchPanel,exportAllSave,importAllSave,wipeEverything,avatarFor,profileStats,updateChip,openReset,doReset};
 </script>
 </body>
 </html>
