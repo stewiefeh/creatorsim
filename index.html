@@ -48,6 +48,7 @@ input,textarea{font-family:var(--ui)}
 .res{display:flex;align-items:center;gap:8px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
 .res .lbl{color:var(--faint);font-size:10.5px;font-weight:600;letter-spacing:.04em}
 .res span:not(.lbl):not(.energybar){font-family:var(--mono);font-size:13px;font-weight:500}
+.iconres{cursor:pointer;font-size:13px;font-weight:600}
 .energybar{width:74px;height:7px;border-radius:4px;background:#0e0c10;border:1px solid var(--line2);overflow:hidden;display:inline-block}
 .energybar i{display:block;height:100%;background:linear-gradient(90deg,#c77e12,var(--amber));transition:width .4s}
 .advance{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--red);color:#fff;border:0;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13.5px;box-shadow:0 4px 14px rgba(255,68,56,.28);transition:transform .08s ease,background .15s}
@@ -89,8 +90,8 @@ input,textarea{font-family:var(--ui)}
 .btn.primary:hover{background:#ff5a4f}
 .btn.gold{background:rgba(232,177,58,.16);border-color:rgba(232,177,58,.5);color:var(--gold)}
 .btn.small{padding:5px 10px;font-size:12px;border-radius:8px}
-.seg{display:flex;gap:0;border:1px solid var(--line2);border-radius:10px;overflow:hidden;width:fit-content}
-.seg button{background:none;border:0;color:var(--dim);padding:8px 14px;font-size:12.5px;font-weight:600;border-right:1px solid var(--line)}
+.seg{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line2);border-radius:10px;overflow:hidden;width:100%;max-width:560px}
+.seg button{flex:1 1 auto;min-width:72px;background:none;border:0;color:var(--dim);padding:8px 10px;font-size:12.5px;font-weight:600;border-right:1px solid var(--line)}
 .seg button:last-child{border-right:0}
 .seg button.sel{background:var(--panel2);color:var(--txt)}
 .seg button span{display:block;font-weight:400;font-size:10.5px;color:var(--faint);margin-top:1px}
@@ -240,6 +241,28 @@ input[type=range]{accent-color:var(--red);width:100%}
 .mfoot{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);margin-top:6px}
 .mfoot .costnote{flex:1;color:var(--faint);font-size:12px;font-family:var(--mono)}
 .toasts{position:fixed;right:18px;bottom:18px;z-index:200;display:flex;flex-direction:column;gap:9px;max-width:340px}
+.prow{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.prow.cur{border-color:var(--red)}
+.pinfo{flex:1;min-width:0}.pname{font-weight:600}
+.psubs{color:var(--dim);font-size:12px}
+.pcur{background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:6px;margin-left:4px}
+.btn.danger{background:transparent;border:1px solid #a33;color:#ff8a80}
+.btn.slim{padding:6px 10px}
+.selinp{width:100%;padding:9px 10px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;color:inherit;font:inherit}
+.radar-meta{color:var(--dim);font-size:12px;margin-bottom:6px}
+.radar-blurb{font-size:13.5px;margin-bottom:8px}
+.radar-row{display:flex;align-items:center;gap:10px;margin-top:8px}
+.radar-topic{width:150px;font-weight:600;font-size:13.5px}
+.radar-heat{flex:1;display:flex;align-items:center;gap:8px}
+.radar-heat .bar{flex:1;height:8px}
+.radar-heat span{font-size:12px;color:var(--dim);width:26px;text-align:right}
+.radar-delta{width:52px;text-align:right;font-family:ui-monospace,monospace;font-size:13px}
+.radar-delta.up{color:var(--green)}.radar-delta.down{color:var(--red)}
+.radar-why{color:var(--dim);font-size:12px;margin:2px 0 0 160px}
+.radar-blow{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--dim)}
+.radar-empty{color:var(--dim);font-size:13px}
+.srow{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.sinfo{flex:1;min-width:0}.ssub{color:var(--dim);font-size:12px}
 .toast{background:var(--panel3);border:1px solid var(--line2);border-left:3px solid var(--blue);border-radius:11px;padding:11px 14px;font-size:13px;box-shadow:var(--shadow);animation:tin .25s ease}
 .toast.gold{border-left-color:var(--gold)}
 .toast.good{border-left-color:var(--green)}
@@ -273,11 +296,12 @@ input[type=range]{accent-color:var(--red);width:100%}
   <div class="main">
     <div class="topbar">
       <button class="btn small primary" id="btnCreateTop" title="Create a video or a Short">+ Create</button>
-      <div class="res" id="chChip" style="display:none"><span class="lbl">Channel</span><span id="chName">—</span></div>
+      <div class="res" id="chChip" style="display:none;cursor:pointer" title="Your channels"><span class="lbl">Channel</span><span id="chName">—</span><span style="color:var(--faint)">▾</span></div>
       <div class="datechip"><span class="dot"></span><b id="dateTxt">Mon, Jan 5, 2026</b></div>
       <div class="res"><span class="lbl">Cash</span><span id="topMoney">$200</span></div>
       <div class="res"><span class="lbl">Energy</span><span class="energybar"><i id="energyFill" style="width:100%"></i></span><span id="energyTxt">100</span></div>
       <div class="res"><span class="lbl">Level</span><span id="topLevel">1</span></div>
+      <button class="res iconres" id="btnTopSettings" title="Channel settings">⚙ Settings</button>
       <button class="advance" id="btnAdvance">Next day<small>stats tick live meanwhile</small></button>
       <div class="daystrip"><i id="dayFill"></i></div>
     </div>
@@ -320,13 +344,19 @@ input[type=range]{accent-color:var(--red);width:100%}
             <button class="actionbtn" id="actStudy"><span class="ic">📚</span><span><span class="t">Practice editing</span><br><span class="d">Editing skill +1 (max 20)</span></span><span class="cost"><b>12</b> ⚡</span></button>
             <button class="actionbtn" id="actPromote"><span class="ic">🚀</span><span><span class="t">Promote latest video</span><br><span class="d">2.3× views for 2 days</span></span><span class="cost" id="costPromote"></span></button>
             <button class="actionbtn" id="actPoll"><span class="ic">🗳️</span><span><span class="t">Run a community poll</span><br><span class="d">Results tomorrow</span></span><span class="cost"><b>10</b> ⚡</span></button>
-            <button class="actionbtn" id="actSeries"><span class="ic">🔗</span><span><span class="t">Start a series</span><br><span class="d">Next 3 same-topic videos binge better</span></span><span class="cost"><b>6</b> ⚡</span></button>
+            <button class="actionbtn" id="actSeries"><span class="ic">🔗</span><span><span class="t">Topic sprint</span><br><span class="d">Next 3 same-topic videos binge better</span></span><span class="cost"><b>6</b> ⚡</span></button>
             <button class="actionbtn" id="actScout"><span class="ic">🔭</span><span><span class="t">Scout trends</span><br><span class="d">+6 title score on your next upload</span></span><span class="cost"><b>5</b> ⚡</span></button>
           </div>
               </div>
 
+      </div>
+
       <!-- CONTENT -->
       <div class="page" id="page-content">
+        <div class="card">
+          <div class="chead"><h2>Series</h2><span style="flex:1"></span><button class="btn small" id="btnNewSeries">+ New series</button></div>
+          <div class="cbody" id="seriesPanel"></div>
+        </div>
         <div class="card">
           <div class="chead"><h2>Channel content</h2><span class="count" id="vidCount"></span>
             <span style="flex:1"></span>
@@ -338,7 +368,6 @@ input[type=range]{accent-color:var(--red);width:100%}
             <div class="empty" id="videoEmpty">No videos yet. Hit "Create video" and publish your first one.</div>
           </div>
         </div>
-</div>
       </div>
 
       <!-- WATCH -->
@@ -370,10 +399,16 @@ input[type=range]{accent-color:var(--red);width:100%}
       <!-- ANALYTICS -->
       <div class="page" id="page-analytics">
         <div class="card">
+          <div class="chead"><h2>Trend Radar</h2><span style="flex:1"></span><span class="count">what is blowing up</span></div>
+          <div class="cbody" id="radarPanel"></div>
+          <div style="padding:10px 14px 14px"><button class="btn primary" id="btnRadar">Run trend radar</button> <span style="color:var(--dim);font-size:12px">Scans topics, world events and rivals. Add an AI key in channel settings for live AI reports.</span></div>
+        </div>
+        <div class="card">
           <div class="chead"><h2>The algorithm, right now</h2><span style="flex:1"></span><span class="count">how the feed weighs you</span></div>
           <div class="cbody" id="algoPanel"></div>
         </div>
         <div class="row2">
+          <div class="card"><div class="chead"><h2>Reach &amp; impressions</h2><span class="count">how the algorithm sees you</span></div><div class="cbody"><div id="anReach"></div></div></div>
           <div class="card"><div class="chead"><h2>Views</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars" id="anViews"></div></div></div>
           <div class="card"><div class="chead"><h2>Revenue</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars gold" id="anRev"></div></div></div>
         </div>
@@ -459,12 +494,15 @@ input[type=range]{accent-color:var(--red);width:100%}
     <div class="field"><label>Tags <span style="color:var(--faint);font-weight:500">(pick up to 5, gold ones are trending this week)</span></label>
       <div class="tagsbox" id="tagsBox"></div>
     </div>
-    <div class="field"><label>Thumbnail effort <span style="color:var(--faint);font-weight:500">(cash, drives click-through rate)</span></label>
-      <div class="slider-row"><input type="range" id="thumbSlider" min="1" max="5" value="2"><span class="sv" id="thumbVal"></span></div>
+    <div class="field"><label>Thumbnail effort <span style="color:var(--faint);font-weight:500">(0 = free basic thumbnail; more cash buys better click-through)</span></label>
+      <div class="slider-row"><input type="range" id="thumbSlider" min="0" max="5" value="0"><span class="sv" id="thumbVal"></span></div>
     </div>
     <div class="field"><label>Editing effort <span style="color:var(--faint);font-weight:500">(energy, drives retention &amp; satisfaction)</span></label>
       <div class="slider-row"><input type="range" id="editSlider" min="1" max="5" value="2"><span class="sv" id="editVal"></span></div>
     </div>
+    <div class="field"><label>Schedule</label><select id="scheduleSel" class="selinp"><option value="0">Publish now</option><option value="1">Tomorrow</option><option value="2">In 2 days</option><option value="3">In 3 days</option></select></div>
+    <div class="field"><label>Series</label><select id="seriesSel" class="selinp"></select></div>
+    <div class="field" id="seriesNewField" style="display:none"><label>New series name</label><input type="text" id="seriesNewInput" maxlength="60" placeholder="Name the series, e.g. Budget PC Builds"></div>
     <div class="mfoot">
       <span class="costnote" id="uploadCostNote"></span>
       <button class="btn primary" id="btnPublish">Publish</button>
@@ -491,6 +529,23 @@ input[type=range]{accent-color:var(--red);width:100%}
   </div>
 </div></div>
 
+<div class="modal-ov" id="modalProfiles"><div class="modal" style="max-width:460px">
+  <div class="mhead"><h3>Your channels</h3><button class="mclose" data-close="modalProfiles">✕</button></div>
+  <div class="mbody" id="profilesBody"></div>
+  <div class="mfoot"><button class="btn slim" id="btnProfileSettings">Settings</button><span></span><button class="btn primary" id="btnNewProfile">New channel</button></div>
+</div></div></div>
+
+<div class="modal-ov" id="modalSettings"><div class="modal" style="max-width:460px">
+  <div class="mhead"><h3>Channel settings</h3><button class="mclose" data-close="modalSettings">✕</button></div>
+  <div class="mbody">
+    <div class="field"><label>Channel name</label><input type="text" id="setNameInput" maxlength="40"></div>
+    <div class="field"><label>Handle</label><input type="text" id="setHandleInput" maxlength="30" placeholder="@yourhandle"></div>
+    <div class="field"><label>Trend Radar AI key (optional)</label><input type="password" id="setAiKeyInput" placeholder="paste a Google AI Studio key for live AI reports">
+    <div style="color:var(--dim);font-size:12px;margin-top:4px">Stored only in this browser, never in the save file. Leave empty to use the built-in simulated analyst.</div></div>
+    <div class="mfoot"><span></span><button class="btn primary" id="btnSaveSettings">Save</button></div>
+  </div>
+</div></div>
+
 <div class="toasts" id="toasts"></div>
 <script>
 "use strict";
@@ -499,13 +554,45 @@ const TOPICS=[
  {id:"gaming",name:"Gaming",icon:"🎮",base:1.15,cpm:2.2,kw:["gameplay","review","tips","walkthrough","reaction"]},
  {id:"vlog",name:"Vlogs",icon:"📹",base:0.95,cpm:3.0,kw:["day in my life","routine","storytime","week","update"]},
  {id:"tutorial",name:"How-To",icon:"🛠️",base:1.2,cpm:5.0,kw:["tutorial","guide","beginners","step by step","explained"]},
- {id:"tech",name:"Tech Reviews",icon:"💻",base:1.1,cpm:6.5,unlock:2,kw:["review","unboxing","comparison","setup","worth it"]},
+ {id:"tech",name:"General Tech",icon:"💻",base:1.1,cpm:6.5,unlock:2,kw:["review","unboxing","comparison","setup","worth it","smartphone","laptop","gadgets"]},
  {id:"comedy",name:"Comedy",icon:"😂",base:1.25,cpm:1.8,unlock:3,kw:["funny","prank","challenge","skit","try not to laugh"]},
  {id:"music",name:"Music",icon:"🎵",base:1.0,cpm:1.5,unlock:4,kw:["cover","original","beat","remix","live"]},
  {id:"food",name:"Food",icon:"🍳",base:1.05,cpm:4.0,unlock:5,kw:["recipe","easy","asmr","mukbang","baking"]},
  {id:"science",name:"Science",icon:"🔬",base:1.1,cpm:7.5,unlock:7,kw:["explained","experiment","physics","space","why"]},
  {id:"news",name:"Commentary",icon:"🎙️",base:1.2,cpm:8.0,unlock:9,kw:["drama","take","analysis","breaking","response"]},
  {id:"irl",name:"Challenges",icon:"🏃",base:1.3,cpm:2.5,unlock:11,kw:["24 hours","challenge","extreme","last to","versus"]}
+];
+const SEASONS=[
+ {label:"New Year reset season",boosts:{vlog:1.5,tutorial:1.3,science:1.1}},
+ {label:"Valentine season",boosts:{food:1.35,vlog:1.2}},
+ {label:"Spring cleaning season",boosts:{tutorial:1.4,irl:1.2}},
+ {label:"Spring holidays",boosts:{food:1.35,irl:1.2}},
+ {label:"Summer plans",boosts:{vlog:1.4,irl:1.3}},
+ {label:"Showcase season",boosts:{gaming:1.5,tech:1.3}},
+ {label:"Peak summer",boosts:{irl:1.4,vlog:1.3}},
+ {label:"Back to school",boosts:{tutorial:1.5,science:1.3}},
+ {label:"Fall reset",boosts:{vlog:1.2,tutorial:1.2}},
+ {label:"Spooky season",boosts:{gaming:1.45,comedy:1.3}},
+ {label:"Deal season",boosts:{tech:1.6,news:1.2}},
+ {label:"Holiday season",boosts:{music:1.4,food:1.3,tech:1.2}}
+];
+const CPM_SEASON=[0.85,0.8,0.9,0.95,1.0,0.95,0.9,0.95,1.0,1.05,1.25,1.45];
+const VIEWER_SEASON=[0.9,0.9,1.0,1.0,1.05,1.05,1.0,1.05,1.05,1.1,1.2,1.25];
+const WORLD_EVENTS=[
+ {n:"a huge gaming showcase just wrapped",topic:"gaming",blurb:"Every channel is covering the trailers."},
+ {n:"a flagship phone launched this week",topic:"tech",blurb:"Reviews and comparisons are everywhere."},
+ {n:"a music awards show went viral",topic:"music",blurb:"Clips and reactions are flooding feeds."},
+ {n:"a creator drama is dominating commentary",topic:"news",blurb:"Everyone has a take. Yours could land."},
+ {n:"a viral challenge is taking over",topic:"comedy",blurb:"Shorts of it are multiplying overnight."},
+ {n:"a major sports final just aired",topic:"irl",blurb:"Reactions and recaps are pulling big numbers."},
+ {n:"a science story is front-page news",topic:"science",blurb:"Explainers are getting pushed hard."},
+ {n:"a street-food trend is blowing up",topic:"food",blurb:"Everyone is trying it on camera."},
+ {n:"a retro game resurgence is underway",topic:"gaming",blurb:"Nostalgia playthroughs are surging."},
+ {n:"a hidden-gem recipe went viral",topic:"food",blurb:"Remakes and duets are everywhere."},
+ {n:"a documentary shocked everyone",topic:"news",blurb:"Explainers and responses are stacking up."},
+ {n:"an indie game blew up overnight",topic:"gaming",blurb:"First-impression videos are printing views."},
+ {n:"a productivity method is trending",topic:"tutorial",blurb:"Study and work-with-me videos are surging."},
+ {n:"a travel destination exploded on feeds",topic:"vlog",blurb:"Travel vlogs are getting pushed hard."}
 ];
 const SHAPES={
  viral:{mult:7.0,ever:0.05,curve:t=>Math.exp(-1.4*Math.max(0,t-1))},
@@ -548,6 +635,7 @@ const ACHS=[
  {id:"subs10k",name:"Verified Energy",desc:"Reach 10,000 subscribers",check:g=>g.subs>=10000},
  {id:"subs100k",name:"Silver Play Button",desc:"Reach 100,000 subscribers",check:g=>g.subs>=100000},
  {id:"subs1m",name:"Gold Play Button",desc:"Reach 1,000,000 subscribers",check:g=>g.subs>=1000000},
+ {id:"series3",name:"Marathon",desc:"Finish a 3-part series",check:g=>(g.seriesList||[]).some(s=>s.eps.length>=3)},
  {id:"subs10m",name:"Diamond Play Button",desc:"Reach 10,000,000 subscribers",check:g=>g.subs>=10000000},
  {id:"views10k",name:"Ten Thousand Eyes",desc:"10,000 total channel views",check:g=>g.totalViews>=10000},
  {id:"views1m",name:"Million View Channel",desc:"1,000,000 total channel views",check:g=>g.totalViews>=1000000},
@@ -576,6 +664,96 @@ const TROPHIES=[
 
 /* ============================== STATE ============================== */
 const SAVE_KEY="creatorSimStudioV2";
+const PROFILES_KEY="creatorSimProfilesV1";
+const CUR_PROFILE_KEY="creatorSimCur";
+const AIKEY_KEY="creatorSimAiKey";
+let curPid=null;
+function profileKey(id){return id?SAVE_KEY+"::"+id:SAVE_KEY;}
+function listProfiles(){try{return JSON.parse(localStorage.getItem(PROFILES_KEY))||[]}catch(e){return[]}}
+function saveProfiles(ps){try{localStorage.setItem(PROFILES_KEY,JSON.stringify(ps))}catch(e){}}
+function newProfileObj(name){return{id:"p"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36),name:name||"New channel",ts:Date.now()}}
+function ensureProfiles(){
+ const ps=listProfiles();
+ if(!ps.length){
+  let raw=null;try{raw=localStorage.getItem(SAVE_KEY)}catch(e){}
+  if(raw){try{const d=JSON.parse(raw);
+    if(d&&d.v===2){const pr=newProfileObj(d.channelName||"My channel");saveProfiles([pr]);
+      try{localStorage.setItem(profileKey(pr.id),raw)}catch(e){}
+      curPid=pr.id;try{localStorage.setItem(CUR_PROFILE_KEY,curPid)}catch(e){}
+      return;}}catch(e){}}
+ }
+ if(!curPid){try{curPid=localStorage.getItem(CUR_PROFILE_KEY)}catch(e){}}
+ if(!curPid||!listProfiles().some(q=>q.id===curPid)){
+  const ps2=listProfiles();
+  if(ps2.length)curPid=ps2[0].id;
+  else{const pr=newProfileObj("My channel");saveProfiles([pr]);curPid=pr.id;}
+  try{localStorage.setItem(CUR_PROFILE_KEY,curPid)}catch(e){}
+ }
+}
+function profileById(id){return listProfiles().find(q=>q.id===id);}
+function renameProfileEntry(name){const ps=listProfiles();const q=ps.find(x=>x.id===curPid);if(q){q.name=name||q.name;saveProfiles(ps);}}
+function guessHandle(name){const h=(name||"").toLowerCase().replace(/[^a-z0-9]/g,"");return "@"+(h||"creator");}
+function switchProfile(id){
+ if(G)saveGame();
+ curPid=id;try{localStorage.setItem(CUR_PROFILE_KEY,curPid)}catch(e){}
+ if(!loadGame())G=freshGame();
+ if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
+ renderAll();switchPage("dashboard");
+ const q=profileById(id);
+ toast("Switched to <b>"+esc(q?q.name:"your channel")+"</b>.","good");
+ if(!G.channelName)openModal("modalStart");
+}
+function createProfile(){
+ const q=newProfileObj("New channel");const ps=listProfiles();ps.push(q);saveProfiles(ps);
+ curPid=null;switchProfile(q.id);
+ G=freshGame();saveGame();renderAll();
+ openModal("modalStart");
+}
+function deleteProfile(id){
+ const ps=listProfiles();
+ if(ps.length<=1)return toast("You need at least one channel.","bad");
+ const q=ps.find(x=>x.id===id);if(!q)return;
+ saveProfiles(ps.filter(x=>x.id!==id));
+ try{localStorage.removeItem(profileKey(id))}catch(e){}
+ if(id===curPid){curPid=null;switchProfile(listProfiles()[0].id);}
+ else renderProfiles();
+ toast("Deleted channel <b>"+esc(q.name)+"</b>.","bad");
+}
+function renameChannel(name){
+ name=(name||"").trim();if(!name)return;
+ const old=G.channelName;
+ G.channelName=name;if(!G.handle||G.handle===guessHandle(old))G.handle=guessHandle(name);
+ renameProfileEntry(name);
+ if(old&&old!==name){G.rebrandDay=G.day;feed("You rebranded from "+old+" to "+name+". Your audience is adjusting to the new name.","");}
+ $("chName").textContent=name;$("chChip").style.display="flex";
+ saveGame();renderAll();
+}
+function openProfileModal(){renderProfiles();openModal("modalProfiles");}
+function openSettings(){
+ $("setNameInput").value=G.channelName||"";
+ $("setHandleInput").value=G.handle||"";
+ let k="";try{k=localStorage.getItem(AIKEY_KEY)||""}catch(e){}
+ $("setAiKeyInput").value=k;
+ openModal("modalSettings");
+}
+function saveSettings(){
+ const n=$("setNameInput").value.trim();
+ if(n&&n!==G.channelName)renameChannel(n);
+ const h=$("setHandleInput").value.trim();
+ G.handle=h||guessHandle(G.channelName);
+ try{localStorage.setItem(AIKEY_KEY,$("setAiKeyInput").value.trim())}catch(e){}
+ closeModal("modalSettings");saveGame();renderAll();toast("Settings saved.","good");
+}
+function renderProfiles(){
+ const ps=listProfiles();const el=$("profilesBody");if(!el)return;
+ el.innerHTML=ps.map(q=>{
+  const cur=q.id===curPid;
+  const sub=cur&&G?fmt(G.subs)+" subs"+(G.handle?" · "+G.handle:""):"saved channel";
+  return '<div class="prow'+(cur?" cur":"")+'"><div class="pinfo"><div class="pname">'+esc(q.name)+(cur?' <span class="pcur">current</span>':"")+'</div><div class="psubs">'+sub+'</div></div>'
+   +(cur?"":'<button class="btn slim" data-pload="'+q.id+'">Open</button>')
+   +(ps.length>1?'<button class="btn danger slim" data-pdel="'+q.id+'">Delete</button>':"")
+   +'</div>';}).join("");
+}
 let G=null;
 function freshGame(){
  return {v:2,day:0,money:200,subsF:0,subs:0,
@@ -594,9 +772,9 @@ function freshGame(){
   equipment:{camera:0,mic:0,editing:0,studio:0},
   strikes:0,gameOver:false,uploadsToday:0,pendingPoll:false,boostNext:false,
   dayStats:{views:0,watchH:0,rev:0,subs:0,imp:0},
-  tickHours:0,sortMode:"newest",channelName:"",ideaBoost:0,totalDislikes:0,
+  tickHours:0,sortMode:"newest",channelName:"",handle:"",rebrandDay:null,ideaBoost:0,totalDislikes:0,
   satisfaction:0.5,weeklyStreak:0,uploadsWeek:0,following:[],rivals:makeRivals(),collabPending:null,
-  collabCooldowns:{},collabOffers:[],nextOfferId:1,collabCount:0,likedRv:[],watchTab:"all"};
+  collabCooldowns:{},collabOffers:[],nextOfferId:1,collabCount:0,likedRv:[],watchTab:"all",worldEvents:[],nextEventId:1,eventCd:2,heatHist:[],radar:{lastDay:-99,report:null},seriesList:[],seriesNextId:1,seriesDone:{}};
 }
 function topicById(id){return TOPICS.find(t=>t.id===id)||TOPICS[0];}
 function pickVideo(){const pool=G.videos.filter(v=>G.day-v.day<=7);return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;}
@@ -622,11 +800,166 @@ function seasonMult(){const m=gameDate().getMonth();
 function xpNeed(l){return Math.round(120*Math.pow(l,1.4));}
 function durStr(min){const s=Math.round(min*60);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function topicHeat(id){
+ const m=gameDate().getMonth();
+ let h=35;
+ const s=SEASONS[m];if(s&&s.boosts[id])h*=s.boosts[id];
+ h+=10*Math.sin((G.day+id.length*7)/9);
+ for(const ev of (G.worldEvents||[]))if(ev.topic===id)h+=ev.heat*0.8;
+ const t=topicById(id);
+ if(t.unlock&&G.level<t.unlock)h*=0.6;
+ return clamp(h,5,100);
+}
+function topicHeatTable(){const o={};for(const t of TOPICS)o[t.id]=Math.round(topicHeat(t.id));return o;}
+function heatDelta(id){
+ const hist=G.heatHist||[];
+ for(let i=hist.length-1;i>=0;i--){if(G.day-hist[i].day>=3)return Math.round((topicHeat(id)-(hist[i].vals[id]||0))*10)/10;}
+ return 0;
+}
 function rollHotKw(){
- const pool=[];
- for(const t of TOPICS)for(const k of t.kw)pool.push(k);
- const out=[];while(out.length<3){const k=pool[Math.floor(Math.random()*pool.length)];if(!out.includes(k))out.push(k);}
+ const table=topicHeatTable();
+ const ranked=TOPICS.slice().sort((a,b)=>table[b.id]-table[a.id]).slice(0,3);
+ const out=[];
+ for(const t of ranked)if(t.kw.length)out.push(t.kw[Math.floor(Math.random()*t.kw.length)]);
+ while(out.length<3){const t=TOPICS[Math.floor(Math.random()*TOPICS.length)];const k=t.kw[Math.floor(Math.random()*t.kw.length)];if(!out.includes(k))out.push(k);}
  return out;
+}
+function dateOffsetStr(n){return new Date(EPOCH.getTime()+(G.day+Math.max(0,n))*86400000).toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});}
+function seedLaunch(v){
+ const seedImp=Math.round(G.subs*rnd(0.10,0.30)*(0.7+(G.satisfaction||0.5)*0.6)*(v.format==="short"?1.5:1));
+ if(seedImp<=0)return;
+ v.impressions+=seedImp;G.totalImpressions+=seedImp;G.dayStats.imp+=seedImp;
+ const sv=v.format==="short"?seedImp*(0.09+((v.hook||5)/10)*0.08+(v.editScore/100)*0.14):seedImp*v.ctr;
+ v.views+=sv;v.dayViews=(v.dayViews||0)+sv;G.totalViews+=sv;G.dayStats.views+=sv;
+ G.traffic.browse+=sv*v.tmix.browse;G.traffic.suggested+=sv*v.tmix.suggested;G.traffic.search+=sv*v.tmix.search;G.traffic.external+=sv*v.tmix.external;G.traffic.shorts+=sv*v.tmix.shorts;
+ const sl=sv*v.likeRate;v.likes+=sl;v.commentsN+=sv*v.commentRate;G.totalLikes+=sl;G.totalComments+=sv*v.commentRate;
+ const sw=sv*v.lenMin/60*v.avd;v.watchH+=sw;G.totalWatchH+=sw;G.dayStats.watchH+=sw;
+ G.subsF+=sv*v.conv;G.dayStats.subs+=sv*v.conv;G.subs=Math.floor(G.subsF);G.xp+=sv/250;checkLevel();
+}
+function releaseScheduled(){
+ for(const v of G.videos){
+  if(v.released===false&&v.scheduled<=G.day){
+   v.released=true;v.day=G.day;
+   G.uploads++;G.uploadsToday++;G.uploadsWeek++;G.lastUploadDay=G.day;
+   seedLaunch(v);seriesCheck();
+   accrue(v,rnd(2,8)); // a mid-day upload still earns the tail of the day
+   feed("\""+v.title+"\" went live as scheduled.","good");
+   toast("Scheduled upload is live: <b>"+esc(v.title)+"</b>","good");
+  }
+ }
+}
+function buildRadarReport(){
+ const table=topicHeatTable();
+ const hl=TOPICS.map(t=>({topic:t.name,id:t.id,icon:t.icon,heat:table[t.id],delta:heatDelta(t.id),driver:"",advice:""}));
+ hl.sort((a,b)=>b.delta-a.delta||b.heat-a.heat);
+ const top=hl.slice(0,3);
+ for(const h of top){
+  const ev=(G.worldEvents||[]).find(e=>e.topic===h.id);
+  const s=SEASONS[gameDate().getMonth()];
+  h.driver=ev?ev.name:(s&&s.boosts[h.id]?s.label.toLowerCase():"general momentum");
+  const mine=G.videos.filter(v=>v.topic===h.id&&v.released!==false).length;
+  h.advice=mine===0?"You have never posted this. A fresh angle could open a new audience.":"You have "+mine+" video"+(mine>1?"s":"")+" here. Double down while it is hot.";
+ }
+ let blow=null;
+ for(const r of (G.rivals||[]))for(const v of r.videos){if(G.day-v.day<=3&&(!blow||v.views>blow.views))blow={who:r.name,title:v.title,views:v.views,day:v.day};}
+ return{headlines:top,blowup:blow,day:G.day,ai:false,blurb:""};
+}
+function autoRadar(){
+ const rep=buildRadarReport();
+ G.radar={lastDay:G.day,report:rep};
+ const h0=rep.headlines[0];
+ feed("Trend Radar: "+h0.topic+" is moving "+(h0.delta>=0?"+":"")+h0.delta+" this week. "+h0.driver+".","gold");
+ toast("<b>Trend Radar</b> updated. Check Analytics for what is heating up.","gold");
+ renderRadar();
+}
+function runRadar(){
+ const rep=buildRadarReport();
+ G.radar={lastDay:G.day,report:rep};saveGame();renderRadar();
+ toast("<b>Trend Radar</b> updated.","gold");
+}
+async function aiRadar(){
+ let key="";try{key=localStorage.getItem(AIKEY_KEY)||""}catch(e){}
+ if(!key){runRadar();return toast("Add an AI key in channel settings for live AI reports. Used the built-in analyst for now.","");}
+ const table=topicHeatTable();
+ const state={day:G.day,subs:G.subs,level:G.level,satisfaction:Math.round((G.satisfaction||0.5)*100),
+  heats:TOPICS.map(t=>({topic:t.name,heat:table[t.id],weekDelta:heatDelta(t.id)})),
+  worldEvents:(G.worldEvents||[]).map(e=>e.name+" ("+topicById(e.topic).name+")"),
+  recentVideos:G.videos.slice(-5).map(v=>({title:v.title,topic:topicById(v.topic).name,views:Math.round(v.views)})),
+  rivals:(G.rivals||[]).map(r=>({name:r.name,subs:Math.floor(r.subsF)}))};
+ try{
+  const res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(key),{
+   method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({contents:[{parts:[{text:'You are the Trend Radar analyst inside a fictional YouTube channel simulator. Using this game state JSON, write a short trend briefing for the player. Reply with ONLY JSON shaped {"headlines":[{"topic":"","driver":"","advice":""}],"blurb":""} with exactly 3 headlines naming topics from the state. Game state: '+JSON.stringify(state)}]}]})
+  });
+  const j=await res.json();
+  const txt=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0].text)||"";
+  const m=txt.match(/\{[\s\S]*\}/);
+  if(!m)throw new Error("no json");
+  const parsed=JSON.parse(m[0]);
+  const base=buildRadarReport();
+  base.ai=true;base.blurb=parsed.blurb||"";
+  if(Array.isArray(parsed.headlines))for(const h of parsed.headlines.slice(0,3)){
+   const hit=base.headlines.find(x=>x.topic.toLowerCase().includes(String(h.topic||"").toLowerCase())||String(h.topic||"").toLowerCase().includes(x.id));
+   if(hit){if(h.driver)hit.driver=h.driver;if(h.advice)hit.advice=h.advice;}
+  }
+  G.radar={lastDay:G.day,report:base};saveGame();renderRadar();
+  toast("<b>Trend Radar</b> AI report ready.","gold");
+ }catch(e){
+  runRadar();
+  toast("The AI report did not come back, so the built-in analyst ran instead.","bad");
+ }
+}
+function renderRadar(){
+ const el=$("radarPanel");if(!el)return;
+ const r=G.radar&&G.radar.report;
+ if(!r){el.innerHTML='<div class="radar-empty">No report yet. Run the radar to scan what is heating up.</div>';return;}
+ let h='<div class="radar-meta">'+(r.ai?"AI analyst report":"Simulated analyst")+' · day '+r.day+'</div>';
+ if(r.blurb)h+='<div class="radar-blurb">'+esc(r.blurb)+'</div>';
+ for(const x of r.headlines){
+  h+='<div class="radar-row"><div class="radar-topic">'+x.icon+' '+esc(x.topic)+'</div><div class="radar-heat"><div class="bar"><div class="fill" style="width:'+x.heat+'%;background:var(--amber)"></div></div><span>'+x.heat+'</span></div><div class="radar-delta'+(x.delta>=0?" up":" down")+'">'+(x.delta>=0?"+":"")+x.delta+'</div></div>';
+  h+='<div class="radar-why">'+esc(x.driver||"—")+' · '+esc(x.advice||"")+'</div>';
+ }
+ if(r.blowup)h+='<div class="radar-blow"><b>Blowing up right now:</b> "'+esc(r.blowup.title)+'" by '+esc(r.blowup.who)+' — '+fmt(r.blowup.views)+' views in the last few days</div>';
+ el.innerHTML=h;
+}
+function addSeries(name,topicId){
+ const ns={id:G.seriesNextId++,name:(name||"").trim()||"New series",topic:topicId||G.trending,eps:[]};
+ G.seriesList.push(ns);return ns;
+}
+function newSeries(){
+ const nm=(window.prompt?prompt("Name your series:",""):"")||"";
+ if(!nm.trim())return;
+ const s=addSeries(nm,null);saveGame();renderSeries();
+ toast("Series created: <b>"+esc(s.name)+"</b>. Assign videos to it when you publish.","good");
+}
+function renderSeries(){
+ const el=$("seriesPanel");if(!el)return;
+ if(!(G.seriesList||[]).length){el.innerHTML='<div class="empty">No series yet. Create one, then assign videos to it on upload. Viewers binge episodes in a row, pulling views to your older uploads.</div>';return;}
+ el.innerHTML=G.seriesList.map(s=>{
+  const eps=s.eps.map(id=>G.videos.find(v=>v.id===id)).filter(v=>v&&v.released!==false);
+  const tv=eps.reduce((a,v)=>a+v.views,0);
+  const done=eps.length>=3;
+  return '<div class="srow"><div class="sinfo"><b>'+esc(s.name)+'</b><div class="ssub">'+topicById(s.topic).icon+" "+topicById(s.topic).name+" · "+eps.length+" episode"+(eps.length===1?"":"s")+" · "+fmt(tv)+" total views"+(done?' · <span style="color:var(--gold)">completed</span>':"")+'</div></div><button class="btn slim danger" data-sdel="'+s.id+'">Delete</button></div>';
+ }).join("");
+}
+function seriesBinge(v,dv){
+ if(!v.seriesId)return;
+ for(const o of G.videos){
+  if(o.seriesId===v.seriesId&&o.id!==v.id&&o.released!==false){
+   const b=dv*0.04;o.views+=b;o.dayViews=(o.dayViews||0)+b;G.totalViews+=b;G.dayStats.views+=b;
+  }
+ }
+}
+function seriesCheck(){
+ for(const s of (G.seriesList||[])){
+  if(s.eps.length>=3&&!G.seriesDone[s.id]){
+   G.seriesDone[s.id]=true;
+   const bonus=Math.max(8,Math.round(G.subs*0.012));
+   addSubs(bonus);G.satisfaction=clamp((G.satisfaction||0.5)+0.04,0.1,0.95);
+   feed("Series complete: \""+s.name+"\". Viewers binged the whole run.","gold");
+   toast("Series complete: <b>"+esc(s.name)+"</b> — the binge effect brought in "+bonus+" subs.","gold");
+  }
+ }
 }
 
 /* ============================== VIDEO MODEL ============================== */
@@ -695,7 +1028,12 @@ function dailyEstimate(v){
  const sh=SHAPES[v.shape];
  let f;
  if(t>25){f=sh.ever*(0.8+0.4*Math.random());if(Math.random()<0.06)f*=rnd(2.5,5);}
- else{f=sh.curve(t)+sh.ever;f*=v.dayNoise;}
+ else{
+  f=sh.curve(t)+sh.ever;
+  if(t<=1)f*=1.35; /* first 48h: the algorithm tests the upload hard on subscribers and the home feed */
+  if(t>=2&&t<=12&&v.perfScore!=null)f*=0.55+0.75*Math.min(1.6,v.perfScore); /* expansion follows early CTR x retention */
+  f*=v.dayNoise;
+ }
  let base=v.scale*sh.mult*f;
  base*=algoScore(v);
  base*=rivalPressure(v.format==="short");
@@ -703,20 +1041,34 @@ function dailyEstimate(v){
  if(G.eventMods.spotlight&&G.eventMods.spotlight.video===v)base*=3;
  if(v.boostDays>0)base*=2.3;
  if(isWeekend())base*=1.15;
+ base*=VIEWER_SEASON[gameDate().getMonth()]||1;
+ const cap=(G.subs*8+9000)*(v.format==="short"?1.8:1);
+ if(base>cap)base=cap+(base-cap)*0.25;
  return Math.max(0,base);
 }
 function accrue(v,hours){
  if(hours<=0)return;
+ if(v.released===false)return;
  const daily=dailyEstimate(v);
  let imp=daily*(hours/24);
  if(imp<1e-9)return;
- v.impressions+=imp;G.totalImpressions+=imp;G.dayStats.imp+=imp;
- let dv;
- if(v.format==="short"){dv=imp*(0.09+((v.hook||5)/10)*0.08+(v.editScore/100)*0.14);}
- else{dv=imp*v.ctr;}
+ v.impressions+=imp;v.dayImp=(v.dayImp||0)+imp;G.totalImpressions+=imp;G.dayStats.imp+=imp;
+ let dv;const age=G.day-v.day;
+ if(v.format==="short"){
+  /* Shorts feed: every show is a swipe-or-stay decision, and each replay counts as a view */
+  const stay=clamp(0.14+((v.hook||5)/10)*0.07+(v.editScore/100)*0.09-Math.max(0,v.lenMin*60-60)/300*0.05,0.10,0.45);
+  const loops=1+(v.editScore/100)*0.3;
+  dv=imp*stay*loops*(0.85+0.35*Math.exp(-Math.max(0,age)*0.05));
+  if(age>2&&Math.random()<0.05)dv*=rnd(1.6,3.2); /* Shorts resurface in the feed weeks later */
+ }else{
+  /* Long form: views are impressions x click-through; CTR sags as the video is shown past its core audience */
+  const fatigue=0.72+0.28*Math.exp(-Math.max(0,v.impressions)/(G.subs*60+40000));
+  dv=imp*v.ctr*fatigue*(0.55+0.45*Math.exp(-Math.max(0,age)*0.05));
+ }
  dv=Math.max(0,dv);
  if(dv<1e-9)return;
  v.views+=dv;v.dayViews=(v.dayViews||0)+dv;G.totalViews+=dv;G.dayStats.views+=dv;
+ seriesBinge(v,dv);
  G.traffic.browse+=dv*v.tmix.browse;G.traffic.suggested+=dv*v.tmix.suggested;
  G.traffic.search+=dv*v.tmix.search;G.traffic.external+=dv*v.tmix.external;G.traffic.shorts+=dv*v.tmix.shorts;
  const likes=dv*v.likeRate,comments=dv*v.commentRate;
@@ -730,7 +1082,7 @@ function accrue(v,hours){
   rev=v.format==="short"?dv*v.cpm*0.06/1000:dv*v.cpm/1000;
  }
  if(v.claimDays>0){} // claimed: no ad revenue on this video
- rev*=seasonMult();
+ rev*=CPM_SEASON[gameDate().getMonth()]||1;
  v.revenue+=rev;G.totalRevenue+=rev;G.money+=rev;G.dayStats.rev+=rev;
  const subs=dv*v.conv;
  G.subsF+=subs;G.dayStats.subs+=subs;G.subs=Math.floor(G.subsF);
@@ -806,10 +1158,10 @@ function rivalsTick(){
    const v=makeRivalVideo(r,G.day,Math.random);
    r.videos.unshift(v);if(r.videos.length>14)r.videos.pop();
    r.lastUp=G.day;r.nextUp=r.cad+Math.floor(Math.random()*2);
-   if(Math.random()<0.22)v.views*=rnd(2.5,6);
+   const rv=Math.random();if(rv<0.22)v.views*=rnd(2.5,6);else if(rv<0.37)v.views*=rnd(0.15,0.4);
   }
   const growth=r.subsF*(0.0015+r.qual/100*0.004)*(0.6+Math.random()*0.8);
-  r.subsF+=growth;
+  r.subsF+=growth*(0.8+topicHeat(r.topic)/100*0.5);
   for(const v of r.videos){const age=G.day-v.day;if(age>=0&&age<10){const g=v.views*(0.05+r.qual/100*0.1)*(age<2?1.6:0.7);v.views+=g;r.weekViews+=g;}}
  }
 }
@@ -821,6 +1173,7 @@ function yourRank(){
 }
 /* ============================== ALGORITHM ============================== */
 function likeRatioOf(v){return v.likes>0?v.likes/(v.likes+Math.max(1,v.dislikes)):0.92;}
+function ctrOf(v){return v.impressions>0?v.views/Math.max(1,v.impressions):v.ctr;}
 function algoComponents(v){
  const age=G.day-v.day;
  const fresh=age>25?0.07:Math.max(0.07,Math.exp(-age/6));
@@ -864,6 +1217,8 @@ function algoWhy(v){
  else if(c.fresh<0.2)parts.push("long-tail evergreen reach");
  if(c.trend>1)parts.push("riding the trending topic");
  if(c.momentum>1)parts.push("upload-consistency momentum");
+ if(v.perfScore!=null&&v.perfScore>1.25)parts.push("early viewers stayed, so the algorithm is expanding reach");
+ else if(v.perfScore!=null&&v.perfScore<0.7)parts.push("weak first-day click-through and retention capped the push");
  if(G.satisfaction>0.65)parts.push("satisfied audience");
  else if(G.satisfaction<0.4)parts.push("audience satisfaction is slipping");
  const rp=rivalPressure(v.format==="short");
@@ -896,6 +1251,7 @@ function advanceDay(){
   if(rec.length){
    const target=clamp(0.5*((rec.reduce((a,v)=>a+likeRatioOf(v),0)/rec.length-0.7)/0.25)+0.5*((rec.reduce((a,v)=>a+v.avd,0)/rec.length)/0.5),0.1,0.95);
    G.satisfaction=clamp((G.satisfaction||0.5)+(target-G.satisfaction)*0.25,0.1,0.95);
+ if(G.rebrandDay!=null&&G.day>=G.rebrandDay&&G.day-G.rebrandDay<5)G.satisfaction=clamp(G.satisfaction-0.004,0.1,0.95);
   }
  }
  G.hist.views.push(Math.round(G.dayStats.views));G.hist.subs.push(Math.round(G.dayStats.subs));
@@ -905,6 +1261,23 @@ function advanceDay(){
  else G.streak=0;
  const weekUps=G.uploadsWeek;
  G.day++;G.tickHours=0;G.uploadsToday=0;G.uploadsWeek=0;{const df=$("dayFill");if(df)df.style.width="0%";}
+ releaseScheduled();
+ if(G.eventCd==null)G.eventCd=2;
+ G.eventCd--;
+ if(G.eventCd<=0){
+  const used=(G.worldEvents||[]).map(e=>e.name);
+  const pool=WORLD_EVENTS.filter(w=>!used.includes(w.n));
+  const w=pool.length?pool[Math.floor(Math.random()*pool.length)]:WORLD_EVENTS[Math.floor(Math.random()*WORLD_EVENTS.length)];
+  G.worldEvents.push({id:G.nextEventId++,name:w.n,topic:w.topic,blurb:w.blurb,heat:rnd(28,55),daysLeft:Math.floor(rnd(5,9))});
+  G.eventCd=Math.floor(rnd(8,14));
+  feed("World: "+w.n+". "+w.blurb,"gold");
+  toast("<b>World event:</b> "+esc(w.n),"gold");
+ }
+ G.worldEvents=(G.worldEvents||[]).filter(e=>{e.daysLeft--;return e.daysLeft>0;});
+ G.heatHist.push({day:G.day,vals:topicHeatTable()});
+ if(G.heatHist.length>10)G.heatHist.shift();
+ G.trending=TOPICS.slice().sort((a,b)=>topicHeat(b.id)-topicHeat(a.id))[0].id;
+ if(G.day-G.radar.lastDay>=7)autoRadar();
  if(G.day%7===0&&G.hist.views.length>=7){
   G.weeklyStreak=weekUps>0?(G.weeklyStreak||0)+1:0;
   if(G.weeklyStreak>=2)feed("You uploaded "+G.weeklyStreak+" weeks in a row. The algorithm is giving you momentum (+"+Math.min(4,G.weeklyStreak)*3+"% reach).","good");
@@ -928,10 +1301,15 @@ function advanceDay(){
  if(payout>0){G.money+=payout;feed("Sponsor payouts: +"+money(payout),"good");}
  // video timers
  for(const v of G.videos){
+  if(v.perfScore==null&&v.released!==false&&G.day-v.day===1&&v.impressions>0){
+   const realized=v.views/Math.max(1,v.impressions);
+   v.perfScore=clamp((realized/(v.ctr*(v.format==="short"?0.26:0.9)))*0.5+(v.avd/(v.format==="short"?0.6:0.42))*0.5,0.3,1.7);
+  }
   if(v.boostDays>0)v.boostDays--;
   if(v.claimDays>0){v.claimDays--;if(v.claimDays===0)feed("Copyright claim on \""+v.title+"\" expired. Revenue restored.","good");}
   v.hist.push(Math.round(v.dayViews));if(v.hist.length>14)v.hist.shift();
-  v.dayViews=0;
+  (v.stats=v.stats||[]).push({d:G.day,imp:Math.round(v.dayImp||0),views:Math.round(v.dayViews),ctr:(v.dayImp>0?v.dayViews/v.dayImp:0)});if(v.stats.length>14)v.stats.shift();
+  v.dayViews=0;v.dayImp=0;
  }
  // passive income features
  let passive=0;
@@ -1106,7 +1484,7 @@ function doSeries(){
  if(G.energy<6)return toast("Not enough energy left today.","bad");
  G.energy-=6;
  G.series={topic:G.trending,daysLeft:5};
- feed("You announced a new "+topicById(G.trending).name+" series. Your next videos on that topic will binge better.","gold");
+ feed("You kicked off a "+topicById(G.trending).name+" topic sprint. Your next videos on that topic will binge better.","gold");
  saveGame();renderAll();
 }
 function buyEquipment(kind){
@@ -1222,9 +1600,9 @@ function publishVideo(){
  const isShort=pendingUpload.fmt==="short";
  const thumbLvl=+document.getElementById("thumbSlider").value;
  const editLvl=+document.getElementById("editSlider").value;
- const energy=isShort?12+editLvl*5:20+editLvl*8;
+ const energy=isShort?Math.round(10+editLvl*4+pendingUpload.len/45):Math.round(14+pendingUpload.len*0.8+editLvl*5);
  if(G.energy<energy)return toast("Not enough energy ("+energy+" needed). Advance the day to rest.","bad");
- const thumbCash=thumbLvl*thumbLvl*10;
+ const thumbCash=thumbLvl>0?thumbLvl*thumbLvl*10:0;
  if(G.money<thumbCash)return toast("Thumbnail effort costs "+money(thumbCash)+" — not enough cash.","bad");
  let tScore=scoreTitle(title)+(G.team.writer>0?TEAM.writer.tiers[G.team.writer].bonus*0.4:0)+(G.ideaBoost||0);
  if(topicText&&topic.kw.some(k=>title.toLowerCase().includes(k)))tScore+=4;
@@ -1232,11 +1610,11 @@ function publishVideo(){
  tScore=clamp(tScore,5,105);G.ideaBoost=0;
  const desc=document.getElementById("descInput").value.trim();
  const seo=clamp(scoreDesc(desc,pendingUpload.tags)+(G.hotKw.some(k=>desc.toLowerCase().includes(k))?8:0),5,100);
- let thumbScore=clamp(Math.round(thumbLvl*12+EQUIP.studio.tiers[G.equipment.studio].bonus*0.6+(G.team.thumb>0?TEAM.thumb.tiers[G.team.thumb].bonus*0.5:0)+rnd(0,8)),5,105);
+ let thumbScore=clamp(Math.round((thumbLvl>0?thumbLvl*12:14)+EQUIP.studio.tiers[G.equipment.studio].bonus*0.6+(G.team.thumb>0?TEAM.thumb.tiers[G.team.thumb].bonus*0.5:0)+rnd(0,8)),5,105);
  let editScore=clamp(Math.round(8+editLvl*12+G.skill*2.5+EQUIP.editing.tiers[G.equipment.editing].bonus*0.8+(G.team.editor>0?TEAM.editor.tiers[G.team.editor].bonus*0.5:0)),5,105);
  if(G.moraleHit){thumbScore-=4;editScore-=4;}
  // appeal
- const trendMult=topicMatchesTrend({topic:topic.id,topicText,title})?2.2:1;
+ const hMult=0.8+topicHeat(topic.id)/100*1.8;const trendMult=(topicMatchesTrend({topic:topic.id,topicText,title})?1.35:1)*hMult;
  const quality=tScore*0.28+thumbScore*0.22+editScore*0.32+(G.level*2+G.skill*1.2)*0.18;
  let appeal=quality*topic.base*trendMult*(1+G.level*0.04)*rnd(0.8,1.25);
  if(pendingUpload.tags.some(tg=>G.hotKw.includes(tg)))appeal*=1.08;
@@ -1247,9 +1625,9 @@ function publishVideo(){
  const shape=pickShape(appeal);
  const sec=isShort?pendingUpload.len:60;
  const lenMin=isShort?sec/60:pendingUpload.len;
- const ctr=clamp(0.02+((tScore*0.45+thumbScore*0.55)/100)*0.10+(trendMult>1?0.012:0),0.015,0.135);
+ const ctr=clamp(0.02+((tScore*0.45+thumbScore*0.55)/100)*0.10+(trendMult>1.15?0.012:0),0.015,0.135);
  const hook=+$('hookSlider').value;
- const avd=isShort?clamp(0.48+editScore/100*0.30+(60-sec)/60*0.10,0.4,0.95):clamp(0.22+editScore/100*0.38-(lenMin-5)/100*0.15+G.skill*0.004,0.12,0.75);
+ const avd=isShort?clamp(0.50+editScore/100*0.28-Math.max(0,sec-60)/300*0.22,0.35,0.95):clamp(0.24+editScore/100*0.38-(lenMin-5)/100*0.15+G.skill*0.004,0.10,0.75);
  const v={
   id:G.nextId++,title:title,topic:topic.id,topicText:topicText||topic.name,day:G.day,format:pendingUpload.fmt,lenMin,
   titleScore:Math.round(tScore),thumbScore,editScore,seoScore:seo,hook:isShort?hook:0,
@@ -1262,11 +1640,29 @@ function publishVideo(){
   conv:0.0015+(clamp(appeal,0,100)/100)*0.006*(1+G.skill*0.02),
   impressions:0,views:0,likes:0,dislikes:0,commentsN:0,watchH:0,revenue:0,
   dayNoise:rnd(0.8,1.25),boostDays:0,claimDays:0,limitedAds:false,
-  tmix:trafficMixV2(seo,avd,isShort),hist:[],dayViews:0
+  tmix:trafficMixV2(seo,avd,isShort),hist:[],dayViews:0,seriesId:null,scheduled:0,released:true
  };
- G.videos.push(v);
+ const sched=+($("scheduleSel")?$("scheduleSel").value:0);
+ const ssv=$("seriesSel")?$("seriesSel").value:"";
+ let seriesId=null;
+ if(ssv==="__new"){
+  const ni=$("seriesNewInput");
+  const nm=((ni&&ni.value.trim())||(window.prompt?prompt("Name your series:",""):""))||"";
+  if(nm.trim()){const ns=addSeries(nm,topic.id);seriesId=ns.id;}
+ }else if(ssv){const sr=(G.seriesList||[]).find(s=>String(s.id)===ssv);if(sr)seriesId=sr.id;}
  G.energy-=energy;G.money-=thumbCash;
+ if(sched>0&&sched<=3){
+  v.released=false;v.scheduled=G.day+sched;v.day=G.day+sched;
+  if(seriesId){v.seriesId=seriesId;const sr=G.seriesList.find(s=>s.id===seriesId);if(sr)sr.eps.push(v.id);}
+  G.videos.push(v);
+  feed("Scheduled \""+title+"\" for "+dateOffsetStr(sched)+".","");
+  toast("Scheduled: <b>"+esc(title)+"</b> — goes live "+dateOffsetStr(sched)+".","good");
+  closeModal("modalUpload");saveGame();renderAll();return;
+ }
  G.uploads++;G.uploadsToday++;G.uploadsWeek++;G.lastUploadDay=G.day;
+ G.videos.push(v);
+ if(seriesId){v.seriesId=seriesId;const sr=G.seriesList.find(s=>s.id===seriesId);if(sr)sr.eps.push(v.id);}
+ seedLaunch(v);seriesCheck();
  if(G.boostNext){G.boostNext=false;addSubs(Math.max(5,G.subs*0.01));feed("The collab video is live and your audience is watching.","gold");}
  feed("Published \""+title+"\" ("+(isShort?"Short":durStr(lenMin))+", "+topic.name+")","");
  toast("Published: <b>"+esc(title)+"</b> — gut feeling: "+({viral:"this could explode",hot:"this feels hot",steady:"a steady climber",slow:"a slow burn",flop:"hard to say"}[shape]),"good");
@@ -1293,20 +1689,33 @@ function checkAchievements(){
   }
  }
 }
-function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
+function saveGame(){try{localStorage.setItem(curPid?profileKey(curPid):SAVE_KEY,JSON.stringify(G));}catch(e){}}
+function migrateG(d){
+ if(!d.rivals||!d.rivals.length)d.rivals=makeRivals();
+ if(d.satisfaction==null)d.satisfaction=0.5;
+ if(d.weeklyStreak==null)d.weeklyStreak=0;
+ if(d.uploadsWeek==null)d.uploadsWeek=0;
+ if(!d.following)d.following=[];
+ if(!d.collabCooldowns)d.collabCooldowns={};
+ if(!d.collabOffers)d.collabOffers=[];
+ if(!d.nextOfferId)d.nextOfferId=1;
+ if(!d.likedRv)d.likedRv=[];
+ if(!d.watchTab)d.watchTab="all";
+ if(d.handle==null)d.handle="";
+ if(d.rebrandDay==null)d.rebrandDay=null;
+ if(!d.worldEvents)d.worldEvents=[];
+ if(d.nextEventId==null)d.nextEventId=1;
+ if(d.eventCd==null)d.eventCd=2;
+ if(!d.heatHist)d.heatHist=[];
+ if(!d.radar)d.radar={lastDay:-99,report:null};
+ if(!d.seriesList)d.seriesList=[];
+ if(d.seriesNextId==null)d.seriesNextId=1;
+ if(!d.seriesDone)d.seriesDone={};
+ return d;
+}
 function loadGame(){
- try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
-  const d=JSON.parse(raw);if(!d||d.v!==2)return false;G=d;
-  if(!G.rivals||!G.rivals.length)G.rivals=makeRivals();
-  if(G.satisfaction==null)G.satisfaction=0.5;
-  if(G.weeklyStreak==null)G.weeklyStreak=0;
-  if(G.uploadsWeek==null)G.uploadsWeek=0;
-  if(!G.following)G.following=[];
-  if(!G.collabCooldowns)G.collabCooldowns={};
-  if(!G.collabOffers)G.collabOffers=[];
-  if(!G.nextOfferId)G.nextOfferId=1;
-  if(!G.likedRv)G.likedRv=[];
-  if(!G.watchTab)G.watchTab="all";
+ try{const raw=localStorage.getItem(curPid?profileKey(curPid):SAVE_KEY);if(!raw)return false;
+  const d=JSON.parse(raw);if(!d||d.v!==2)return false;G=migrateG(d);
   return true;
  }catch(e){return false;}
 }
@@ -1324,6 +1733,7 @@ function toast(html,cls){
  setTimeout(()=>{t.classList.add("out");setTimeout(()=>t.remove(),450);},4200);
 }
 function renderTop(){
+ if($("chName"))$("chName").textContent=G.channelName||"—";
  $("topMoney").textContent=money(G.money);
  $("energyTxt").textContent=Math.round(G.energy);
  $("energyFill").style.width=clamp(G.energy/(100+G.level*5)*100,0,100)+"%";
@@ -1436,7 +1846,7 @@ function renderLatest(){
   '<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:10px">'+
    thumbDiv(v)+
    '<div style="min-width:0;flex:1"><div class="vtitle" style="-webkit-line-clamp:2">'+esc(v.title)+'</div>'+
-   '<div class="vmeta2">'+topicById(v.topic).icon+" "+topicById(v.topic).name+' · '+(t===0?"published today":t+" days ago")+' · '+badgeHtml(v)+'</div></div>'+
+   '<div class="vmeta2">'+topicById(v.topic).icon+" "+topicById(v.topic).name+' · '+(v.released===false?("scheduled — goes live "+dateOffsetStr(Math.max(0,(v.scheduled||0)-G.day))):(t===0?"published today":(t===1?"1 day ago":t+" days ago")))+' · '+badgeHtml(v)+'</div></div>'+
   '</div>'+
   '<div class="vstats" style="margin-bottom:8px">'+
    '<div><b data-vn="lv-views" style="font-size:16px">'+fmt(v.views)+'</b><span>views</span></div>'+
@@ -1530,6 +1940,15 @@ function renderAlgo(){
 }
 function renderAnalytics(){
  renderAlgo();
+ {const rel=$("anReach");if(rel){
+  const imp=G.totalImpressions||0,ctr=imp>0?G.totalViews/imp:0;
+  const live=G.videos.filter(v=>v.released!==false&&G.day-v.day<=2).reduce((a,v)=>a+(v.dayViews||0),0);
+  rel.innerHTML='<div class="statgrid">'+
+   '<div class="stat"><div class="lbl">Impressions</div><div class="val">'+fmt(Math.round(imp))+'</div><div class="sub">thumbnails served so far</div></div>'+
+   '<div class="stat"><div class="lbl">Channel CTR</div><div class="val">'+(ctr*100).toFixed(1)+'%</div><div class="sub">views ÷ impressions</div></div>'+
+   '<div class="stat s-v"><div class="lbl">Last 48h</div><div class="val">'+fmt(Math.round(live))+'</div><div class="sub">views on uploads ≤2 days old</div></div>'+
+  '</div>'+
+  '<div style="font-size:12px;color:var(--faint);margin-top:6px">Impressions come first; CTR and how long people stay decide whether the algorithm serves more.</div>';}}
  $("anViews").innerHTML=chartHtml(G.hist.views,"");
  $("anRev").innerHTML=chartHtml(G.hist.rev,"gold");
  renderTraffic();renderKeys();
@@ -1539,7 +1958,7 @@ function renderAnalytics(){
    '<div class="thumb" style="width:70px;height:42px;font-size:17px">'+topicById(v.topic).icon+(v.format==="short"?'<span class="sfm">SHORT</span>':'<span class="dur">'+durStr(v.lenMin)+'</span>')+'</div>'+
    '<div class="vtitle" style="-webkit-line-clamp:1">'+esc(v.title)+'</div>'+
    '<div style="font-variant-numeric:tabular-nums;font-size:13px">'+fmt(v.views)+' views · '+money(v.revenue)+'</div>'+
-   '<div style="font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint)">'+(v.ctr*100).toFixed(1)+'% CTR · '+Math.round(v.avd*100)+'% avd</div>'+
+   '<div style="font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint)">'+(ctrOf(v)*100).toFixed(1)+'% CTR · '+Math.round(v.avd*100)+'% avd</div>'+
   '</div>').join(""):'<div class="empty">No videos yet.</div>';
 }
 function renderCommunity(){
@@ -1636,12 +2055,15 @@ function renderAll(){
 
 /* ============================== UPLOAD MODAL ============================== */
 function openUpload(preset){
+ {const ss=$("seriesSel");if(ss)ss.innerHTML='<option value="">No series</option>'+(G.seriesList||[]).map(s=>'<option value="'+s.id+'">'+esc(s.name)+" ("+s.eps.length+")</option>").join("")+'<option value="__new">+ New series…</option>';}
+ {const sf=$("seriesNewField");if(sf)sf.style.display="none";}{const sn=$("seriesNewInput");if(sn)sn.value="";}
+ {const sc=$("scheduleSel");if(sc)sc.value="0";}
  pendingUpload={fmt:"long",len:10,topic:G.trending,tags:[],hook:5};
  if(preset==="short"){pendingUpload.fmt="short";pendingUpload.len=30;}
  updateTopicState();renderTopicQuick();renderTagsBox();renderLenSeg();
  $("titleInput").value="";$("descInput").value="";
  updateTitleMeter();updateDescScore();
- $("thumbSlider").value=2;$("editSlider").value=2;
+ $("thumbSlider").value=0;$("editSlider").value=2;
  $("hookSlider").value=5;$("hookVal").textContent="5 / 10";
  updateUploadCosts();
  document.querySelectorAll("#fmtSeg button").forEach(b=>b.classList.toggle("sel",b.dataset.fmt===pendingUpload.fmt));
@@ -1652,8 +2074,8 @@ function openUpload(preset){
 }
 function renderLenSeg(){
  const isShort=pendingUpload.fmt==="short";
- const opts=isShort?[[15,"snappy, loops fast"],[30,"the sweet spot"],[45,"more story"],[60,"the 60s cap"]]
-                   :[[5,"easy to finish"],[10,"balanced"],[20,"watch time monster"]];
+ const opts=isShort?[[15,"snappy, loops fast"],[30,"the sweet spot"],[45,"more story"],[60,"the classic"],[90,"deep-dive Short"],[120,"2 min Short"],[180,"the 3 min cap"]]
+                   :[[2,"quick hit"],[3,"tight story"],[5,"easy to finish"],[8,"solid length"],[12,"deep dive"],[20,"watch time monster"],[30,"the documentary"]];
  if(!opts.some(o=>o[0]===pendingUpload.len))pendingUpload.len=isShort?30:10;
  $("lenSeg").innerHTML=opts.map(o=>'<button data-len="'+o[0]+'" class="'+(pendingUpload.len===o[0]?"sel":"")+'">'+(isShort?o[0]+" sec":"~"+o[0]+" min")+'<span>'+o[1]+'</span></button>').join("");
 }
@@ -1695,9 +2117,9 @@ function updateDescScore(){
 function updateUploadCosts(){
  const isShort=pendingUpload.fmt==="short";
  const thumbLvl=+$("thumbSlider").value,editLvl=+$("editSlider").value;
- $("thumbVal").textContent="lvl "+thumbLvl+" · "+money(thumbLvl*thumbLvl*10);
+ $("thumbVal").textContent=thumbLvl===0?"basic · free":"lvl "+thumbLvl+" · "+money(thumbLvl*thumbLvl*10);
  $("editVal").textContent="lvl "+editLvl+" · "+(isShort?12+editLvl*5:20+editLvl*8)+" ⚡";
- $("uploadCostNote").textContent="Total: "+(isShort?12+editLvl*5:20+editLvl*8)+" energy · "+money(thumbLvl*thumbLvl*10)+" thumbnail cost";
+ $("uploadCostNote").textContent="Total: "+(isShort?12+editLvl*5:20+editLvl*8)+" energy · "+(thumbLvl>0?money(thumbLvl*thumbLvl*10)+" thumbnail cost":"free basic thumbnail");
  $("hookField").style.display=isShort?"block":"none";
  $("btnPublish").disabled=$("titleInput").value.trim().length===0;
 }
@@ -1716,6 +2138,7 @@ function openVideoModal(id){
  const tm=v.tmix;
  const tmTotal=tm.browse+tm.suggested+tm.search+tm.external+tm.shorts||1;
  const trows=[["Browse features",tm.browse,"var(--blue)"],["Suggested videos",tm.suggested,"var(--red)"],["Search",tm.search,"var(--gold)"],["External",tm.external,"var(--green)"],["Shorts feed",tm.shorts,"var(--purple)"]];
+ const reach=(v.stats||[]).slice(-7).map(s=>'<div class="hbar"><div class="hl"><span>'+(G.day-s.d===0?"today":(G.day-s.d===1?"yesterday":(G.day-s.d)+" days ago"))+'</span><b>'+fmt(s.imp)+' impressions · '+fmt(s.views)+' views · '+(s.ctr*100).toFixed(1)+'% CTR</b></div><div class="ht"><i style="width:'+clamp(s.ctr/0.12*100,2,100)+'%;background:var(--blue)"></i></div></div>').join("");
  $("vModalBody").innerHTML=
   '<div style="display:flex;gap:14px;margin-bottom:14px">'+thumbDiv(v)+
   '<div style="min-width:0"><div class="vmeta2" style="margin-bottom:6px">'+
@@ -1724,7 +2147,7 @@ function openVideoModal(id){
    '<span class="chip '+(G.monetized&&!v.limitedAds?"mon":"")+'">'+(G.monetized?(v.limitedAds?"limited ads":"monetized"):"no ads")+'</span>'+
    (v.claimDays>0?'<span class="chip lim">copyright claim ('+v.claimDays+'d)</span>':'')+
    badgeHtml(v)+'</div>'+
-   '<div style="color:var(--faint);font-size:12.5px">Uploaded '+(t===0?"today":t+" days ago")+' · '+fmt(v.impressions)+' impressions served</div></div></div>'+
+   '<div style="color:var(--faint);font-size:12.5px">Uploaded '+(v.released===false?"scheduled — not live yet":(t===0?"today":(t===1?"1 day ago":t+" days ago")))+' · '+fmt(v.impressions)+' impressions served</div></div></div>'+
   '<div class="vstats" style="margin-bottom:14px">'+
    '<div><b style="font-size:19px">'+fmt(v.views)+'</b><span>views</span></div>'+
    '<div><b style="font-size:19px">'+fmt(v.likes)+'</b><span>likes</span></div>'+
@@ -1740,10 +2163,11 @@ function openVideoModal(id){
    '<div class="meterlbl"><span>0%</span><span>average viewed: '+Math.round(v.avd*100)+'%</span><span>100% of video</span></div></div>'+
   '<div class="field"><label>Traffic sources</label>'+
    trows.map(r=>{const pct=r[1]/tmTotal*100;return'<div class="hbar"><div class="hl"><span>'+r[0]+'</span><b>'+pct.toFixed(1)+'%</b></div><div class="ht"><i style="width:'+pct+'%;background:'+r[2]+'"></i></div></div>';}).join("")+'</div>'+
+  '<div class="field"><label>Reach by day</label>'+(v.stats&&v.stats.length?reach:'<div class="empty">No daily reach data yet.</div>')+'</div>'+
   '<div class="field"><label>Performance breakdown</label>'+
    '<div style="font-size:13px;color:var(--dim);line-height:1.75">'+
    'Pattern: <b style="color:var(--txt)">'+v.shape+'</b> · appeal '+v.appeal+'<br>'+
-   'Click-through: <b style="color:var(--txt)">'+(v.ctr*100).toFixed(1)+'%</b> (title '+v.titleScore+' · thumbnail '+v.thumbScore+')<br>'+
+   'Click-through: <b style="color:var(--txt)">'+(ctrOf(v)*100).toFixed(1)+'%</b> (title '+v.titleScore+' · thumbnail '+v.thumbScore+')<br>'+
    'Likes '+fmt(v.likes)+' · dislikes '+fmt(Math.round(v.dislikes))+' ('+(v.likes>0?Math.round(v.likes/(v.likes+Math.max(1,v.dislikes))*100):95)+'% like ratio)<br>'+
    'Average viewed: <b style="color:var(--txt)">'+Math.round(v.avd*100)+'%</b> (editing '+v.editScore+')<br>'+
    'SEO score: '+v.seoScore+' · tags: '+(v.tags.length?esc(v.tags.join(", ")):"none")+'<br>'+
@@ -1922,10 +2346,10 @@ function closeModal(id){$(id).classList.remove("open");}
 function switchPage(p){
  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.page===p));
  document.querySelectorAll(".page").forEach(pg=>pg.classList.toggle("on",pg.id==="page-"+p));
- if(p==="content")renderContent();
+ if(p==="content"){renderContent();renderSeries();}
  if(p==="watch")renderWatch();
  if(p==="rivals")renderRivals();
- if(p==="analytics")renderAnalytics();
+ if(p==="analytics"){renderAnalytics();renderRadar();}
  if(p==="community")renderCommunity();
  if(p==="monet")renderMonet();
  if(p==="studio"){renderShop();renderTeam();}
@@ -1948,6 +2372,19 @@ function wire(){
  $("actSeries").addEventListener("click",doSeries);
  $("actScout").addEventListener("click",doScout);
  $("actShort").addEventListener("click",()=>openUpload("short"));
+ $("chChip").addEventListener("click",openProfileModal);
+ $("btnNewProfile").addEventListener("click",()=>{closeModal("modalProfiles");createProfile();});
+ $("btnProfileSettings").addEventListener("click",()=>{closeModal("modalProfiles");openSettings();});
+ $("btnTopSettings").addEventListener("click",openSettings);
+ $("btnSaveSettings").addEventListener("click",saveSettings);
+ {const ss=$("seriesSel");if(ss)ss.addEventListener("change",()=>{const sf=$("seriesNewField");if(sf)sf.style.display=ss.value==="__new"?"block":"none";});}
+ $("btnRadar").addEventListener("click",aiRadar);
+ $("btnNewSeries").addEventListener("click",newSeries);
+ $("seriesPanel").addEventListener("click",e=>{const b=e.target.closest("[data-sdel]");if(!b)return;const id=+b.dataset.sdel;const s=(G.seriesList||[]).find(x=>x.id===id);if(!s)return;for(const v of G.videos)if(v.seriesId===id)v.seriesId=null;G.seriesList=G.seriesList.filter(x=>x.id!==id);delete G.seriesDone[id];saveGame();renderSeries();toast("Deleted series <b>"+esc(s.name)+"</b>.","bad");});
+ $("profilesBody").addEventListener("click",e=>{
+  const lo=e.target.closest("[data-pload]");if(lo){closeModal("modalProfiles");switchProfile(lo.dataset.pload);return;}
+  const de=e.target.closest("[data-pdel]");if(de){deleteProfile(de.dataset.pdel);return;}
+ });
  document.addEventListener("keydown",e=>{
   if(e.code!=="Space")return;
   const tag=(document.activeElement&&document.activeElement.tagName)||"";
@@ -1958,7 +2395,7 @@ function wire(){
  $("btnStartGo").addEventListener("click",()=>{
   const n=$("chNameInput").value.trim();
   if(!n)return toast("Give your channel a name first.","bad");
-  G.channelName=n;$("chName").textContent=n;$("chChip").style.display="flex";
+  G.channelName=n;G.handle=guessHandle(n);renameProfileEntry(n);$("chName").textContent=n;$("chChip").style.display="flex";
   closeModal("modalStart");saveGame();
   feed("Channel \""+n+"\" is live. First upload sets the tone.","gold");
  });
@@ -2038,11 +2475,12 @@ function wire(){
  setInterval(tick,2000);
 }
 function resetGame(){
- try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+ try{localStorage.removeItem(profileKey(curPid))}catch(e){}
  G=freshGame();saveGame();renderAll();switchPage("dashboard");
  toast("New channel created. Good luck out there.","gold");
 }
 function init(){
+ ensureProfiles();
  if(!loadGame())G=freshGame();
  if(!G.rivals||!G.rivals.length)G.rivals=makeRivals();
  if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
@@ -2055,7 +2493,7 @@ function init(){
  }
 }
 init();
-window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,applyMonetization,toggleFeature,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,publishVideoState:()=>pendingUpload};
+window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,applyMonetization,toggleFeature,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,switchProfile,createProfile,deleteProfile,renameChannel,listProfiles,openSettings,saveSettings,renderProfiles,guessHandle,curPid:()=>curPid,topicHeat,topicHeatTable,heatDelta,buildRadarReport,runRadar,aiRadar,renderRadar,releaseScheduled,renderSeries,newSeries,addSeries,seriesBinge,seriesCheck,seedLaunch,dateOffsetStr,publishVideoState:()=>pendingUpload};
 </script>
 </body>
 </html>
