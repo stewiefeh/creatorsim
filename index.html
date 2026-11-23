@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CreatorSim Studio — YouTube Channel Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#161318;--bg2:#1c181d;--panel:#1e1a1f;--panel2:#282328;--panel3:#211c22;
+ --line:#352e38;--line2:#3f3744;--txt:#f1ebe6;--dim:#b3a6ae;--faint:#7f7079;
+ --red:#ff4438;--red2:#d92d22;--amber:#ffb224;--green:#3ddc84;--blue:#5aa2ff;
+ --purple:#b07aff;--gold:#e8b13a;--shadow:0 14px 34px rgba(0,0,0,.42);
+ --disp:"Bricolage Grotesque",Georgia,serif;--ui:"Archivo",system-ui,sans-serif;--mono:"Spline Sans Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{color-scheme:dark}
+body{font-family:var(--ui);background:radial-gradient(1200px 500px at 85% -10%,#241b26 0%,transparent 60%),var(--bg);color:var(--txt);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(255,68,56,.35)}
+button{font-family:var(--ui);cursor:pointer}
+input,textarea{font-family:var(--ui)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.app{display:flex;min-height:100vh;animation:shell .5s ease}
+@keyframes shell{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ---------- rail ---------- */
+.side{width:216px;flex:none;border-right:1px solid var(--line);background:linear-gradient(180deg,#1a161b,#161318);padding:18px 12px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;padding:2px 10px 16px;display:flex;align-items:baseline;gap:2px}
+.brand .glyph{width:11px;height:11px;border-radius:3px;background:var(--red);display:inline-block;margin-right:8px;box-shadow:0 0 0 3px rgba(255,68,56,.18)}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--dim);text-align:left;white-space:nowrap;background:none;border:0}
+.nav button:hover{background:var(--panel2);color:var(--txt)}
+.nav button.on{background:var(--panel2);color:var(--txt);font-weight:600;box-shadow:inset 2px 0 0 var(--red)}
+.nav button .ic{font-size:15px;width:20px;text-align:center}
+.sidefoot{margin-top:auto;color:var(--faint);font-size:11px;line-height:1.5;padding:12px 10px;border-top:1px solid var(--line)}
+@media(max-width:900px){.side{width:auto;height:auto;position:static}.nav{flex-direction:row;overflow-x:auto}.sidefoot{display:none}}
+/* ---------- main / topbar ---------- */
+.main{flex:1;min-width:0}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;padding:12px 22px;background:rgba(22,19,24,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.datechip{display:flex;align-items:baseline;gap:9px;margin-right:auto}
+.datechip .dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 8px rgba(255,68,56,.7);animation:pulse 2.4s infinite;align-self:center}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.datechip b{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:-.01em}
+.res{display:flex;align-items:center;gap:8px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;padding:6px 11px}
+.res .lbl{color:var(--faint);font-size:10.5px;font-weight:600;letter-spacing:.04em}
+.res span:not(.lbl):not(.energybar){font-family:var(--mono);font-size:13px;font-weight:500}
+.energybar{width:74px;height:7px;border-radius:4px;background:#0e0c10;border:1px solid var(--line2);overflow:hidden;display:inline-block}
+.energybar i{display:block;height:100%;background:linear-gradient(90deg,#c77e12,var(--amber));transition:width .4s}
+.advance{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--red);color:#fff;border:0;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13.5px;box-shadow:0 4px 14px rgba(255,68,56,.28);transition:transform .08s ease,background .15s}
+.advance:hover{background:#ff5a4f}
+.advance:active{transform:scale(.97)}
+.advance small{font-weight:500;font-size:10px;opacity:.85;font-family:var(--mono)}
+.daystrip{width:100%;height:3px;background:var(--panel2);border-radius:2px;overflow:hidden;margin-top:-4px}
+.daystrip i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--amber));transition:width .5s linear}
+.content{padding:22px;max-width:1180px;margin:0 auto}
+.page{display:none}.page.on{display:block;animation:pg .28s ease}
+@keyframes pg{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ---------- cards ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.chead{display:flex;align-items:center;gap:10px;padding:13px 16px 11px;border-bottom:1px solid var(--line)}
+.chead h2{font-family:var(--disp);font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.chead .count{color:var(--faint);font-size:12px;font-family:var(--mono)}
+.cbody{padding:14px 16px}
+.row2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:900px){.row2{grid-template-columns:1fr}}
+/* stat strip: one connected panel, LED style */
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
+@media(max-width:760px){.statgrid{grid-template-columns:1fr 1fr}}
+.stat{padding:16px 18px 13px;position:relative}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat:nth-child(3),.stat:nth-child(4){border-top:1px solid var(--line)}
+@media(max-width:760px){.stat+.stat{border-left:0}.stat{border-top:1px solid var(--line)}.stat:first-child{border-top:0}}
+.stat .lbl{color:var(--faint);font-size:11px;font-weight:600;letter-spacing:.05em;margin-bottom:6px}
+.stat .val{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat.s-v .val{color:#8ab8ff}.stat.s-w .val{color:#5fd6a0}.stat.s-m .val{color:#7fe0ae}
+.stat .sub{margin-top:5px;font-size:12px;color:var(--faint);font-family:var(--mono)}
+.ticking{animation:ticknum .6s ease}
+@keyframes ticknum{0%{color:var(--amber)}100%{color:inherit}}
+/* ---------- buttons & controls ---------- */
+.btn{background:var(--panel2);border:1px solid var(--line2);color:var(--txt);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;transition:background .15s,transform .08s}
+.btn:hover{background:var(--panel3)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 12px rgba(255,68,56,.25)}
+.btn.primary:hover{background:#ff5a4f}
+.btn.gold{background:rgba(232,177,58,.16);border-color:rgba(232,177,58,.5);color:var(--gold)}
+.btn.small{padding:5px 10px;font-size:12px;border-radius:8px}
+.seg{display:flex;gap:0;border:1px solid var(--line2);border-radius:10px;overflow:hidden;width:fit-content}
+.seg button{background:none;border:0;color:var(--dim);padding:8px 14px;font-size:12.5px;font-weight:600;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.sel{background:var(--panel2);color:var(--txt)}
+.seg button span{display:block;font-weight:400;font-size:10.5px;color:var(--faint);margin-top:1px}
+.actionbtn{display:flex;align-items:center;gap:12px;text-align:left;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:12px;color:var(--txt);transition:border-color .15s,background .15s,transform .08s}
+.actionbtn:hover:not(:disabled){border-color:var(--red);background:#241d21}
+.actionbtn:active:not(:disabled){transform:scale(.98)}
+.actionbtn:disabled{opacity:.45;cursor:not-allowed}
+.actionbtn .ic{font-size:19px}
+.actionbtn .t{font-weight:600;font-size:13.5px}
+.actionbtn .d{color:var(--faint);font-size:11.5px}
+.actionbtn .cost{margin-left:auto;font-family:var(--mono);color:var(--amber);font-size:12px;white-space:nowrap}
+/* topics */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.topic{position:relative;background:var(--panel2);border:1px solid var(--line2);border-radius:11px;padding:10px 6px;color:var(--txt);transition:border-color .15s}
+.topic:hover{border-color:var(--dim)}
+.topic.sel{border-color:var(--red);background:rgba(255,68,56,.08)}
+.topic .ti{font-size:20px;margin-bottom:3px}
+.topic .tn{font-size:12px;font-weight:600}
+.topic .td{font-size:10.5px;color:var(--faint);font-family:var(--mono)}
+.topic .trend{position:absolute;top:-8px;right:6px;background:var(--amber);color:#1a1206;font-size:9px;font-weight:700;border-radius:6px;padding:1px 5px}
+.topic .lock{position:absolute;top:6px;right:6px;color:var(--faint);font-size:10px}
+input[type=text],input[type=number],textarea{width:100%;background:#141114;border:1px solid var(--line2);border-radius:10px;color:var(--txt);padding:10px 12px;font-size:13.5px}
+input[type=text]:focus,textarea:focus{border-color:var(--blue);outline:none}
+input[type=range]{accent-color:var(--red);width:100%}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row .sv{font-family:var(--mono);font-size:12px;color:var(--dim);white-space:nowrap}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--dim);margin-bottom:6px}
+.meter{height:5px;background:#141114;border-radius:3px;overflow:hidden;margin-top:7px}
+.meter i{display:block;height:100%;transition:width .25s}
+.meterlbl{display:flex;justify-content:space-between;color:var(--faint);font-size:11.5px;margin-top:5px}
+.tagsbox{display:flex;flex-wrap:wrap;gap:7px}
+.tagchip{border:1px solid var(--line2);background:var(--panel2);border-radius:20px;padding:4px 11px;font-size:12px;color:var(--dim);font-weight:500}
+.tagchip:hover{border-color:var(--dim);color:var(--txt)}
+.tagchip.sel{background:rgba(90,162,255,.14);border-color:var(--blue);color:#a9ccff}
+.tagchip.hotkw{border-color:rgba(255,178,36,.55);color:var(--amber)}
+/* ---------- video rows & thumbs ---------- */
+.vrow{display:grid;grid-template-columns:70px 1fr 130px 90px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.vrow:last-child{border-bottom:0}
+.vrow:hover .vtitle{color:#fff}
+.thumb{position:relative;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.thumb .dur{position:absolute;bottom:4px;right:5px;background:rgba(0,0,0,.72);font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:4px}
+.thumb .sfm{position:absolute;bottom:4px;right:5px;background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;letter-spacing:.04em}
+.vtitle{font-weight:600;font-size:13.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vmeta2{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;background:var(--panel2);border:1px solid var(--line2);border-radius:20px;padding:2px 9px;font-size:11px;color:var(--dim);font-weight:500}
+.chip.mon{background:rgba(61,220,132,.12);border-color:rgba(61,220,132,.4);color:#7fe0ae}
+.chip.shorts{background:rgba(176,122,255,.14);border-color:rgba(176,122,255,.45);color:var(--purple)}
+.chip.lim{background:rgba(255,68,56,.1);border-color:rgba(255,68,56,.4);color:#ff8d85}
+.badge{display:inline-flex;align-items:center;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700}
+.vstats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;background:var(--panel2);border-radius:12px;padding:12px}
+.vstats div{display:flex;flex-direction:column;gap:2px}
+.vstats div span{color:var(--faint);font-size:11px}
+.chartbars{display:flex;align-items:flex-end;gap:3px;height:70px}
+.chartbars i{flex:1;background:linear-gradient(180deg,#6f5f77,#4a3f51);border-radius:2px 2px 0 0;min-height:2px;transition:height .35s ease}
+.chartbars i:last-child{background:linear-gradient(180deg,var(--red),#8c2620)}
+.hbar{margin-bottom:8px}
+.hbar .hl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:3px}
+.hbar .hl b{font-family:var(--mono);font-weight:500}
+.hbar .ht{height:7px;border-radius:4px;background:#141114;overflow:hidden}
+.hbar .ht i{display:block;height:100%;border-radius:4px;transition:width .4s}
+.retention{width:100%;height:90px;display:block;background:#141114;border-radius:10px;border:1px solid var(--line)}
+/* comments */
+.comment{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.comment:last-child{border-bottom:0}
+.comment .av{width:30px;height:30px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.comment.hate .ct{color:#ff9a93}
+.comment.pinned{background:rgba(232,177,58,.06);border-radius:9px;padding:9px 10px}
+.comment .cu{font-size:12px;color:var(--faint)}
+.comment .cu b{color:var(--txt)}
+.comment .ct{font-size:13px;margin-top:2px}
+.csel{display:flex;gap:6px;margin-top:6px}
+.csel button{background:none;border:1px solid var(--line2);border-radius:7px;color:var(--dim);font-size:11px;padding:3px 8px}
+.csel button:hover{color:var(--txt);border-color:var(--dim)}
+.csel button.done{color:var(--red);border-color:rgba(255,68,56,.5)}
+/* offers / shop / team / ach */
+.offer{display:flex;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line2);border-radius:12px;padding:12px;margin-bottom:9px}
+.offer .ot{font-weight:700;font-size:13.5px}
+.offer .od{color:var(--dim);font-size:12.5px;margin-top:2px}
+.obtns{display:flex;gap:7px;margin-left:auto;flex:none}
+.shopitem{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.shopitem:last-child{border-bottom:0}
+.shopitem .k{font-size:18px}
+.shopitem .kv{flex:1}
+.shopitem .sn{font-weight:600;font-size:13px}
+.shopitem .sd{color:var(--faint);font-size:11.5px}
+.tier{color:var(--faint);font-size:11px;font-family:var(--mono)}
+.feeditem{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--dim);display:flex;gap:9px;align-items:baseline}
+.feeditem:last-child{border-bottom:0}
+.feeditem.gold{color:var(--gold)}.feeditem.good{color:#7fe0ae}.feeditem.bad{color:#ff8d85}
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ach{display:flex;gap:11px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px;opacity:.38}
+.ach.won{opacity:1;border-color:rgba(232,177,58,.45)}
+.ach .em{font-size:22px}
+.ach .tn{font-weight:700;font-size:13px}
+.ach .ad{color:var(--dim);font-size:11.5px;margin-top:2px}
+.trophy{display:flex;align-items:center;gap:14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;opacity:.4}
+.trophy.won{opacity:1;border-color:rgba(232,177,58,.4)}
+.trophy .em{font-size:28px}
+.trophy .tn{font-weight:700}
+.trophy .td{color:var(--dim);font-size:12px}
+.toggle{position:relative;width:44px;height:24px;border-radius:14px;background:var(--panel3);border:1px solid var(--line2);transition:background .2s;flex:none}
+.toggle.on{background:var(--green);border-color:var(--green)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle.on::after{left:22px}
+.biglock{padding:30px;text-align:center;color:var(--dim)}
+.biglock .em{font-size:40px;display:block;margin-bottom:10px}
+/* ---------- watch app ---------- */
+.wcard{background:var(--panel2);border:1px solid var(--line);border-radius:13px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .1s}
+.wcard:hover{border-color:var(--dim);transform:translateY(-2px)}
+.wcard .thumb{border-radius:0}
+.wcard .wt{font-weight:600;font-size:13px;padding:9px 11px 3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.wcard .wm{color:var(--faint);font-size:11.5px;padding:0 11px 11px;font-family:var(--mono);line-height:1.6}
+/* rivals */
+.rrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:0}
+.rrow.me{background:rgba(232,177,58,.05);border-radius:10px;padding:11px 10px;border-bottom:0;margin-bottom:2px;border:1px solid rgba(232,177,58,.3)}
+.rk{font-family:var(--mono);color:var(--faint);font-size:12px;width:30px;flex:none;text-align:right}
+.rrow.me .rk{color:var(--gold)}
+.rav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.rmain{flex:1;min-width:0}
+.rmain b{font-size:13.5px}
+.rsub{color:var(--faint);font-size:11.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ract{flex:none}
+/* algorithm panel */
+.algoVerdict{font-size:13.5px;color:var(--dim);margin-bottom:12px}
+.algoVerdict b{color:var(--txt)}
+.abar{margin-bottom:9px}
+.abar .hl{display:flex;justify-content:space-between;font-size:12px;color:var(--dim)}
+.abar .hl b{font-family:var(--mono);font-weight:500;color:var(--txt)}
+.abar .ht{height:7px;border-radius:4px;background:#141114;overflow:hidden}
+.abar .ht i{display:block;height:100%;border-radius:4px;transition:width .4s}
+.whyline{font-size:12.5px;color:var(--dim);padding:8px 0;border-bottom:1px solid var(--line)}
+.whyline:last-child{border-bottom:0}
+.whyline b{color:var(--txt);font-weight:600}
+/* ---------- modals & toasts ---------- */
+.modal-ov{position:fixed;inset:0;background:rgba(10,8,11,.72);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:7vh 16px 16px;overflow-y:auto}
+.modal-ov.open{display:flex;animation:ovin .18s ease}
+@keyframes ovin{from{opacity:0}to{opacity:1}}
+.modal{background:var(--panel);border:1px solid var(--line2);border-radius:16px;width:100%;max-width:520px;box-shadow:var(--shadow);animation:mup .22s ease}
+@keyframes mup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.mhead{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.mhead h3{font-family:var(--disp);font-size:16px;font-weight:700;flex:1}
+.mclose{background:none;border:0;color:var(--faint);font-size:15px;padding:4px 6px;border-radius:7px}
+.mclose:hover{color:var(--txt);background:var(--panel2)}
+.mbody{padding:16px 18px;max-height:66vh;overflow-y:auto}
+.mfoot{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);margin-top:6px}
+.mfoot .costnote{flex:1;color:var(--faint);font-size:12px;font-family:var(--mono)}
+.toasts{position:fixed;right:18px;bottom:18px;z-index:200;display:flex;flex-direction:column;gap:9px;max-width:340px}
+.toast{background:var(--panel3);border:1px solid var(--line2);border-left:3px solid var(--blue);border-radius:11px;padding:11px 14px;font-size:13px;box-shadow:var(--shadow);animation:tin .25s ease}
+.toast.gold{border-left-color:var(--gold)}
+.toast.good{border-left-color:var(--green)}
+.toast.bad{border-left-color:var(--red)}
+.toast b{font-weight:700}
+@keyframes tin{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.toast.out{opacity:0;transform:translateX(30px);transition:all .4s}
+.empty{color:var(--faint);font-size:13px;text-align:center;padding:26px 10px}
+.footer{margin-top:26px;text-align:center;color:var(--faint);font-size:11.5px;padding-bottom:10px}
+.achcount{color:var(--faint);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="side">
+    <div class="brand"><span class="glyph"></span>CreatorSim&nbsp;<span style="color:var(--faint);font-weight:500;font-size:12px">Studio</span></div>
+    <div class="nav" id="nav">
+      <button data-page="dashboard" class="on"><span class="ic">🏠</span>Dashboard</button>
+      <button data-page="content"><span class="ic">🎬</span>Content</button>
+      <button data-page="watch"><span class="ic">▶</span>Watch</button>
+      <button data-page="rivals"><span class="ic">🥊</span>Rivals</button>
+      <button data-page="analytics"><span class="ic">📊</span>Analytics</button>
+      <button data-page="community"><span class="ic">💬</span>Community</button>
+      <button data-page="monet"><span class="ic">💰</span>Monetization</button>
+      <button data-page="studio"><span class="ic">🛠️</span>Studio</button>
+      <button data-page="awards"><span class="ic">🏆</span>Awards</button>
+    </div>
+    <div class="sidefoot">CreatorSim is a fictional single-player career simulation.<br>Every view, channel, comment and dollar is simulated in the game.</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="btn small primary" id="btnCreateTop" title="Create a video or a Short">+ Create</button>
+      <div class="res" id="chChip" style="display:none"><span class="lbl">Channel</span><span id="chName">—</span></div>
+      <div class="datechip"><span class="dot"></span><b id="dateTxt">Mon, Jan 5, 2026</b></div>
+      <div class="res"><span class="lbl">Cash</span><span id="topMoney">$200</span></div>
+      <div class="res"><span class="lbl">Energy</span><span class="energybar"><i id="energyFill" style="width:100%"></i></span><span id="energyTxt">100</span></div>
+      <div class="res"><span class="lbl">Level</span><span id="topLevel">1</span></div>
+      <button class="advance" id="btnAdvance">Next day<small>stats tick live meanwhile</small></button>
+      <div class="daystrip"><i id="dayFill"></i></div>
+    </div>
+
+    <div class="content">
+      <!-- DASHBOARD -->
+      <div class="page on" id="page-dashboard">
+        <div class="statgrid">
+          <div class="stat"><div class="lbl">Subscribers</div><div class="val" id="statSubs">0</div><div class="sub" id="statSubsSub">+0 today</div></div>
+          <div class="stat s-v"><div class="lbl">Channel views</div><div class="val" id="statViews">0</div><div class="sub" id="statViewsSub">+0 today</div></div>
+          <div class="stat s-w"><div class="lbl">Watch time</div><div class="val" id="statWatch">0 hrs</div><div class="sub" id="statWatchSub">+0 today</div></div>
+          <div class="stat s-m"><div class="lbl">Revenue earned</div><div class="val" id="statRev">$0</div><div class="sub" id="statRevSub">+$0 today</div></div>
+        </div>
+        <div class="row2">
+          <div class="card">
+            <div class="chead"><h2>Latest video performance</h2><span style="flex:1"></span><span class="count">real-time</span></div>
+            <div class="cbody" id="latestVideo"></div>
+          </div>
+          <div class="card">
+            <div class="chead"><h2>What's happening</h2></div>
+            <div class="cbody" id="dashFeed" style="padding-top:6px;max-height:300px;overflow-y:auto"></div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="card">
+            <div class="chead"><h2>Views, last 14 days</h2></div>
+            <div class="cbody"><div class="chartbars" id="dashChart"></div></div>
+          </div>
+          <div class="card">
+            <div class="chead"><h2>Next milestone</h2></div>
+            <div class="cbody" id="milestone"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chead"><h2>Creator actions</h2><span style="flex:1"></span><span class="count" id="energySide"></span></div>
+          <div class="cbody" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
+            <button class="actionbtn" id="actShort"><span class="ic">⚡</span><span><span class="t">Make a Short</span><br><span class="d">Vertical, fast feed, built for the Shorts algorithm</span></span><span class="cost"><b>12+</b> ⚡</span></button>
+            <button class="actionbtn" id="actPost"><span class="ic">📣</span><span><span class="t">Community post</span><br><span class="d">Boost your recent videos</span></span><span class="cost"><b>8</b> ⚡</span></button>
+            <button class="actionbtn" id="actReply"><span class="ic">💬</span><span><span class="t">Reply to comments</span><br><span class="d">Engagement up for 3 days</span></span><span class="cost"><b>10</b> ⚡</span></button>
+            <button class="actionbtn" id="actStudy"><span class="ic">📚</span><span><span class="t">Practice editing</span><br><span class="d">Editing skill +1 (max 20)</span></span><span class="cost"><b>12</b> ⚡</span></button>
+            <button class="actionbtn" id="actPromote"><span class="ic">🚀</span><span><span class="t">Promote latest video</span><br><span class="d">2.3× views for 2 days</span></span><span class="cost" id="costPromote"></span></button>
+            <button class="actionbtn" id="actPoll"><span class="ic">🗳️</span><span><span class="t">Run a community poll</span><br><span class="d">Results tomorrow</span></span><span class="cost"><b>10</b> ⚡</span></button>
+            <button class="actionbtn" id="actSeries"><span class="ic">🔗</span><span><span class="t">Start a series</span><br><span class="d">Next 3 same-topic videos binge better</span></span><span class="cost"><b>6</b> ⚡</span></button>
+            <button class="actionbtn" id="actScout"><span class="ic">🔭</span><span><span class="t">Scout trends</span><br><span class="d">+6 title score on your next upload</span></span><span class="cost"><b>5</b> ⚡</span></button>
+          </div>
+              </div>
+
+      <!-- CONTENT -->
+      <div class="page" id="page-content">
+        <div class="card">
+          <div class="chead"><h2>Channel content</h2><span class="count" id="vidCount"></span>
+            <span style="flex:1"></span>
+            <button class="btn small" id="sortViews">Sort: newest</button>
+            <button class="btn small primary" id="btnCreate">+ Create video</button>
+          </div>
+          <div class="cbody" style="padding:6px 12px">
+            <div id="videoList"></div>
+            <div class="empty" id="videoEmpty">No videos yet. Hit "Create video" and publish your first one.</div>
+          </div>
+        </div>
+</div>
+      </div>
+
+      <!-- WATCH -->
+      <div class="page" id="page-watch">
+        <div class="card">
+          <div class="chead"><h2>The feed</h2><span class="count" id="watchCount"></span><span style="flex:1"></span>
+            <div class="seg" id="watchTabs" style="display:flex;gap:0">
+              <button data-wtab="all">Home</button><button data-wtab="subs">Following</button><button data-wtab="mine">Yours</button>
+            </div></div>
+          <div class="cbody" style="padding:12px 16px">
+            <div id="watchFeed" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px"></div>
+            <div class="empty" id="watchEmpty"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIVALS -->
+      <div class="page" id="page-rivals">
+        <div class="card">
+          <div class="chead"><h2>Channel standings</h2><span class="count" id="rankLine"></span></div>
+          <div class="cbody" id="rivalList" style="padding:8px 16px 14px"></div>
+        </div>
+        <div class="card">
+          <div class="chead"><h2>Collab desk</h2><span class="count" id="collabCount"></span></div>
+          <div class="cbody" id="collabInbox" style="padding:8px 16px 14px"></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page" id="page-analytics">
+        <div class="card">
+          <div class="chead"><h2>The algorithm, right now</h2><span style="flex:1"></span><span class="count">how the feed weighs you</span></div>
+          <div class="cbody" id="algoPanel"></div>
+        </div>
+        <div class="row2">
+          <div class="card"><div class="chead"><h2>Views</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars" id="anViews"></div></div></div>
+          <div class="card"><div class="chead"><h2>Revenue</h2><span style="flex:1"></span><span class="count">last 14 days</span></div><div class="cbody"><div class="chartbars gold" id="anRev"></div></div></div>
+        </div>
+        <div class="row2">
+          <div class="card"><div class="chead"><h2>Traffic sources</h2><span style="flex:1"></span><span class="count">all time</span></div><div class="cbody" id="anTraffic"></div></div>
+          <div class="card"><div class="chead"><h2>Key metrics</h2></div><div class="cbody" id="anKeys"></div></div>
+        </div>
+        <div class="card"><div class="chead"><h2>Top videos</h2></div><div class="cbody" id="anTop" style="padding-top:4px"></div></div>
+      </div>
+
+      <!-- COMMUNITY -->
+      <div class="page" id="page-community">
+        <div class="card">
+          <div class="chead"><h2>Comments</h2><span class="count" id="cmtCount"></span><span style="flex:1"></span><span class="count">moderate to keep your audience happy</span></div>
+          <div class="cbody" id="cmtList" style="padding-top:4px;max-height:560px;overflow-y:auto"></div>
+        </div>
+      </div>
+
+      <!-- MONETIZATION -->
+      <div class="page" id="page-monet">
+        <div class="card">
+          <div class="chead"><h2>YouTube Partner Program</h2></div>
+          <div class="cbody" id="monetStatus"></div>
+        </div>
+        <div class="row2">
+          <div class="card"><div class="chead"><h2>Earning features</h2></div><div class="cbody" id="monetFeatures"></div></div>
+          <div class="card"><div class="chead"><h2>Active sponsorships</h2></div><div class="cbody" id="monetSponsors"></div></div>
+        </div>
+        <div class="card" id="offersCard" style="display:none">
+          <div class="chead"><h2>Inbox offers</h2></div>
+          <div class="cbody" id="offersList"></div>
+        </div>
+      </div>
+
+      <!-- STUDIO -->
+      <div class="page" id="page-studio">
+        <div class="card"><div class="chead"><h2>Gear &amp; workspace</h2><span style="flex:1"></span><span class="count" id="saleNote"></span></div><div class="cbody" id="shopList"></div></div>
+        <div class="card"><div class="chead"><h2>Your team</h2><span style="flex:1"></span><span class="count">salaries are paid every day</span></div><div class="cbody" id="teamList"></div></div>
+      </div>
+
+      <!-- AWARDS -->
+      <div class="page" id="page-awards">
+        <div class="card"><div class="chead"><h2>Creator play buttons</h2></div><div class="cbody" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px" id="trophies"></div></div>
+        <div class="card"><div class="chead"><h2>Achievements</h2><span style="flex:1"></span><span class="achcount" id="achCount"></span></div><div class="cbody"><div class="achgrid" id="achGrid"></div></div></div>
+      </div>
+
+      <div class="footer">CreatorSim Studio is a fictional single-player career simulation. Every view, subscriber, channel and dollar here is simulated inside the game.</div>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-ov" id="modalUpload"><div class="modal">
+  <div class="mhead"><h3 id="uploadTitle">Create video</h3><button class="mclose" data-close="modalUpload">✕</button></div>
+  <div class="mbody">
+    <div class="field"><label>Format</label>
+      <div class="seg" id="fmtSeg">
+        <button data-fmt="long" class="sel">Long-form<span>classic video, ad revenue</span></button>
+        <button data-fmt="short">Short<span>vertical, fast feed, low RPM</span></button>
+      </div>
+    </div>
+    <div class="field" id="lenField"><label>Length</label>
+      <div class="seg" id="lenSeg"></div>
+    </div>
+    <div class="field" id="hookField" style="display:none"><label>First 3 seconds hook</label>
+      <input type="range" id="hookSlider" min="1" max="10" value="5" style="width:100%">
+      <div class="meterlbl"><span id="hookVal">5 / 10</span><span>how hard the Short grabs in the feed</span></div>
+    </div>
+    <div class="field"><label>Topic — type anything</label>
+      <input type="text" id="topicInput" maxlength="60" placeholder="gaming, sourdough, city history, your cat… anything">
+      <div class="meterlbl"><span id="topicClass"></span><span id="topicHint"></span></div>
+      <div class="topics" id="topicQuick" style="margin-top:8px"></div>
+    </div>
+    <div class="field"><label>Title</label>
+      <input type="text" id="titleInput" maxlength="100" placeholder="e.g. I tried editing for 30 days straight">
+      <div class="meter"><i id="titleMeter" style="width:0%;background:var(--red)"></i></div>
+      <div class="meterlbl"><span id="titleHint">Type a title to score it</span><span id="titleScoreTxt"></span></div>
+    </div>
+    <div class="field"><label>Description &amp; SEO</label>
+      <textarea id="descInput" rows="2" placeholder="Describe the video. Mention your topic and keywords."></textarea>
+      <div class="meterlbl"><span>SEO score feeds search traffic</span><span id="descScoreTxt"></span></div>
+    </div>
+    <div class="field"><label>Tags <span style="color:var(--faint);font-weight:500">(pick up to 5, gold ones are trending this week)</span></label>
+      <div class="tagsbox" id="tagsBox"></div>
+    </div>
+    <div class="field"><label>Thumbnail effort <span style="color:var(--faint);font-weight:500">(cash, drives click-through rate)</span></label>
+      <div class="slider-row"><input type="range" id="thumbSlider" min="1" max="5" value="2"><span class="sv" id="thumbVal"></span></div>
+    </div>
+    <div class="field"><label>Editing effort <span style="color:var(--faint);font-weight:500">(energy, drives retention &amp; satisfaction)</span></label>
+      <div class="slider-row"><input type="range" id="editSlider" min="1" max="5" value="2"><span class="sv" id="editVal"></span></div>
+    </div>
+    <div class="mfoot">
+      <span class="costnote" id="uploadCostNote"></span>
+      <button class="btn primary" id="btnPublish">Publish</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="modal-ov" id="modalWatch"><div class="modal" style="max-width:560px">
+  <div class="mhead"><h3 id="wModalTitle">Watch</h3><button class="mclose" data-close="modalWatch">✕</button></div>
+  <div class="mbody" id="wModalBody"></div>
+</div></div>
+
+<div class="modal-ov" id="modalVideo"><div class="modal">
+  <div class="mhead"><h3 id="vModalTitle">Video</h3><button class="mclose" data-close="modalVideo">✕</button></div>
+  <div class="mbody" id="vModalBody"></div>
+</div></div>
+
+<div class="modal-ov" id="modalStart"><div class="modal" style="max-width:440px">
+  <div class="mhead"><h3>Name your channel</h3></div>
+  <div class="mbody">
+    <div class="field"><label>Channel name</label><input type="text" id="chNameInput" maxlength="40" placeholder="e.g. StewieTech"></div>
+    <div style="color:var(--dim);font-size:13px">You can be anyone in this simulation. Pick a name for your creator identity.</div>
+    <div class="mfoot"><span></span><button class="btn primary" id="btnStartGo">Start creating</button></div>
+  </div>
+</div></div>
+
+<div class="toasts" id="toasts"></div>
+<script>
+"use strict";
+/* ============================== DATA ============================== */
+const TOPICS=[
+ {id:"gaming",name:"Gaming",icon:"🎮",base:1.15,cpm:2.2,kw:["gameplay","review","tips","walkthrough","reaction"]},
+ {id:"vlog",name:"Vlogs",icon:"📹",base:0.95,cpm:3.0,kw:["day in my life","routine","storytime","week","update"]},
+ {id:"tutorial",name:"How-To",icon:"🛠️",base:1.2,cpm:5.0,kw:["tutorial","guide","beginners","step by step","explained"]},
+ {id:"tech",name:"Tech Reviews",icon:"💻",base:1.1,cpm:6.5,unlock:2,kw:["review","unboxing","comparison","setup","worth it"]},
+ {id:"comedy",name:"Comedy",icon:"😂",base:1.25,cpm:1.8,unlock:3,kw:["funny","prank","challenge","skit","try not to laugh"]},
+ {id:"music",name:"Music",icon:"🎵",base:1.0,cpm:1.5,unlock:4,kw:["cover","original","beat","remix","live"]},
+ {id:"food",name:"Food",icon:"🍳",base:1.05,cpm:4.0,unlock:5,kw:["recipe","easy","asmr","mukbang","baking"]},
+ {id:"science",name:"Science",icon:"🔬",base:1.1,cpm:7.5,unlock:7,kw:["explained","experiment","physics","space","why"]},
+ {id:"news",name:"Commentary",icon:"🎙️",base:1.2,cpm:8.0,unlock:9,kw:["drama","take","analysis","breaking","response"]},
+ {id:"irl",name:"Challenges",icon:"🏃",base:1.3,cpm:2.5,unlock:11,kw:["24 hours","challenge","extreme","last to","versus"]}
+];
+const SHAPES={
+ viral:{mult:7.0,ever:0.05,curve:t=>Math.exp(-1.4*Math.max(0,t-1))},
+ hot:{mult:3.2,ever:0.10,curve:t=>0.8*Math.exp(-0.9*Math.max(0,t-1))+0.1},
+ steady:{mult:1.5,ever:0.30,curve:t=>0.55*Math.exp(-0.45*Math.max(0,t-2))+0.18},
+ slow:{mult:1.7,ever:0.45,curve:t=>Math.min(1,t/5)*(0.75*Math.exp(-0.18*Math.max(0,t-6))+0.35)},
+ flop:{mult:0.5,ever:0.12,curve:t=>0.5*Math.exp(-1.1*t)+0.05}
+};
+const EQUIP={
+ camera:{name:"Camera",icon:"📷",tiers:[
+  {n:"Phone camera",cost:0,bonus:0},{n:"Used DSLR",cost:250,bonus:8},
+  {n:"Mirrorless + lens",cost:900,bonus:16},{n:"Cinema rig",cost:3500,bonus:26}]},
+ mic:{name:"Microphone",icon:"🎙️",tiers:[
+  {n:"Headset mic",cost:0,bonus:0},{n:"USB condenser",cost:120,bonus:8},
+  {n:"XLR setup",cost:600,bonus:16},{n:"Studio booth kit",cost:2400,bonus:26}]},
+ editing:{name:"Editing software",icon:"💻",tiers:[
+  {n:"Free editor",cost:0,bonus:0},{n:"Prosumer suite",cost:180,bonus:8},
+  {n:"Industry suite",cost:700,bonus:17},{n:"Full workstation",cost:2800,bonus:28}]},
+ studio:{name:"Studio space",icon:"💡",tiers:[
+  {n:"Bedroom corner",cost:0,bonus:0},{n:"Light kit + backdrop",cost:200,bonus:7},
+  {n:"Dedicated room",cost:1100,bonus:15},{n:"Real studio",cost:4000,bonus:25}]}
+};
+const TEAM={
+ editor:{name:"Video editor",icon:"✂️",tiers:[{n:"None",cost:0,bonus:0},{n:"Junior editor",cost:8,bonus:14},{n:"Senior editor",cost:25,bonus:30}]},
+ thumb:{name:"Thumbnail artist",icon:"🖌️",tiers:[{n:"None",cost:0,bonus:0},{n:"Freelancer",cost:5,bonus:12},{n:"Studio designer",cost:15,bonus:24}]},
+ writer:{name:"Scriptwriter",icon:"📝",tiers:[{n:"None",cost:0,bonus:0},{n:"Freelance writer",cost:4,bonus:10},{n:"Show writer",cost:12,bonus:20}]}
+};
+const CMT={
+ pos:["This actually helped me so much","Underrated channel fr","The editing on this is insane","I come back to this every week","You deserve way more subs","First time watching, instantly subscribed","This is my comfort video now","Nobody talks about this, thank you"],
+ q:["What editing software do you use?","Can you do a part 2?","How long did this take to make?","What mic is that?","Do you have a playlist for this?"],
+ hate:["Fell asleep halfway","This is just like every other video","Content farms do it better","Clickbait title ngl","The algorithm carried this one"],
+ neu:["Just got here from the feed","Watching this with dinner","Who else is on a binge?"]
+};
+const CMT_NAMES=["pixelpanda","notalwaystired","sam_on_sixth","jo_park","quietstorm","mrgears","teacup_tim","vex_v","dana.d","watchitagain"];
+const SPONSOR_NAMES=["GlowFuel Energy","NimbusVPN","CrispTea","Vaultly Passwords","SkyRoute Travel","BoltHost","PuraWater","DriftBoard","LumenDesk"];
+const ACHS=[
+ {id:"first",name:"Lights, Camera, Publish",desc:"Upload your first video",check:g=>g.videos.length>=1},
+ {id:"subs100",name:"Triple Digits",desc:"Reach 100 subscribers",check:g=>g.subs>=100},
+ {id:"subs1k",name:"Four Digits Club",desc:"Reach 1,000 subscribers",check:g=>g.subs>=1000},
+ {id:"subs10k",name:"Verified Energy",desc:"Reach 10,000 subscribers",check:g=>g.subs>=10000},
+ {id:"subs100k",name:"Silver Play Button",desc:"Reach 100,000 subscribers",check:g=>g.subs>=100000},
+ {id:"subs1m",name:"Gold Play Button",desc:"Reach 1,000,000 subscribers",check:g=>g.subs>=1000000},
+ {id:"subs10m",name:"Diamond Play Button",desc:"Reach 10,000,000 subscribers",check:g=>g.subs>=10000000},
+ {id:"views10k",name:"Ten Thousand Eyes",desc:"10,000 total channel views",check:g=>g.totalViews>=10000},
+ {id:"views1m",name:"Million View Channel",desc:"1,000,000 total channel views",check:g=>g.totalViews>=1000000},
+ {id:"views10m",name:"Household Name",desc:"10,000,000 total channel views",check:g=>g.totalViews>=10000000},
+ {id:"video100k",name:"One Banger",desc:"One video passes 100,000 views",check:g=>g.videos.some(v=>v.views>=100000)},
+ {id:"video1m",name:"Algorithm's Favorite",desc:"One video passes 1,000,000 views",check:g=>g.videos.some(v=>v.views>=1000000)},
+ {id:"viral",name:"Went Viral",desc:"Publish a video that goes viral",check:g=>g.videos.some(v=>v.shape==="viral")},
+ {id:"watch4k",name:"Monetization Ready",desc:"4,000 watch hours earned",check:g=>g.totalWatchH>=4000},
+ {id:"money1k",name:"First Paycheck",desc:"Earn $1,000 total",check:g=>g.totalRevenue>=1000},
+ {id:"money10k",name:"Quit Your Day Job",desc:"Earn $10,000 total",check:g=>g.totalRevenue>=10000},
+ {id:"uploads10",name:"Consistent Creator",desc:"Upload 10 videos",check:g=>g.uploads>=10},
+ {id:"uploads25",name:"Content Machine",desc:"Upload 25 videos",check:g=>g.uploads>=25},
+ {id:"streak7",name:"Seven Straight",desc:"Upload 7 days in a row",check:g=>g.bestStreak>=7},
+ {id:"ctr7",name:"Packaging Pro",desc:"Get a video over 9% click-through",check:g=>g.videos.some(v=>v.ctr>=0.09)},
+ {id:"team",name:"Boss Move",desc:"Hire your first team member",check:g=>Object.values(g.team).some(x=>x>0)},
+ {id:"level10",name:"Industry Name",desc:"Reach level 10",check:g=>g.level>=10},
+ {id:"collab1",name:"Better Together",desc:"Complete a collab with another channel",check:g=>g.collabCount>=1},
+ {id:"rank1",name:"Top of the Food Chain",desc:"Become the biggest channel on the platform",check:g=>yourRank().rank===1&&g.subs>1000}
+];
+const TROPHIES=[
+ {id:"silver",name:"Silver Play Button",em:"🥈",need:100000},
+ {id:"gold",name:"Gold Play Button",em:"🥇",need:1000000},
+ {id:"diamond",name:"Diamond Play Button",em:"💎",need:10000000},
+ {id:"ruby",name:"Ruby Play Button",em:"❤️‍🔥",need:50000000}
+];
+
+/* ============================== STATE ============================== */
+const SAVE_KEY="creatorSimStudioV2";
+let G=null;
+function freshGame(){
+ return {v:2,day:0,money:200,subsF:0,subs:0,
+  totalViews:0,totalWatchH:0,totalLikes:0,totalComments:0,totalRevenue:0,totalImpressions:0,
+  energy:100,skill:0,xp:0,level:1,uploads:0,streak:0,bestStreak:0,lastUploadDay:-9,
+  monetized:false,monetApplied:false,monetReviewDays:0,
+  features:{superthanks:false,memberships:false,merch:false},
+  team:{editor:0,thumb:0,writer:0},sponsorsAccepted:0,
+  videos:[],nextId:1,trending:"gaming",trendDays:3,
+  hotKw:[],feed:[],unlocked:{},comments:[],nextCmtId:1,
+  sponsors:[],offers:[],offerNextId:1,
+  eventMods:{spotlight:null,wave:0,viewMult:1,sale:false},moraleHit:0,
+  traffic:{browse:0,suggested:0,search:0,external:0,shorts:0},
+  hist:{views:[],subs:[],watch:[],rev:[]},
+  series:{topic:null,daysLeft:0},
+  equipment:{camera:0,mic:0,editing:0,studio:0},
+  strikes:0,gameOver:false,uploadsToday:0,pendingPoll:false,boostNext:false,
+  dayStats:{views:0,watchH:0,rev:0,subs:0,imp:0},
+  tickHours:0,sortMode:"newest",channelName:"",ideaBoost:0,totalDislikes:0,
+  satisfaction:0.5,weeklyStreak:0,uploadsWeek:0,following:[],rivals:makeRivals(),collabPending:null,
+  collabCooldowns:{},collabOffers:[],nextOfferId:1,collabCount:0,likedRv:[],watchTab:"all"};
+}
+function topicById(id){return TOPICS.find(t=>t.id===id)||TOPICS[0];}
+function pickVideo(){const pool=G.videos.filter(v=>G.day-v.day<=7);return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;}
+function topVideo(){let best=null;for(const v of G.videos){if(!best||v.views>best.views)best=v;}return best;}
+
+/* ============================== HELPERS ============================== */
+function rnd(a,b){return a+Math.random()*(b-a);}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function fmt(n){
+ n=Math.floor(n);
+ if(n<1000)return String(n);
+ if(n<1e6)return (n/1e3).toFixed(n<1e4?1:0).replace(/\.0$/,"")+"K";
+ if(n<1e9)return (n/1e6).toFixed(2).replace(/\.?0+$/,"")+"M";
+ return (n/1e9).toFixed(2)+"B";
+}
+function money(n){return "$"+Math.floor(n).toLocaleString("en-US");}
+const EPOCH=new Date(2026,0,5);
+function gameDate(){return new Date(EPOCH.getTime()+G.day*86400000);}
+function dateStr(){return gameDate().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"});}
+function isWeekend(){const d=gameDate().getDay();return d===0||d===6;}
+function seasonMult(){const m=gameDate().getMonth();
+ return [0.85,0.8,1.0,1.0,1.05,1.0,0.9,1.0,1.0,1.1,1.25,1.3][m];}
+function xpNeed(l){return Math.round(120*Math.pow(l,1.4));}
+function durStr(min){const s=Math.round(min*60);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function rollHotKw(){
+ const pool=[];
+ for(const t of TOPICS)for(const k of t.kw)pool.push(k);
+ const out=[];while(out.length<3){const k=pool[Math.floor(Math.random()*pool.length)];if(!out.includes(k))out.push(k);}
+ return out;
+}
+
+/* ============================== VIDEO MODEL ============================== */
+function scoreTitle(text){
+ let s=38;const t=(text||"").trim();const len=t.length;
+ if(len>=20&&len<=60)s+=25;else if(len<12)s-=10;else if(len>80)s-=12;
+ const low=t.toLowerCase();
+ const hooks=["insane","secret","ultimate","best","worst","why","how","stopped","tried","days","never","actually","honest","gone wrong","$"];
+ let hits=0;for(const h of hooks)if(low.includes(h))hits++;
+ s+=Math.min(hits*5,16);
+ if(/\?/.test(t))s+=4;
+ if(/\d/.test(t))s+=5;
+ const letters=t.replace(/[^a-zA-Z]/g,"");const caps=t.replace(/[^A-Z]/g,"");
+ if(letters.length>10&&caps.length/letters.length>0.5)s-=15;
+ for(const v of G.videos){if(v.title.toLowerCase().slice(0,18)===low.slice(0,18)&&low.length>0){s-=8;break;}}
+ return clamp(Math.round(s+rnd(-4,4)),5,100);
+}
+function scoreDesc(text,tags){
+ let s=20;const t=(text||"").trim();
+ if(t.length>=80)s+=25;else if(t.length>=30)s+=12;
+ const low=t.toLowerCase();
+ for(const tg of tags)if(tg&&low.includes(tg.toLowerCase()))s+=10;
+ if(/\?|link|subscribe|timecodes|chapters/.test(low))s+=5;
+ return clamp(Math.round(s),5,100);
+}
+function pickShape(appeal){
+ let pv,ph,ps,sl,pf;
+ if(appeal>=85){pv=0.14;ph=0.34;ps=0.30;sl=0.18;pf=0.04;}
+ else if(appeal>=65){pv=0.06;ph=0.28;ps=0.36;sl=0.22;pf=0.08;}
+ else if(appeal>=45){pv=0.02;ph=0.16;ps=0.38;sl=0.28;pf=0.16;}
+ else{pv=0.01;ph=0.08;ps=0.32;sl=0.30;pf=0.29;}
+ const r=Math.random();let acc=0;
+ if(r<(acc+=pv))return"viral";
+ if(r<(acc+=ph))return"hot";
+ if(r<(acc+=ps))return"steady";
+ if(r<(acc+=sl))return"slow";
+ return"flop";
+}
+function makeRetention(editScore,avdPct){
+ const hook=(100-editScore)/100*34;
+ const pts=[];
+ for(let i=0;i<10;i++){
+  const x=i/9;
+  let p=100-hook*Math.min(1,x*2.2)-Math.pow(x,0.8)*(100-avdPct)*0.9;
+  pts.push(clamp(p,avdPct*0.8,100));
+ }
+ pts[0]=100;
+ return pts.map(p=>Math.round(p));
+}
+function trafficMix(v){
+ if(v.format==="short"){
+  return{browse:0.04,suggested:0.08,search:0.03,external:0.02,shorts:0.83};
+ }
+ const seo=(v.seoScore||40)/100;
+ const sat=v.avd;
+ const browse=0.22+Math.min(G.subs/20000,0.28);
+ const suggested=0.18+sat*0.5;
+ const search=0.08+seo*0.3+(v.tags||[]).reduce((a,t)=>a+(G.hotKw.includes(t)?0.06:0),0);
+ const external=0.04;
+ const sum=browse+suggested+search+external;
+ return{browse:browse/sum,suggested:suggested/sum,search:search/sum,external:external/sum,shorts:0};
+}
+function scaleFor(appeal){return appeal*(3+Math.sqrt(G.subs)*5.5);}
+function dailyEstimate(v){
+ const t=G.day-v.day;
+ const sh=SHAPES[v.shape];
+ let f;
+ if(t>25){f=sh.ever*(0.8+0.4*Math.random());if(Math.random()<0.06)f*=rnd(2.5,5);}
+ else{f=sh.curve(t)+sh.ever;f*=v.dayNoise;}
+ let base=v.scale*sh.mult*f;
+ base*=algoScore(v);
+ base*=rivalPressure(v.format==="short");
+ if(G.eventMods.viewMult!==1)base*=G.eventMods.viewMult;
+ if(G.eventMods.spotlight&&G.eventMods.spotlight.video===v)base*=3;
+ if(v.boostDays>0)base*=2.3;
+ if(isWeekend())base*=1.15;
+ return Math.max(0,base);
+}
+function accrue(v,hours){
+ if(hours<=0)return;
+ const daily=dailyEstimate(v);
+ let imp=daily*(hours/24);
+ if(imp<1e-9)return;
+ v.impressions+=imp;G.totalImpressions+=imp;G.dayStats.imp+=imp;
+ let dv;
+ if(v.format==="short"){dv=imp*(0.09+((v.hook||5)/10)*0.08+(v.editScore/100)*0.14);}
+ else{dv=imp*v.ctr;}
+ dv=Math.max(0,dv);
+ if(dv<1e-9)return;
+ v.views+=dv;v.dayViews=(v.dayViews||0)+dv;G.totalViews+=dv;G.dayStats.views+=dv;
+ G.traffic.browse+=dv*v.tmix.browse;G.traffic.suggested+=dv*v.tmix.suggested;
+ G.traffic.search+=dv*v.tmix.search;G.traffic.external+=dv*v.tmix.external;G.traffic.shorts+=dv*v.tmix.shorts;
+ const likes=dv*v.likeRate,comments=dv*v.commentRate;
+ v.likes+=likes;v.commentsN+=comments;
+ const dis=dv*0.004;v.dislikes+=dis;G.totalDislikes=(G.totalDislikes||0)+dis;
+ G.totalLikes+=likes;G.totalComments+=comments;
+ const watch=dv*v.lenMin/60*v.avd;
+ v.watchH+=watch;G.totalWatchH+=watch;G.dayStats.watchH+=watch;
+ let rev=0;
+ if(G.monetized&&!v.limitedAds&&v.claimDays<=0){
+  rev=v.format==="short"?dv*v.cpm*0.06/1000:dv*v.cpm/1000;
+ }
+ if(v.claimDays>0){} // claimed: no ad revenue on this video
+ rev*=seasonMult();
+ v.revenue+=rev;G.totalRevenue+=rev;G.money+=rev;G.dayStats.rev+=rev;
+ const subs=dv*v.conv;
+ G.subsF+=subs;G.dayStats.subs+=subs;G.subs=Math.floor(G.subsF);
+ G.xp+=dv/250;checkLevel();
+}
+function addSubs(x){G.subsF+=x;G.subs=Math.floor(G.subsF);}
+function checkLevel(){
+ let leveled=false;
+ while(G.xp>=xpNeed(G.level)){G.xp-=xpNeed(G.level);G.level++;leveled=true;}
+ if(leveled){
+  const un=TOPICS.find(t=>t.unlock===G.level);
+  toast("Level up! You're now level "+G.level+"."+(un?" New topic unlocked: "+un.name+"":""),"gold");
+  feed("You hit level "+G.level+".","gold");
+ }
+}
+
+/* ============================== RIVAL CHANNELS ============================== */
+const RIVAL_SEEDS=[
+ {name:"PixelForge",topic:"gaming",subs:[80000,140000],qual:[62,80],cad:[1,3],tier:"big"},
+ {name:"mira.eats",topic:"food",subs:[1200,4000],qual:[50,68],cad:[2,4],tier:"mid"},
+ {name:"Dana Builds",topic:"tutorial",subs:[15000,40000],qual:[58,76],cad:[1,3],tier:"mid"},
+ {name:"RunTrack",topic:"irl",subs:[90000,200000],qual:[66,84],cad:[2,4],tier:"big"},
+ {name:"The Quiet Desk",topic:"science",subs:[300,1200],qual:[44,62],cad:[2,4],tier:"small"},
+ {name:"HyperFix",topic:"tech",subs:[400000,900000],qual:[70,88],cad:[1,2],tier:"huge"},
+ {name:"SourNote",topic:"music",subs:[2000,8000],qual:[48,66],cad:[2,4],tier:"small"},
+ {name:"Couch Critics",topic:"news",subs:[30000,70000],qual:[60,78],cad:[1,3],tier:"mid"},
+ {name:"Atlas Outdoors",topic:"vlog",subs:[5000,15000],qual:[52,70],cad:[2,4],tier:"mid"}
+];
+const RIVAL_TITLES={
+ gaming:["I speedran {n} and this happened","ranked until I lost my voice","the {n} update broke everything","building the worst {n} base ever"],
+ food:["$3 vs $300 {n}","I cooked {n} for a week straight","restaurant chef reacts to my {n}","the only {n} recipe you need"],
+ tutorial:["learn {n} in 20 minutes","{n} for absolute beginners","I rebuilt {n} from scratch","stop doing {n} like this"],
+ irl:["24 hours in {n}","we tried {n} at 3am","last to leave {n} wins $1000","{n} but every fail costs $10"],
+ science:["why {n} works (the real math)","I tested {n} so you don't have to","the {n} experiment that went wrong","{n}, explained in 8 minutes"],
+ tech:["{n} review: 6 months later","I returned my {n}","building the ultimate {n} setup","is {n} still worth it?"],
+ music:["I wrote a song in 1 hour","{n} but it's lofi","covering {n} with no practice","my {n} setup tour"],
+ news:["the {n} situation is wild","why everyone is talking about {n}","I read the {n} receipts","an honest take on {n}"],
+ vlog:["a week in my {n} life","moving to {n} alone","{n} morning routine (realistic)","what I eat in a day + {n}"]
+};
+const RIVAL_FILLER=["minecraft","sourdough","Excel","a marathon","black holes","this GPU","guitar","streaming drama","tokyo","my old job","the new iPhone","spreadsheets","cold brew","the gym","film school"];
+function makeRivals(){
+ let s=Math.floor(Math.random()*1e6)+7;const rand=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+ return RIVAL_SEEDS.map((sd,i)=>{
+  const r={id:"r"+(i+1),name:sd.name,topic:sd.topic,tier:sd.tier,
+   subsF:Math.round(sd.subs[0]+rand()*(sd.subs[1]-sd.subs[0])),
+   qual:Math.round(sd.qual[0]+rand()*(sd.qual[1]-sd.qual[0])),
+   cad:Math.round(sd.cad[0]+rand()*(sd.cad[1]-sd.cad[0])),
+   lastUp:-Math.floor(rand()*5),videos:[],nextId:1,weekViews:0};
+  const back=2+Math.floor(rand()*3);
+  for(let k=0;k<back;k++){
+   const d=-Math.floor(rand()*20)-1;
+   r.videos.push(makeRivalVideo(r,d,rand));
+  }
+  r.nextUp=r.cad-Math.floor(rand()*2);
+  return r;
+ });
+}
+function makeRivalVideo(r,day,rand){
+ const t=RIVAL_TITLES[r.topic]||RIVAL_TITLES.gaming;
+ const n=RIVAL_FILLER[Math.floor(rand()*RIVAL_FILLER.length)];
+ const title=t[Math.floor(rand()*t.length)].replace("{n}",n);
+ const isShort=rand()<0.3;
+ const views=Math.round(r.subsF*(0.08+rand()*0.5)*(isShort?2.2:1));
+ return{id:"rv"+r.id+"_"+r.nextId++,title,day,topic:r.topic,format:isShort?"short":"long",
+  lenMin:isShort?0.5:(6+Math.floor(rand()*20)),views,likes:Math.round(views*(0.03+rand()*0.05)),
+  comments:Math.round(views*(0.003+rand()*0.006)),qual:r.qual+Math.round(rand()*14-7)};
+}
+function rivalsTick(){
+ if(!G.rivals||!G.rivals.length)G.rivals=makeRivals();
+ for(const r of G.rivals){
+  r.weekViews=0;
+  if(G.day-r.lastUp>=r.nextUp){
+   const v=makeRivalVideo(r,G.day,Math.random);
+   r.videos.unshift(v);if(r.videos.length>14)r.videos.pop();
+   r.lastUp=G.day;r.nextUp=r.cad+Math.floor(Math.random()*2);
+   if(Math.random()<0.22)v.views*=rnd(2.5,6);
+  }
+  const growth=r.subsF*(0.0015+r.qual/100*0.004)*(0.6+Math.random()*0.8);
+  r.subsF+=growth;
+  for(const v of r.videos){const age=G.day-v.day;if(age>=0&&age<10){const g=v.views*(0.05+r.qual/100*0.1)*(age<2?1.6:0.7);v.views+=g;r.weekViews+=g;}}
+ }
+}
+function rivalById(id){return (G.rivals||[]).find(r=>r.id===id);}
+function yourRank(){
+ const all=[{name:G.channelName||"You",subs:G.subs,me:true},...G.rivals.map(r=>({name:r.name,subs:Math.floor(r.subsF),r}))];
+ all.sort((a,b)=>b.subs-a.subs);
+ return{rank:all.findIndex(x=>x.me)+1,of:all.length};
+}
+/* ============================== ALGORITHM ============================== */
+function likeRatioOf(v){return v.likes>0?v.likes/(v.likes+Math.max(1,v.dislikes)):0.92;}
+function algoComponents(v){
+ const age=G.day-v.day;
+ const fresh=age>25?0.07:Math.max(0.07,Math.exp(-age/6));
+ const lr=likeRatioOf(v);
+ const quality=clamp((v.ctr/0.08)*0.5+(v.avd/0.35)*0.3+(lr/0.94)*0.2,0.25,2.0);
+ const authority=0.55+Math.log10(1+G.subs)/4;
+ const sat=0.7+0.6*(G.satisfaction||0.5);
+ const trend=topicMatchesTrend(v)?(G.eventMods.wave?2.6:1.9):1;
+ const momentum=1+Math.min(4,(G.weeklyStreak||0))*0.03;
+ return{fresh,quality,authority,sat,trend,momentum};
+}
+function topicMatchesTrend(v){
+ if(v.topic===G.trending)return true;
+ const tv=topicById(G.trending);
+ const hay=((v.topicText||"")+" "+(v.title||"")).toLowerCase();
+ return tv.kw.some(k=>hay.includes(k));
+}
+function rivalPull(){
+ let pull=0;
+ for(const r of G.rivals){
+  const recent=r.videos.filter(v=>G.day-v.day<7&&G.day-v.day>=0);
+  const s=recent.length?Math.max(...recent.map(v=>r.qual/70*Math.log10(1+v.views))):r.qual/200;
+  pull+=s*(0.6+Math.log10(1+r.subsF)/3);
+ }
+ return pull;
+}
+function rivalPressure(isShort){
+ const rp=rivalPull();
+ const yp=(0.4+Math.log10(1+G.subs))*Math.max(0.35,G.satisfaction);
+ const x=yp/(yp+rp*0.55);
+ let p=0.72+0.5*x;
+ if(isShort)p=0.86+0.3*x;
+ return clamp(p,0.6,1.22);
+}
+function algoWhy(v){
+ const c=algoComponents(v);
+ const parts=[];
+ if(c.quality>=1.2)parts.push("strong packaging and retention");
+ else if(c.quality<0.7)parts.push("weak click-through or retention");
+ if(c.fresh>=0.8)parts.push("fresh upload boost");
+ else if(c.fresh<0.2)parts.push("long-tail evergreen reach");
+ if(c.trend>1)parts.push("riding the trending topic");
+ if(c.momentum>1)parts.push("upload-consistency momentum");
+ if(G.satisfaction>0.65)parts.push("satisfied audience");
+ else if(G.satisfaction<0.4)parts.push("audience satisfaction is slipping");
+ const rp=rivalPressure(v.format==="short");
+ if(rp<0.85)parts.push("bigger channels are eating reach today");
+ else if(rp>1.1)parts.push("little competition in the feed right now");
+ return parts.slice(0,3).join(", ")||"steady, unremarkable signal";
+}
+function algoScore(v){
+ const c=algoComponents(v);
+ return c.fresh*c.quality*c.authority*c.sat*c.trend*c.momentum;
+}
+
+/* ============================== LIVE DAY LOOP ============================== */
+function tick(){
+ G.tickHours++;
+ const df=$("dayFill");if(df)df.style.width=(G.tickHours/24*100)+"%";
+ const remaining=Math.max(0,24-G.tickHours);
+ const hours=Math.min(1,remaining)||0.012;
+ for(const v of G.videos)accrue(v,hours);
+ if(Math.random()<0.12)genLiveComment();
+ renderTop();renderStats();
+ if(G.tickHours%3===0)renderLiveNumbers();
+}
+function advanceDay(){
+ const remaining=Math.max(0,24-G.tickHours);
+ for(const v of G.videos)accrue(v,remaining);
+ rivalsTick();stepCollabs();
+ {
+  const rec=G.videos.filter(v=>G.day-v.day<=5);
+  if(rec.length){
+   const target=clamp(0.5*((rec.reduce((a,v)=>a+likeRatioOf(v),0)/rec.length-0.7)/0.25)+0.5*((rec.reduce((a,v)=>a+v.avd,0)/rec.length)/0.5),0.1,0.95);
+   G.satisfaction=clamp((G.satisfaction||0.5)+(target-G.satisfaction)*0.25,0.1,0.95);
+  }
+ }
+ G.hist.views.push(Math.round(G.dayStats.views));G.hist.subs.push(Math.round(G.dayStats.subs));
+ G.hist.watch.push(Math.round(G.dayStats.watchH));G.hist.rev.push(Math.round(G.dayStats.rev));
+ for(const k of Object.keys(G.hist))if(G.hist[k].length>14)G.hist[k].shift();
+ if(G.uploadsToday>0){G.streak=G.lastUploadDay===G.day?G.streak+1:1;G.bestStreak=Math.max(G.bestStreak,G.streak);}
+ else G.streak=0;
+ const weekUps=G.uploadsWeek;
+ G.day++;G.tickHours=0;G.uploadsToday=0;G.uploadsWeek=0;{const df=$("dayFill");if(df)df.style.width="0%";}
+ if(G.day%7===0&&G.hist.views.length>=7){
+  G.weeklyStreak=weekUps>0?(G.weeklyStreak||0)+1:0;
+  if(G.weeklyStreak>=2)feed("You uploaded "+G.weeklyStreak+" weeks in a row. The algorithm is giving you momentum (+"+Math.min(4,G.weeklyStreak)*3+"% reach).","good");
+  const wv=G.hist.views.slice(-7).reduce((a,b)=>a+b,0);
+  const ws=G.hist.subs.slice(-7).reduce((a,b)=>a+b,0);
+  const wr=G.hist.rev.slice(-7).reduce((a,b)=>a+b,0);
+  feed("Week "+(G.day/7)+" wrap-up: "+fmt(wv)+" views, +"+fmt(ws)+" subs, "+money(wr)+" earned.","gold");
+ }
+ G.energy=100+G.level*5;
+ // team salaries
+ let salary=0;
+ for(const k of Object.keys(G.team)){const ti=G.team[k];if(ti>0)salary+=TEAM[k].tiers[ti].cost;}
+ if(salary>0){
+  G.money-=salary;
+  if(G.money<0){G.money=0;for(const k of Object.keys(G.team))G.team[k]=0;feed("You couldn't make payroll. The whole team walked out.","bad");}
+  else feed("Team salaries paid: -"+money(salary),"bad");
+ }
+ // sponsor payouts
+ let payout=0;
+ G.sponsors=G.sponsors.filter(s=>{if(s.daysLeft>0){payout+=s.daily;s.daysLeft--;return s.daysLeft>0;}return false;});
+ if(payout>0){G.money+=payout;feed("Sponsor payouts: +"+money(payout),"good");}
+ // video timers
+ for(const v of G.videos){
+  if(v.boostDays>0)v.boostDays--;
+  if(v.claimDays>0){v.claimDays--;if(v.claimDays===0)feed("Copyright claim on \""+v.title+"\" expired. Revenue restored.","good");}
+  v.hist.push(Math.round(v.dayViews));if(v.hist.length>14)v.hist.shift();
+  v.dayViews=0;
+ }
+ // passive income features
+ let passive=0;
+ if(G.features.memberships){const m=Math.floor(G.subs*0.004);passive+=m*4.99/30;}
+ if(G.features.merch){passive+=G.subs*0.0006;}
+ if(G.features.superthanks&&Math.random()<0.5){const d=Math.round(rnd(2,10)+G.subs*0.0002);passive+=d;feed("A viewer sent a Super Thanks of $"+d,"good");}
+ if(passive>1){G.money+=passive;G.totalRevenue+=passive;G.dayStats.rev+=passive;}
+ // monetization review
+ if(G.monetApplied&&!G.monetized){
+  G.monetReviewDays--;
+  if(G.monetReviewDays<=0){G.monetized=true;feed("You're in! Ads are now running on your channel.","gold");toast("<b>Monetization approved.</b> Your views now earn ad revenue.","gold");}
+ }
+ // claims countdown handled above; trend rotation
+ G.trendDays--;
+ if(G.trendDays<=0){
+  const unlocked=TOPICS.filter(t=>!t.unlock||t.unlock<=G.level);
+  let nt=G.trending;while(nt===G.trending)nt=unlocked[Math.floor(Math.random()*unlocked.length)].id;
+  G.trending=nt;G.trendDays=2+Math.floor(Math.random()*3);
+  G.hotKw=rollHotKw();
+  feed("Trending topic is now "+topicById(nt).name+". Hot keywords: "+G.hotKw.join(", ")+".","");
+ }
+ // poll results
+ if(G.pendingPoll){
+  G.pendingPoll=false;
+  const bump=Math.max(2,G.subs*0.002);
+  addSubs(bump);
+  feed("Your poll closed with "+fmt(bump*120)+" votes. A few new faces subscribed.","good");
+ }
+ // event roll
+ if(Math.random()<0.5)rollEvent();
+ if(G.gameOver){
+  toast("<b>Channel terminated.</b> Three community guidelines strikes. Starting a fresh channel.","bad");
+  feed("The channel was terminated for three strikes.","bad");
+  const gameOverRef=G.gameOver;
+  resetGame();
+  G.gameOver=false;
+  return;
+ }
+ // comment generation
+ genComments();
+ // series
+ if(G.series.daysLeft>0)G.series.daysLeft--;
+ // summary
+ const s=G.dayStats;
+ toast("<b>"+dateStr()+"</b> — +"+fmt(s.views)+" views, +"+fmt(Math.round(s.watchH))+" watch hrs, +"+fmt(s.subs)+" subs, +"+money(s.rev),"good");
+ G.dayStats={views:0,watchH:0,rev:0,subs:0,imp:0};
+ G.eventMods={spotlight:null,wave:0,viewMult:1,sale:false};G.moraleHit=0;
+ checkMonetEligibility();
+ checkAchievements();saveGame();renderAll();
+}
+function rollEvent(){
+ const pool=EVENT_POOL.filter(e=>G.subs>=e.minSubs);
+ if(!pool.length)return;
+ const total=pool.reduce((a,e)=>a+e.w,0);let r=Math.random()*total;let ev=pool[0];
+ for(const e of pool){r-=e.w;if(r<=0){ev=e;break;}}
+ const txt=ev.make(G);
+ if(txt)feed(txt,ev.cls||"hot");
+}
+const EVENT_POOL=[
+ {id:"spotlight",minSubs:0,w:2,make:g=>{const v=pickVideo();if(v){g.eventMods.spotlight={video:v};return "The algorithm picked up \""+v.title+"\" — big push today.";}},
+  cls:"hot"},
+ {id:"trendwave",minSubs:0,w:2,make:g=>{g.eventMods.wave=1;return "A wider trend wave is pushing "+topicById(g.trending).name+" extra hard.";},cls:"hot"},
+ {id:"fanmail",minSubs:100,w:2,make:g=>{const amt=Math.max(5,Math.round((5+g.subs*0.01)*(0.5+Math.random())));g.money+=amt;g.totalRevenue+=amt;g.dayStats.rev+=amt;return "A fan sent a $"+amt+" tip with a nice message.";},cls:"good"},
+ {id:"hater",minSubs:50,w:2,make:g=>{g.moraleHit=1;return "A comment war broke out. You feel rattled (next upload scores slightly lower).";},cls:"bad"},
+ {id:"copycat",minSubs:500,w:1,make:g=>{const v=topVideo();if(v){const extra=v.views*0.12;v.views+=extra;g.totalViews+=extra;g.dayStats.views+=extra;return "A bigger channel reacted to \""+v.title+"\" — traffic surged.";}},
+  cls:"hot"},
+ {id:"bug",minSubs:1000,w:1,make:g=>{g.eventMods.viewMult=0.6;return "Platform hiccup: recommendations were broken. Views reduced today.";},cls:"bad"},
+ {id:"holiday",minSubs:0,w:1,make:g=>{g.eventMods.viewMult=1.6;return "Everyone is home today. Views are up across the platform.";},cls:"good"},
+ {id:"sale",minSubs:0,w:2,make:g=>{g.eventMods.sale=true;return "Gear shop sale: studio upgrades cost 25% less today.";},cls:"good"},
+ {id:"limited",minSubs:1500,w:1,make:g=>{const v=pickVideo();if(v){v.limitedAds=true;return "Advertisers flagged \""+v.title+"\" as limited ads. It earns less.";}},
+  cls:"bad"},
+ {id:"claim",minSubs:3000,w:1,make:g=>{const v=topVideo();if(v){v.claimDays=14;return "A copyright claim hit \""+v.title+"\". Its ad revenue is diverted for 14 days.";}},
+  cls:"bad"},
+ {id:"strike",minSubs:5000,w:0.5,make:g=>{g.strikes=(g.strikes||0)+1;
+  if(g.strikes>=3){g.gameOver=true;return "";}
+  return "Community guidelines strike "+g.strikes+"/3 received. Three strikes end the channel. Lay low.";},
+  cls:"bad"},
+ {id:"sponsor",minSubs:2000,w:3,make:g=>{const daily=Math.round((8+g.subs*0.012)*(0.8+Math.random()*0.5));const days=5+Math.floor(Math.random()*5);
+  g.offers.push({id:"sp"+(g.offerNextId++),type:"sponsor",title:"Sponsor offer: "+SPONSOR_NAMES[Math.floor(Math.random()*SPONSOR_NAMES.length)],
+   desc:"$"+daily+"/day for "+days+" days if you mention them in uploads.",daily,days});return null;}},
+ {id:"collaboffer",minSubs:1500,w:3,make:g=>{
+  if(!g.rivals||!g.rivals.length)return null;
+  const cands=g.rivals.filter(r=>r.subsF<g.subs*1.6&&!g.collabOffers.some(o=>o.rivalId===r.id));
+  if(!cands.length)return null;
+  const r=cands[Math.floor(Math.random()*cands.length)];
+  g.collabOffers.push({id:g.nextOfferId++,rivalId:r.id,day:g.day});
+  return r.name+" wants to collab with you. Find them on the Rivals page.";
+  },cls:"good"},
+ {id:"press",minSubs:20000,w:1,make:g=>{g.money+=Math.round(100+g.subs*0.02);return "A small press outlet wrote about your channel. New viewers are checking you out.";},cls:"good"}
+];
+function genLiveComment(){
+ const pool=G.videos.filter(v=>G.day-v.day<=3&&v.views>50);
+ if(!pool.length)return;
+ const v=pool[Math.floor(Math.random()*pool.length)];
+ const r=Math.random();const kind=r<0.65?"pos":(r<0.85?"q":"hate");
+ const text=CMT[kind][Math.floor(Math.random()*CMT[kind].length)];
+ G.comments.push({id:G.nextCmtId++,vid:v.id,vidTitle:v.title,user:CMT_NAMES[Math.floor(Math.random()*CMT_NAMES.length)],text,kind,hearted:false,pinned:false,day:G.day});
+ while(G.comments.length>40)G.comments.shift();
+}
+function genComments(){
+ const recent=G.videos.filter(v=>G.day-v.day<=5&&v.views>10);
+ for(const v of recent){
+  const n=Math.random()<0.55?1:(Math.random()<0.3?2:0);
+  for(let i=0;i<n;i++){
+   const r=Math.random();
+   const kind=r<0.6?"pos":(r<0.8?"q":"hate");
+   const names=CMT_NAMES;
+   const text=CMT[kind][Math.floor(Math.random()*CMT[kind].length)];
+   G.comments.push({id:G.nextCmtId++,vid:v.id,vidTitle:v.title,user:names[Math.floor(Math.random()*names.length)],text,kind,hearted:false,pinned:false,day:G.day});
+  }
+ }
+ while(G.comments.length>40)G.comments.shift();
+}
+function checkMonetEligibility(){
+ if(G.monetized||G.monetApplied)return;
+}
+
+/* ============================== ACTIONS ============================== */
+function promoteCost(){return Math.round(20+G.subs*0.02);}
+function doCommunityPost(){
+ if(G.energy<8)return toast("Not enough energy left today.","bad");
+ G.energy-=8;
+ const recent=G.videos.filter(v=>G.day-v.day<=5);
+ for(const v of recent)v.boostDays=Math.max(v.boostDays,1);
+ addSubs(1+G.subs*0.002);
+ feed("You posted to the community tab. Recent videos got a small boost.","");
+ checkAchievements();saveGame();renderAll();
+}
+function doReplyComments(){
+ if(G.energy<10)return toast("Not enough energy left today.","bad");
+ G.energy-=10;
+ const recent=G.videos.filter(v=>G.day-v.day<=5);
+ for(const v of recent)v.likeRate+=0.006;
+ addSubs(Math.max(0.5,G.subs*0.001));
+ feed("You spent an hour replying to comments. Engagement is up.","");
+ saveGame();renderAll();
+}
+function doStudy(){
+ if(G.energy<12)return toast("Not enough energy left today.","bad");
+ if(G.skill>=20)return toast("Your editing skill is already maxed.","bad");
+ G.energy-=12;G.skill++;
+ feed("Editing practice session. Skill is now "+G.skill+".","");
+ toast("Editing skill +1 (now "+G.skill+")","good");
+ saveGame();renderAll();
+}
+function doPromote(){
+ if(!G.videos.length)return toast("Upload something first.","bad");
+ const cost=promoteCost();
+ if(G.money<cost)return toast("Not enough cash ($"+cost+" needed).","bad");
+ const v=G.videos[G.videos.length-1];
+ G.money-=cost;v.boostDays=2;
+ feed("You paid "+money(cost)+" to promote \""+v.title+"\" for 2 days.","");
+ saveGame();renderAll();
+}
+function doScout(){
+ if(G.energy<5)return toast("Not enough energy left today.","bad");
+ G.energy-=5;G.ideaBoost=6;
+ const t=topicById(G.trending);
+ const ideas=[t.name+" tier list: ranked worst to best","I tried every "+t.kw[0]+" for a week","Why nobody talks about this "+t.kw[1]+" trick"];
+ feed("Trend scouting done. Ideas: "+ideas.join(" | ")+". Your next upload gets +6 title score.","gold");
+ toast("Trends scouted. Next upload: +6 title score.","good");
+ saveGame();renderAll();
+}
+function doPoll(){
+ if(G.energy<10)return toast("Not enough energy left today.","bad");
+ G.energy-=10;
+ G.pendingPoll=true;
+ feed("Poll is live. Your audience is voting; results tomorrow.","");
+ saveGame();renderAll();
+}
+function doSeries(){
+ if(G.energy<6)return toast("Not enough energy left today.","bad");
+ G.energy-=6;
+ G.series={topic:G.trending,daysLeft:5};
+ feed("You announced a new "+topicById(G.trending).name+" series. Your next videos on that topic will binge better.","gold");
+ saveGame();renderAll();
+}
+function buyEquipment(kind){
+ const tiers=EQUIP[kind].tiers;const cur=G.equipment[kind];
+ if(cur>=tiers.length-1)return;
+ let cost=tiers[cur+1].cost;if(G.eventMods.sale)cost=Math.round(cost*0.75);
+ if(G.money<cost)return toast("Not enough cash ("+money(cost)+" needed).","bad");
+ G.money-=cost;G.equipment[kind]++;
+ toast("Upgraded "+EQUIP[kind].name+" to "+tiers[G.equipment[kind]].n,"good");
+ feed("Bought "+tiers[G.equipment[kind]].n+" for "+money(cost)+".","");
+ saveGame();renderAll();renderShop();
+}
+function hireTeam(kind,dir){
+ const tiers=TEAM[kind].tiers;
+ const cur=G.team[kind];
+ let next;
+ if(dir==="hire")next=cur+1;else next=cur-1;
+ if(next<0||next>=tiers.length)return;
+ if(dir==="fire"){G.team[kind]=0;feed(TEAM[kind].name+" let go.","");saveGame();renderAll();return;}
+ const cost=tiers[next].cost;
+ const totalSalary=Object.keys(G.team).reduce((a,k)=>a+(k===kind?cost:TEAM[k].tiers[G.team[k]].cost),0);
+ if(G.money<100&&dir==="hire")return toast("You need at least $100 in the bank to hire.","bad");
+ G.team[kind]=next;
+ toast(dir==="hire"?"Hired: "+tiers[next].n:"Promoted to "+tiers[next].n,"good");
+ feed("Team update: "+tiers[next].n+" ("+money(cost)+"/day).","");
+ checkAchievements();saveGame();renderAll();renderTeam();
+}
+function acceptOffer(id){
+ const i=G.offers.findIndex(o=>o.id===id);if(i<0)return;
+ const o=G.offers[i];G.offers.splice(i,1);
+ if(o.type==="sponsor"){
+  G.sponsors.push({daily:o.daily,daysLeft:o.days,name:o.title});
+  G.sponsorsAccepted++;
+  feed("Signed "+o.title+": $"+o.daily+"/day for "+o.days+" days.","gold");
+  toast("Sponsor deal signed","gold");
+ }else{
+  G.boostNext=true;
+  feed("Collab agreed. Your next video gets +30% appeal and a subscriber spike.","gold");
+  toast("Collab locked in","gold");
+ }
+ checkAchievements();saveGame();renderAll();
+}
+function declineOffer(id){
+ const i=G.offers.findIndex(o=>o.id===id);if(i<0)return;
+ const o=G.offers[i];G.offers.splice(i,1);
+ feed("Declined: "+o.title,"");saveGame();renderAll();
+}
+function applyMonetization(){
+ if(G.monetized||G.monetApplied)return;
+ if(G.subs<1000||G.totalWatchH<4000)return toast("You don't meet the requirements yet.","bad");
+ G.monetApplied=true;G.monetReviewDays=3;
+ feed("Application submitted to the partner program. Review takes about 3 days.","gold");
+ toast("Application sent — review takes about 3 days.","gold");
+ saveGame();renderAll();
+}
+function toggleFeature(f){
+ const needs={superthanks:500,memberships:30000,merch:10000};
+ if(!G.monetized)return toast("Join the partner program first.","bad");
+ if(G.subs<needs[f])return toast("You need "+fmt(needs[f])+" subscribers for that.","bad");
+ G.features[f]=!G.features[f];
+ const names={superthanks:"Super Thanks",memberships:"Channel memberships",merch:"Merch shelf"};
+ feed(names[f]+(G.features[f]?" turned on.":" turned off."),"" );
+ saveGame();renderAll();
+}
+/* comment moderation */
+function cmtHeart(id){
+ const c=G.comments.find(x=>x.id===id);if(!c||c.hearted)return;
+ c.hearted=true;
+ const v=G.videos.find(x=>x.id===c.vid);if(v)v.likeRate+=0.003;
+ addSubs(1);
+ toast("You hearted "+c.user+"'s comment","good");
+ saveGame();renderAll();
+}
+function cmtPin(id){
+ const c=G.comments.find(x=>x.id===id);if(!c)return;
+ G.comments.forEach(x=>{if(x.vid===c.vid)x.pinned=false;});
+ c.pinned=true;
+ const v=G.videos.find(x=>x.id===c.vid);if(v)v.ctr+=0.004;
+ feed("Pinned a comment on \""+v.title+"\". Click-through is up a little.","");
+ saveGame();renderAll();
+}
+function cmtDelete(id){
+ const i=G.comments.findIndex(x=>x.id===id);if(i<0)return;
+ const c=G.comments[i];G.comments.splice(i,1);
+ if(c.kind==="hate"){feed("You deleted a hate comment. The vibes are restored.","");}
+ saveGame();renderAll();
+}
+
+/* ============================== PUBLISH ============================== */
+let pendingUpload={fmt:"long",len:10,topic:"gaming",tags:[]};
+function classifyTopic(text){
+ const t=(text||"").trim().toLowerCase();let best=null,bs=0;
+ for(const tp of TOPICS){
+  let s=0;if(t.includes(tp.name.toLowerCase()))s+=6;
+  if(tp.id===t)s+=10;
+  for(const k of tp.kw)if(t.includes(k))s+=3;
+  if(s>bs){bs=s;best=tp;}
+ }
+ if(!best){
+  const counts={};for(const v of G.videos)counts[v.topic]=(counts[v.topic]||0)+1;
+  let bk=null,bc=0;for(const k in counts)if(counts[k]>bc){bc=counts[k];bk=k;}
+  best=bk?topicById(bk):TOPICS[0];
+ }
+ return{topic:best,matched:!!bs};
+}
+function publishVideo(){
+ const topicInput=document.getElementById("topicInput");
+ const topicText=(topicInput?topicInput.value:"").trim();
+ const cls=classifyTopic(topicText||pendingUpload.topicName||"");
+ const topic=cls.topic;
+ const title=document.getElementById("titleInput").value.trim();
+ if(!title)return toast("Give the video a title first.","bad");
+ const isShort=pendingUpload.fmt==="short";
+ const thumbLvl=+document.getElementById("thumbSlider").value;
+ const editLvl=+document.getElementById("editSlider").value;
+ const energy=isShort?12+editLvl*5:20+editLvl*8;
+ if(G.energy<energy)return toast("Not enough energy ("+energy+" needed). Advance the day to rest.","bad");
+ const thumbCash=thumbLvl*thumbLvl*10;
+ if(G.money<thumbCash)return toast("Thumbnail effort costs "+money(thumbCash)+" — not enough cash.","bad");
+ let tScore=scoreTitle(title)+(G.team.writer>0?TEAM.writer.tiers[G.team.writer].bonus*0.4:0)+(G.ideaBoost||0);
+ if(topicText&&topic.kw.some(k=>title.toLowerCase().includes(k)))tScore+=4;
+ tScore=clamp(tScore,5,105);
+ tScore=clamp(tScore,5,105);G.ideaBoost=0;
+ const desc=document.getElementById("descInput").value.trim();
+ const seo=clamp(scoreDesc(desc,pendingUpload.tags)+(G.hotKw.some(k=>desc.toLowerCase().includes(k))?8:0),5,100);
+ let thumbScore=clamp(Math.round(thumbLvl*12+EQUIP.studio.tiers[G.equipment.studio].bonus*0.6+(G.team.thumb>0?TEAM.thumb.tiers[G.team.thumb].bonus*0.5:0)+rnd(0,8)),5,105);
+ let editScore=clamp(Math.round(8+editLvl*12+G.skill*2.5+EQUIP.editing.tiers[G.equipment.editing].bonus*0.8+(G.team.editor>0?TEAM.editor.tiers[G.team.editor].bonus*0.5:0)),5,105);
+ if(G.moraleHit){thumbScore-=4;editScore-=4;}
+ // appeal
+ const trendMult=topicMatchesTrend({topic:topic.id,topicText,title})?2.2:1;
+ const quality=tScore*0.28+thumbScore*0.22+editScore*0.32+(G.level*2+G.skill*1.2)*0.18;
+ let appeal=quality*topic.base*trendMult*(1+G.level*0.04)*rnd(0.8,1.25);
+ if(pendingUpload.tags.some(tg=>G.hotKw.includes(tg)))appeal*=1.08;
+ if(!cls.matched&&topicText)appeal*=1.05;
+ if(G.boostNext)appeal*=1.3;
+ if(G.series.daysLeft>0&&G.series.topic===topic.id)appeal*=1.12;
+ appeal=clamp(appeal,5,150);
+ const shape=pickShape(appeal);
+ const sec=isShort?pendingUpload.len:60;
+ const lenMin=isShort?sec/60:pendingUpload.len;
+ const ctr=clamp(0.02+((tScore*0.45+thumbScore*0.55)/100)*0.10+(trendMult>1?0.012:0),0.015,0.135);
+ const hook=+$('hookSlider').value;
+ const avd=isShort?clamp(0.48+editScore/100*0.30+(60-sec)/60*0.10,0.4,0.95):clamp(0.22+editScore/100*0.38-(lenMin-5)/100*0.15+G.skill*0.004,0.12,0.75);
+ const v={
+  id:G.nextId++,title:title,topic:topic.id,topicText:topicText||topic.name,day:G.day,format:pendingUpload.fmt,lenMin,
+  titleScore:Math.round(tScore),thumbScore,editScore,seoScore:seo,hook:isShort?hook:0,
+  tags:pendingUpload.tags.slice(),appeal:Math.round(appeal),shape,
+  scale:scaleFor(appeal)*(isShort?2.5:1),
+  cpm:topic.cpm*rnd(0.7,1.3),
+  ctr,avd,
+  likeRate:rnd(0.03,0.08)+(editScore>70?0.008:0),
+  commentRate:rnd(0.005,0.014),
+  conv:0.0015+(clamp(appeal,0,100)/100)*0.006*(1+G.skill*0.02),
+  impressions:0,views:0,likes:0,dislikes:0,commentsN:0,watchH:0,revenue:0,
+  dayNoise:rnd(0.8,1.25),boostDays:0,claimDays:0,limitedAds:false,
+  tmix:trafficMixV2(seo,avd,isShort),hist:[],dayViews:0
+ };
+ G.videos.push(v);
+ G.energy-=energy;G.money-=thumbCash;
+ G.uploads++;G.uploadsToday++;G.uploadsWeek++;G.lastUploadDay=G.day;
+ if(G.boostNext){G.boostNext=false;addSubs(Math.max(5,G.subs*0.01));feed("The collab video is live and your audience is watching.","gold");}
+ feed("Published \""+title+"\" ("+(isShort?"Short":durStr(lenMin))+", "+topic.name+")","");
+ toast("Published: <b>"+esc(title)+"</b> — gut feeling: "+({viral:"this could explode",hot:"this feels hot",steady:"a steady climber",slow:"a slow burn",flop:"hard to say"}[shape]),"good");
+ closeModal("modalUpload");
+ checkLevel();checkAchievements();saveGame();renderAll();
+}
+function trafficMixV2(seo,avd,isShort){
+ if(isShort)return{browse:0.04,suggested:0.08,search:0.03,external:0.02,shorts:0.83};
+ const browse=0.22+Math.min(G.subs/20000,0.28);
+ const suggested=0.18+avd*0.5;
+ const search=0.08+(seo/100)*0.3;
+ const external=0.04;
+ const sum=browse+suggested+search+external;
+ return{browse:browse/sum,suggested:suggested/sum,search:search/sum,external:external/sum,shorts:0};
+}
+
+/* ============================== SAVE / ACHIEVEMENTS ============================== */
+function checkAchievements(){
+ for(const a of ACHS){
+  if(!G.unlocked[a.id]&&a.check(G)){
+   G.unlocked[a.id]=true;
+   toast("🏆 Achievement: <b>"+a.name+"</b>","gold");
+   feed("Achievement unlocked: "+a.name,"gold");
+  }
+ }
+}
+function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
+function loadGame(){
+ try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;
+  const d=JSON.parse(raw);if(!d||d.v!==2)return false;G=d;
+  if(!G.rivals||!G.rivals.length)G.rivals=makeRivals();
+  if(G.satisfaction==null)G.satisfaction=0.5;
+  if(G.weeklyStreak==null)G.weeklyStreak=0;
+  if(G.uploadsWeek==null)G.uploadsWeek=0;
+  if(!G.following)G.following=[];
+  if(!G.collabCooldowns)G.collabCooldowns={};
+  if(!G.collabOffers)G.collabOffers=[];
+  if(!G.nextOfferId)G.nextOfferId=1;
+  if(!G.likedRv)G.likedRv=[];
+  if(!G.watchTab)G.watchTab="all";
+  return true;
+ }catch(e){return false;}
+}
+
+/* ============================== FEED ============================== */
+function feed(text,cls){
+ G.feed.unshift({d:dateStr(),t:text,c:cls||""});
+ if(G.feed.length>40)G.feed.pop();
+}
+/* ============================== RENDER: TOP & STATS ============================== */
+const $=id=>document.getElementById(id);
+function toast(html,cls){
+ const t=document.createElement("div");t.className="toast "+(cls||"");t.innerHTML=html;
+ $("toasts").appendChild(t);
+ setTimeout(()=>{t.classList.add("out");setTimeout(()=>t.remove(),450);},4200);
+}
+function renderTop(){
+ $("topMoney").textContent=money(G.money);
+ $("energyTxt").textContent=Math.round(G.energy);
+ $("energyFill").style.width=clamp(G.energy/(100+G.level*5)*100,0,100)+"%";
+ $("topLevel").textContent=G.level;
+ $("dateTxt").textContent=dateStr();
+ $("energySide").textContent=Math.round(G.energy)+" energy left today";
+ $("costPromote").innerHTML="<b>"+money(promoteCost())+"</b>";
+ renderActionState();
+}
+function renderActionState(){
+ const set=(id,dis,why)=>{const b=$(id);if(!b)return;b.disabled=!!dis;if(why)b.title=why;else b.removeAttribute("title");};
+ const noE="Out of energy: advance the day to rest";
+ set("actPost",G.energy<8,G.energy<8?noE:"");
+ set("actReply",G.energy<10,G.energy<10?noE:"");
+ set("actStudy",G.energy<12||G.skill>=20,G.skill>=20?"Editing skill is maxed":noE);
+ set("actShort",G.energy<12,G.energy<12?noE:"");
+ set("actScout",G.energy<5,G.energy<5?noE:(G.ideaBoost?"Bonus already banked for your next upload":""));
+ set("actPoll",G.energy<10,G.energy<10?noE:"");
+ set("actSeries",G.energy<6,G.energy<6?noE:"");
+ set("actPromote",G.videos.length<1||G.money<promoteCost(),G.videos.length<1?"Upload a video first":(G.money<promoteCost()?"Not enough cash":""));
+}
+function setStat(id,txt){const el=$(id);if(el.textContent!==txt){el.textContent=txt;el.classList.remove("ticking");void el.offsetWidth;el.classList.add("ticking");}}
+function renderStats(){
+ setStat("statSubs",fmt(G.subs));
+ setStat("statSubsSub","+"+fmt(G.dayStats.subs)+" today");
+ setStat("statViews",fmt(G.totalViews));
+ setStat("statViewsSub","+"+fmt(G.dayStats.views)+" today");
+ setStat("statWatch",fmt(G.totalWatchH)+" hrs");
+ setStat("statWatchSub","+"+fmt(Math.round(G.dayStats.watchH))+" today");
+ setStat("statRev",money(G.totalRevenue));
+ setStat("statRevSub","+"+money(G.dayStats.rev)+" today");
+}
+function renderLiveNumbers(){
+ // refresh live per-video numbers in content list + dashboard without full rebuild
+ for(const v of G.videos){
+  const a=document.querySelector('[data-vn="views-'+v.id+'"]');if(a)a.textContent=fmt(v.views);
+  const b=document.querySelector('[data-vn="imp-'+v.id+'"]');if(b)b.textContent=fmt(v.impressions);
+  const c=document.querySelector('[data-vn="rev-'+v.id+'"]');if(c)c.textContent=money(v.revenue);
+  const d=document.querySelector('[data-vn="likes-'+v.id+'"]');if(d)d.textContent=fmt(v.likes);
+  const f=document.querySelector('[data-vn="cmts-'+v.id+'"]');if(f)f.textContent=fmt(v.commentsN);
+ }
+ const lv=latestVideo();
+ if(lv){
+  const a=document.querySelector('[data-vn="lv-views"]');if(a)a.textContent=fmt(lv.views);
+  const b=document.querySelector('[data-vn="lv-imp"]');if(b)b.textContent=fmt(lv.impressions);
+ }
+}
+function latestVideo(){return G.videos.length?G.videos[G.videos.length-1]:null;}
+
+/* ============================== RENDER: PAGES ============================== */
+function perfBadge(v){
+ const age=G.day-v.day;
+ if(v.claimDays>0)return'<span class="chip lim">claim</span>';
+ if(v.boostDays>0)return'<span class="chip tr">promoted</span>';
+ if(age<=2)return'<span class="chip tr">new</span>';
+ return'<span class="badge '+v.shape+'">'+v.shape+'</span>';
+}
+function badgeHtml(v){
+ return'<span class="badge '+v.shape+'">'+v.shape+'</span>';
+}
+function thumbDiv(v){
+ const t=topicById(v.topic);
+ const grad={gaming:"linear-gradient(135deg,#3a1d4f,#7a3f9d)",vlog:"linear-gradient(135deg,#1d3a4f,#3f7a9d)",tutorial:"linear-gradient(135deg,#1d4f2a,#3f9d5c)",tech:"linear-gradient(135deg,#12283a,#2f6f9d)",comedy:"linear-gradient(135deg,#4f1d1d,#9d3f3f)",music:"linear-gradient(135deg,#2a1d4f,#5c3f9d)",food:"linear-gradient(135deg,#4f2a1d,#9d6a3f)",science:"linear-gradient(135deg,#123a3a,#3f8a8a)",news:"linear-gradient(135deg,#3a3a12,#8a8a3f)",irl:"linear-gradient(135deg,#4f3a12,#9d7a3f)"}[v.topic];
+ return'<div class="thumb" style="background:'+grad+'">'+t.icon+
+  (v.format==="short"?'<span class="sfm">SHORT</span>':'<span class="dur">'+durStr(v.lenMin)+'</span>')+'</div>';
+}
+let sortViewsOn=false;
+function renderContent(){
+ const list=$("videoList");
+ $("vidCount").textContent=G.videos.length+" video"+(G.videos.length===1?"":"s");
+ $("videoEmpty").style.display=G.videos.length?"none":"block";
+ let vids=[...G.videos].reverse();
+ if(sortViewsOn)vids=[...G.videos].sort((a,b)=>b.views-a.views);
+ let html="";
+ for(const v of vids){
+  const ratio=v.likes>0?(v.likes/(v.likes+Math.max(1,v.dislikes))):0.95;
+  html+='<div class="vrow" data-vid="'+v.id+'">'+
+   thumbDiv(v)+
+   '<div><div class="vtitle">'+esc(v.title)+'</div><div class="vmeta2">'+
+    '<span class="chip">'+topicById(v.topic).icon+" "+esc(v.topicText||topicById(v.topic).name)+'</span>'+
+    (v.format==="short"?'<span class="chip shorts">Shorts</span>':'')+
+    '<span class="chip '+(G.monetized&&!v.limitedAds?"mon":"")+'">'+(G.monetized?(v.limitedAds?"limited ads":"monetized"):"not monetized")+'</span>'+
+    (v.claimDays>0?'<span class="chip lim">copyright claim</span>':'')+
+    badgeHtml(v)+
+   '</div><div class="likebar" style="width:110px"><i style="width:'+(ratio*100)+'%"></i></div></div>'+
+   '<div class="vstats">'+
+    '<div><b data-vn="views-'+v.id+'">'+fmt(v.views)+'</b><span>views</span></div>'+
+    '<div><b data-vn="imp-'+v.id+'">'+fmt(v.impressions)+'</b><span>impressions</span></div>'+
+    '<div><b data-vn="likes-'+v.id+'">'+fmt(v.likes)+'</b><span>likes</span></div>'+
+    '<div><b data-vn="cmts-'+v.id+'">'+fmt(v.commentsN)+'</b><span>comments</span></div>'+
+   '</div>'+
+   '<div class="vrev" data-vn="rev-'+v.id+'">'+money(v.revenue)+'</div>'+
+   '<div class="vage">'+(G.day-v.day===0?"today":(G.day-v.day)+"d")+'</div>'+
+  '</div>';
+ }
+ list.innerHTML=html||"";
+ $("sortViews").textContent=sortViewsOn?"Sort: top views":"Sort: newest";
+}
+function renderDashFeed(){
+ const el=$("dashFeed");
+ if(!G.feed.length){el.innerHTML='<div class="empty">Quiet so far. Publish something.</div>';return;}
+ el.innerHTML=G.feed.slice(0,12).map(f=>'<div class="feeditem '+f.c+'"><span class="d">'+f.d.slice(0,6)+'</span><span>'+esc(f.t)+'</span></div>').join("");
+}
+function renderLatest(){
+ const v=latestVideo();
+ const el=$("latestVideo");
+ if(!v){el.innerHTML='<div class="empty">Nothing uploaded yet.</div>';return;}
+ const t=G.day-v.day;
+ el.innerHTML=
+  '<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:10px">'+
+   thumbDiv(v)+
+   '<div style="min-width:0;flex:1"><div class="vtitle" style="-webkit-line-clamp:2">'+esc(v.title)+'</div>'+
+   '<div class="vmeta2">'+topicById(v.topic).icon+" "+topicById(v.topic).name+' · '+(t===0?"published today":t+" days ago")+' · '+badgeHtml(v)+'</div></div>'+
+  '</div>'+
+  '<div class="vstats" style="margin-bottom:8px">'+
+   '<div><b data-vn="lv-views" style="font-size:16px">'+fmt(v.views)+'</b><span>views</span></div>'+
+   '<div><b data-vn="lv-imp" style="font-size:16px">'+fmt(v.impressions)+'</b><span>impressions</span></div>'+
+   '<div><b style="font-size:16px">'+(v.format==="short"?"—":(v.ctr*100).toFixed(1)+"%")+'</b><span>click-through</span></div>'+
+   '<div><b style="font-size:16px">'+Math.round(v.avd*100)+'%</b><span>avg viewed</span></div>'+
+   '<div><b style="font-size:16px">'+money(v.revenue)+'</b><span>earned</span></div>'+
+  '</div>'+
+  '<div style="font-size:11.5px;color:var(--faint)">Impressions × click-through = views. Higher average viewed % makes the algorithm push it to more people.</div>';
+}
+function chartHtml(arr,cls){
+ if(!arr.length)return'<div class="empty">No data yet.</div>';
+ const mx=Math.max(1,...arr);
+ return arr.map(h=>'<i style="height:'+clamp(h/mx*100,3,100)+'%"></i>').join("");
+}
+function renderMilestone(){
+ const el=$("milestone");
+ const milestones=[
+  {label:"1,000 subscribers & 4,000 watch hours",now:Math.min(G.subs/1000,1)*50+Math.min(G.totalWatchH/4000,1)*50,done:G.subs>=1000&&G.totalWatchH>=4000,note:G.subs+"/1,000 subs · "+fmt(Math.round(G.totalWatchH))+"/4,000 hrs"},
+  {label:"10,000 subscribers",now:G.subs/10000,done:G.subs>=10000,note:fmt(G.subs)+"/10K"},
+  {label:"100,000 subscribers (Silver Play Button)",now:G.subs/100000,done:G.subs>=100000,note:fmt(G.subs)+"/100K"},
+  {label:"1,000,000 subscribers (Gold Play Button)",now:G.subs/1000000,done:G.subs>=1000000,note:fmt(G.subs)+"/1M"}
+ ];
+ let m=milestones.find(x=>!x.done)||milestones[milestones.length-1];
+ el.innerHTML='<div style="font-weight:600;margin-bottom:4px">'+m.label+'</div>'+
+  '<div class="progress"><i style="width:'+clamp(m.now*100,2,100)+'%"></i></div>'+
+  '<div style="color:var(--faint);font-size:12px;margin-top:5px">'+m.note+'</div>';
+}
+function renderTraffic(){
+ const t=G.traffic;const total=t.browse+t.suggested+t.search+t.external+t.shorts;
+ if(total<=0){$("anTraffic").innerHTML='<div class="empty">No traffic yet.</div>';return;}
+ const rows=[["Browse features",t.browse,"var(--blue)"],["Suggested videos",t.suggested,"var(--red)"],["YouTube search",t.search,"var(--gold)"],["External",t.external,"var(--green)"],["Shorts feed",t.shorts,"var(--purple)"]];
+ $("anTraffic").innerHTML=rows.map(r=>{
+  const pct=r[1]/total*100;
+  return'<div class="hbar"><div class="hl"><span>'+r[0]+'</span><b>'+pct.toFixed(1)+'%</b></div><div class="ht"><i style="width:'+pct+'%;background:'+r[2]+'"></i></div></div>';
+ }).join("");
+}
+function renderKeys(){
+ const monetizedViews=G.monetized?G.totalViews:0;
+ const rpm=G.monetized&&monetizedViews>0?G.totalRevenue/monetizedViews*1000:0;
+ const ctrAvg=G.totalImpressions>0?G.totalViews/G.totalImpressions*100:0;
+ const watchPerView=G.totalViews>0?G.totalWatchH/G.totalViews*60:0;
+ $("anKeys").innerHTML=
+  '<div class="kv"><span class="k">Average click-through</span><span class="v">'+(ctrAvg>0?ctrAvg.toFixed(1)+"%":"—")+'</span></div>'+
+  '<div class="kv"><span class="k">Average minutes viewed</span><span class="v">'+(watchPerView>0?watchPerView.toFixed(1)+" min":"—")+'</span></div>'+
+  '<div class="kv"><span class="k">RPM (revenue per 1,000 views)</span><span class="v">'+(rpm>0?"$"+rpm.toFixed(2):"not monetized")+'</span></div>'+
+  '<div class="kv"><span class="k">Seasonal ad rates</span><span class="v">'+(seasonMult()>=1.2?"peak season":"normal")+'</span></div>'+
+  '<div class="kv"><span class="k">Shorts views (all time)</span><span class="v">'+fmt(G.videos.filter(v=>v.format==="short").reduce((a,v)=>a+v.views,0))+'</span></div>'+
+  '<div class="kv"><span class="k">Impressions served</span><span class="v">'+fmt(G.totalImpressions)+'</span></div>'+
+  '<div class="kv"><span class="k">Returning viewers</span><span class="v">'+(G.totalViews>0?Math.min(60,Math.round(8+Math.min(G.subs,50000)/1000*4))+"%":"—")+'</span></div>'+
+  '<div class="kv"><span class="k">Editing skill</span><span class="v">'+G.skill+' / 20</span></div>';
+}
+function renderTop(){
+ renderTopbar();
+}
+function renderTopbar(){
+ $("topMoney").textContent=money(G.money);
+ $("energyTxt").textContent=Math.round(G.energy);
+ $("energyFill").style.width=clamp(G.energy/(100+G.level*5)*100,0,100)+"%";
+ $("topLevel").textContent=G.level;
+ $("dateTxt").textContent=dateStr();
+ $("energySide").textContent=Math.round(G.energy)+" energy left today";
+ $("costPromote").innerHTML="<b>"+money(promoteCost())+"</b>";
+}
+function renderAlgo(){
+ const v=[...G.videos].sort((a,b)=>b.day-a.day)[0];
+ let panel;
+ if(!v){
+  panel='<div class="empty">Publish something and the algorithm will start weighing it here.</div>';
+ }else{
+  const c=algoComponents(v);
+  const rp=rivalPressure(v.format==="short");
+  const bars=[
+   ["Packaging & retention",clamp(c.quality/2*100,4,100),"var(--red)"],
+   ["Channel authority",clamp(c.authority/1.55*100,4,100),"var(--blue)"],
+   ["Audience satisfaction",clamp(((G.satisfaction||0.5)-0.1)/0.85*100,4,100),"var(--green)"],
+   ["Freshness of your latest",clamp(c.fresh*100,4,100),"var(--amber)"],
+   ["Trend alignment",clamp((c.trend-1)/1.6*100,4,100),"var(--purple)"],
+   ["Room vs the rivals",clamp((rp-0.6)/0.62*100,4,100),"var(--gold)"]
+  ];
+  const verdict=G.satisfaction>0.6&&rp>0.95?"The feed likes you right now: your packaging is earning the reach it gets."
+   :(G.satisfaction<0.4?"The algorithm is cooling on you: recent videos are disappointing viewers. Fix retention and the like ratio before chasing trends."
+   :(rp<0.85?"The feed is crowded today. Bigger channels are absorbing the impressions your videos would normally get."
+   :"Steady signal. Nothing is blocking you, but nothing is carrying you either."));
+  panel='<div class="algoVerdict">'+verdict+'</div>'+
+   bars.map(b=>'<div class="abar"><div class="hl"><span>'+b[0]+'</span><b>'+Math.round(b[1])+'</b></div><div class="ht"><i style="width:'+b[1]+'%;background:'+b[2]+'"></i></div></div>').join("")+
+   '<div style="margin-top:12px" class="field"><label>Why your latest video is getting what it gets</label>'+
+   '<div class="whyline"><b>'+esc(v.title.length>46?v.title.slice(0,46)+"…":v.title)+'</b> — '+algoWhy(v)+'</div></div>';
+ }
+ $("algoPanel").innerHTML=panel;
+}
+function renderAnalytics(){
+ renderAlgo();
+ $("anViews").innerHTML=chartHtml(G.hist.views,"");
+ $("anRev").innerHTML=chartHtml(G.hist.rev,"gold");
+ renderTraffic();renderKeys();
+ const top=[...G.videos].sort((a,b)=>b.views-a.views).slice(0,8);
+ $("anTop").innerHTML=top.length?top.map(v=>
+  '<div class="vrow" data-vid="'+v.id+'" style="grid-template-columns:70px 1fr 130px 90px">'+
+   '<div class="thumb" style="width:70px;height:42px;font-size:17px">'+topicById(v.topic).icon+(v.format==="short"?'<span class="sfm">SHORT</span>':'<span class="dur">'+durStr(v.lenMin)+'</span>')+'</div>'+
+   '<div class="vtitle" style="-webkit-line-clamp:1">'+esc(v.title)+'</div>'+
+   '<div style="font-variant-numeric:tabular-nums;font-size:13px">'+fmt(v.views)+' views · '+money(v.revenue)+'</div>'+
+   '<div style="font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint)">'+(v.ctr*100).toFixed(1)+'% CTR · '+Math.round(v.avd*100)+'% avd</div>'+
+  '</div>').join(""):'<div class="empty">No videos yet.</div>';
+}
+function renderCommunity(){
+ $("cmtCount").textContent=G.comments.length+" recent";
+ const el=$("cmtList");
+ if(!G.comments.length){el.innerHTML='<div class="empty">No comments yet. They arrive after uploads start pulling views.</div>';return;}
+ const sorted=[...G.comments].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||b.day-a.day||b.id-a.id);
+ el.innerHTML=sorted.slice(0,25).map(c=>
+  '<div class="comment '+(c.kind==="hate"?"hate":"")+(c.pinned?" pinned":"")+'">'+
+   '<div class="av">'+(c.kind==="hate"?"👎":"🙂")+'</div>'+
+   '<div class="cb"><div class="cu"><b>@'+esc(c.user)+'</b> on "'+esc(c.vidTitle.length>38?c.vidTitle.slice(0,38)+"…":c.vidTitle)+'"'+(c.pinned?' <span class="chip" style="background:rgba(255,201,77,.15);color:var(--gold)">pinned</span>':'')+'</div>'+
+   '<div class="ct">'+esc(c.text)+'</div>'+
+   '<div class="csel">'+
+    '<button data-ch="heart-'+c.id+'" class="'+(c.hearted?"done":"")+'">❤ '+(c.hearted?"Hearted":"Heart")+'</button>'+
+    '<button data-ch="pin-'+c.id+'">📌 Pin</button>'+
+    '<button data-ch="del-'+c.id+'">🗑 Delete</button>'+
+   '</div></div></div>'
+ ).join("");
+}
+function renderMonet(){
+ const el=$("monetStatus");
+ if(G.monetized){
+  el.innerHTML='<div style="color:var(--green);font-weight:700;margin-bottom:6px">✓ In the partner program</div>'+
+   '<div style="color:var(--dim);font-size:13px;line-height:1.7">Ads run on your videos. Your RPM shifts with the season: advertisers pay the most in November and December and pull back in January and February. Videos with copyright claims or limited ads earn less.</div>';
+ }else if(G.monetApplied){
+  el.innerHTML='<div style="font-weight:700;margin-bottom:6px">Application under review</div>'+
+   '<div style="color:var(--dim);font-size:13px;margin-bottom:8px">About '+G.monetReviewDays+' day'+(G.monetReviewDays===1?"":"s")+' left. Keep uploading.</div>';
+ }else{
+  const subP=clamp(G.subs/1000*100,2,100),wP=clamp(G.totalWatchH/4000*100,2,100);
+  el.innerHTML='<div style="font-weight:600;margin-bottom:8px">Requirements</div>'+
+   '<div style="font-size:13px;margin-bottom:2px">Subscribers: '+fmt(G.subs)+' / 1,000</div><div class="progress"><i style="width:'+subP+'%"></i></div>'+
+   '<div style="font-size:13px;margin:10px 0 2px">Public watch hours: '+fmt(Math.round(G.totalWatchH))+' / 4,000</div><div class="progress"><i style="width:'+wP+'%"></i></div>'+
+   '<button class="btn primary" id="btnApplyMonet" style="margin-top:14px" '+(G.subs>=1000&&G.totalWatchH>=4000?"":"disabled")+'>Apply</button>'+
+   '<div style="color:var(--faint);font-size:12px;margin-top:8px">Until then, your money comes from sponsors, tips and your own pockets. Watch every hour you earn: the counter in Analytics is the same one the program checks.</div>';
+ }
+ const f=$("monetFeatures");
+ const feats=[["superthanks","Super Thanks","Viewers tip you directly",500],["memberships","Channel memberships","Fans pay $4.99/month, you keep a cut",30000],["merch","Merch shelf","Passive merch income under your videos",10000]];
+ f.innerHTML=feats.map(x=>{
+  const on=G.features[x[0]];
+  const ok=G.monetized&&G.subs>=x[3];
+  return'<div class="shopitem"><span class="ic">💵</span><div class="grow"><div class="sn">'+x[1]+'</div><div class="sd">'+x[2]+' · needs '+fmt(x[3])+' subs'+(ok?"":(G.monetized?" — locked":" — join the partner program first"))+'</div></div>'+
+   '<button class="toggle '+(on?"on":"")+'" data-toggle="'+x[0]+'" '+(ok?"":"disabled")+'></button></div>';
+ }).join("");
+ $("monetSponsors").innerHTML=G.sponsors.length?G.sponsors.map(s=>
+  '<div class="kv"><span class="k">'+esc(s.name)+' ('+s.daysLeft+' days left)</span><span class="v" style="color:var(--green)">+'+money(s.daily)+'/day</span></div>').join(""):'<div class="empty">No active sponsorships. Offers land in your inbox once you have an audience.</div>';
+ const card=$("offersCard");
+ if(!G.offers.length){card.style.display="none";}
+ else{
+  card.style.display="block";
+  $("offersList").innerHTML=G.offers.map(o=>
+   '<div class="offer"><div class="ot">'+esc(o.title)+'</div><div class="od">'+esc(o.desc)+'</div>'+
+   '<div class="obtns"><button class="btn small primary" data-accept="'+o.id+'">Accept</button><button class="btn small" data-decline="'+o.id+'">Decline</button></div></div>').join("");
+ }
+}
+function renderShop(){
+ $("saleNote").textContent=G.eventMods.sale?"Gear sale active: 25% off":"";
+ $("shopList").innerHTML=Object.keys(EQUIP).map(kind=>{
+  const e=EQUIP[kind];const cur=G.equipment[kind];
+  let row;
+  if(cur>=e.tiers.length-1)row='<button class="btn small" disabled>Maxed</button>';
+  else{
+   let cost=e.tiers[cur+1].cost;if(G.eventMods.sale)cost=Math.round(cost*0.75);
+   row='<button class="btn small primary" data-buy="'+kind+'" '+(G.money<cost?"disabled":"")+">"+money(cost)+"</button>";
+  }
+  const maxed=cur>=e.tiers.length-1;
+  const tierLine=maxed?'':'<div class="tier">Next: '+e.tiers[cur+1].n+' (+'+e.tiers[cur+1].bonus+' quality)</div>';
+  return'<div class="shopitem"><span class="ic">'+e.icon+'</span><div class="grow"><div class="sn">'+e.name+'</div><div class="sd">Current: '+e.tiers[cur].n+' (+'+e.tiers[cur].bonus+' quality)</div>'+tierLine+'</div>'+row+'</div>';
+ }).join("");
+}
+function renderTeam(){
+ $("teamList").innerHTML=Object.keys(TEAM).map(kind=>{
+  const e=TEAM[kind];const cur=G.team[kind];
+  let row;
+  if(cur>=e.tiers.length-1)row='<button class="btn small" data-fire="'+kind+'">Let go</button>';
+  else row='<button class="btn small primary" data-hire="'+kind+'" '+(G.money<100?"disabled":"")+">Hire ("+money(e.tiers[cur+1].cost)+"/day)</button>";
+  const maxed=cur>=e.tiers.length-1;
+  const tierLine=maxed?'':'<div class="tier">Next tier: '+e.tiers[cur+1].n+' (+'+e.tiers[cur+1].bonus+' quality, '+money(e.tiers[cur+1].cost)+"/day)</div>";
+  return'<div class="shopitem"><span class="ic">'+e.icon+'</span><div class="grow"><div class="sn">'+e.name+'</div><div class="sd">Current: '+e.tiers[cur].n+(cur>0?" (+"+e.tiers[cur].bonus+" quality, "+money(e.tiers[cur].cost)+"/day)":"")+'</div>'+tierLine+'</div>'+row+'</div>';
+ }).join("");
+}
+function renderAwards(){
+ const won=ACHS.filter(a=>G.unlocked[a.id]).length;
+ $("achCount").textContent=won+" / "+ACHS.length+" unlocked";
+ $("achGrid").innerHTML=ACHS.map(a=>
+  '<div class="ach '+(G.unlocked[a.id]?"won":"")+'"><div class="an"><span>'+(G.unlocked[a.id]?"🏆":"🔒")+'</span>'+a.name+'</div><div class="ad">'+a.desc+'</div></div>').join("");
+ $("trophies").innerHTML=TROPHIES.map(t=>
+  '<div class="trophy '+(G.subs>=t.need?"won":"")+'"><span class="em">'+(G.subs>=t.need?t.em:"🔒")+'</span><div><div class="tn">'+t.name+'</div><div class="td">'+fmt(t.need)+' subscribers'+(G.subs>=t.need?" · earned":"")+'</div></div></div>').join("");
+}
+function renderAll(){
+ const safe=f=>{try{f();}catch(e){console.error("panel failed to render:",e);}};
+ safe(renderTopbar);safe(renderStats);safe(renderContent);safe(renderDashFeed);safe(renderLatest);safe(renderMilestone);
+ safe(renderWatch);safe(renderRivals);safe(renderAnalytics);safe(renderCommunity);safe(renderMonet);safe(renderShop);safe(renderTeam);safe(renderAwards);safe(renderActionState);
+}
+
+/* ============================== UPLOAD MODAL ============================== */
+function openUpload(preset){
+ pendingUpload={fmt:"long",len:10,topic:G.trending,tags:[],hook:5};
+ if(preset==="short"){pendingUpload.fmt="short";pendingUpload.len=30;}
+ updateTopicState();renderTopicQuick();renderTagsBox();renderLenSeg();
+ $("titleInput").value="";$("descInput").value="";
+ updateTitleMeter();updateDescScore();
+ $("thumbSlider").value=2;$("editSlider").value=2;
+ $("hookSlider").value=5;$("hookVal").textContent="5 / 10";
+ updateUploadCosts();
+ document.querySelectorAll("#fmtSeg button").forEach(b=>b.classList.toggle("sel",b.dataset.fmt===pendingUpload.fmt));
+ $("lenField").style.display="block";
+ $("hookField").style.display=pendingUpload.fmt==="short"?"block":"none";
+ $("uploadTitle").textContent=pendingUpload.fmt==="short"?"Create a Short":"Create video";
+ openModal("modalUpload");
+}
+function renderLenSeg(){
+ const isShort=pendingUpload.fmt==="short";
+ const opts=isShort?[[15,"snappy, loops fast"],[30,"the sweet spot"],[45,"more story"],[60,"the 60s cap"]]
+                   :[[5,"easy to finish"],[10,"balanced"],[20,"watch time monster"]];
+ if(!opts.some(o=>o[0]===pendingUpload.len))pendingUpload.len=isShort?30:10;
+ $("lenSeg").innerHTML=opts.map(o=>'<button data-len="'+o[0]+'" class="'+(pendingUpload.len===o[0]?"sel":"")+'">'+(isShort?o[0]+" sec":"~"+o[0]+" min")+'<span>'+o[1]+'</span></button>').join("");
+}
+function updateTopicState(){
+ const txt=($("topicInput").value||"").trim();
+ const cls=classifyTopic(txt||G.trending);
+ pendingUpload.topic=cls.topic.id;
+ pendingUpload.topicName=txt;
+ $("topicClass").textContent="Category: "+cls.topic.icon+" "+cls.topic.name;
+ $("topicHint").textContent=txt?(cls.matched?"":"fresh angle · small discovery-luck bonus"):"blank = your usual lane";
+ renderTagsBox();
+}
+function renderTopicQuick(){
+ const un=TOPICS.filter(t=>!t.unlock||t.unlock<=99);
+ $("topicQuick").innerHTML=un.slice(0,10).map(t=>
+  '<button class="topic '+(pendingUpload.topic===t.id?"sel":"")+'" data-topic="'+t.id+'" data-name="'+esc(t.name)+'">'+
+   (G.trending===t.id?'<span class="trend">▲ trending</span>':"")+
+   '<div class="ti">'+t.icon+'</div><div class="tn">'+t.name+'</div><div class="td">$'+t.cpm.toFixed(1)+' CPM</div></button>').join("");
+}function renderTagsBox(){
+ const t=topicById(pendingUpload.topic);
+ const all=[...new Set([...G.hotKw,...t.kw,"vlog","shorts","how to","2026"])].slice(0,9);
+ $("tagsBox").innerHTML=all.map(k=>
+  '<span class="tagchip '+(G.hotKw.includes(k)?"hotkw ":"")+(pendingUpload.tags.includes(k)?"sel":"")+'" data-tag="'+esc(k)+'">'+esc(k)+(G.hotKw.includes(k)?" 🔥":"")+'</span>').join("");
+}
+function updateTitleMeter(){
+ const t=$("titleInput").value;
+ const s=scoreTitle(t);
+ const good=s>=70,ok=s>=45;
+ $("titleMeter").style.width=s+"%";
+ $("titleMeter").style.background=good?"var(--green)":(ok?"var(--gold)":"var(--red)");
+ $("titleScoreTxt").textContent=t?s+" / 100":"";
+ $("titleHint").textContent=t?(good?"Strong title":(ok?"Decent title":"Weak title — 20 to 60 characters, a hook word or a number helps")):"Type a title to score it";
+ $("btnPublish").disabled=t.trim().length===0;
+}
+function updateDescScore(){
+ const s=scoreDesc($("descInput").value,pendingUpload.tags);
+ $("descScoreTxt").textContent=$("descInput").value?("SEO "+s+" / 100"):"";
+}
+function updateUploadCosts(){
+ const isShort=pendingUpload.fmt==="short";
+ const thumbLvl=+$("thumbSlider").value,editLvl=+$("editSlider").value;
+ $("thumbVal").textContent="lvl "+thumbLvl+" · "+money(thumbLvl*thumbLvl*10);
+ $("editVal").textContent="lvl "+editLvl+" · "+(isShort?12+editLvl*5:20+editLvl*8)+" ⚡";
+ $("uploadCostNote").textContent="Total: "+(isShort?12+editLvl*5:20+editLvl*8)+" energy · "+money(thumbLvl*thumbLvl*10)+" thumbnail cost";
+ $("hookField").style.display=isShort?"block":"none";
+ $("btnPublish").disabled=$("titleInput").value.trim().length===0;
+}
+
+/* ============================== VIDEO MODAL ============================== */
+function openVideoModal(id){
+ const v=G.videos.find(x=>x.id===id);if(!v)return;
+ $("vModalTitle").textContent=v.title;
+ const t=G.day-v.day;
+ const est=dailyEstimate(v);
+ const mx=Math.max(1,...v.hist,1);
+ const bars=v.hist.slice(-14).map(h=>'<i style="height:'+clamp(h/mx*100,3,100)+'%"></i>').join("");
+ const ret=makeRetention(v.editScore,v.avd*100);
+ const pts=ret.map((p,i)=>(i*10)+","+(100-p)).join(" ");
+ const rpmNow=G.monetized?(v.format==="short"?v.cpm*0.06:v.cpm)*seasonMult():0;
+ const tm=v.tmix;
+ const tmTotal=tm.browse+tm.suggested+tm.search+tm.external+tm.shorts||1;
+ const trows=[["Browse features",tm.browse,"var(--blue)"],["Suggested videos",tm.suggested,"var(--red)"],["Search",tm.search,"var(--gold)"],["External",tm.external,"var(--green)"],["Shorts feed",tm.shorts,"var(--purple)"]];
+ $("vModalBody").innerHTML=
+  '<div style="display:flex;gap:14px;margin-bottom:14px">'+thumbDiv(v)+
+  '<div style="min-width:0"><div class="vmeta2" style="margin-bottom:6px">'+
+   '<span class="chip">'+topicById(v.topic).icon+" "+topicById(v.topic).name+'</span>'+
+   (v.format==="short"?'<span class="chip shorts">Shorts</span>':'')+
+   '<span class="chip '+(G.monetized&&!v.limitedAds?"mon":"")+'">'+(G.monetized?(v.limitedAds?"limited ads":"monetized"):"no ads")+'</span>'+
+   (v.claimDays>0?'<span class="chip lim">copyright claim ('+v.claimDays+'d)</span>':'')+
+   badgeHtml(v)+'</div>'+
+   '<div style="color:var(--faint);font-size:12.5px">Uploaded '+(t===0?"today":t+" days ago")+' · '+fmt(v.impressions)+' impressions served</div></div></div>'+
+  '<div class="vstats" style="margin-bottom:14px">'+
+   '<div><b style="font-size:19px">'+fmt(v.views)+'</b><span>views</span></div>'+
+   '<div><b style="font-size:19px">'+fmt(v.likes)+'</b><span>likes</span></div>'+
+   '<div><b style="font-size:19px">'+fmt(v.commentsN)+'</b><span>comments</span></div>'+
+   '<div><b style="font-size:19px">'+fmt(Math.round(v.watchH))+'</b><span>watch hrs</span></div>'+
+   '<div><b style="font-size:19px">'+money(v.revenue)+'</b><span>earned</span></div>'+
+  '</div>'+
+  '<div class="field"><label>Views per day (last '+Math.max(0,v.hist.length)+' days)</label><div class="chartbars" style="height:56px">'+bars+'</div></div>'+
+  '<div class="field"><label>Audience retention</label>'+
+   '<svg class="retention" viewBox="0 0 100 100" preserveAspectRatio="none">'+
+    '<polyline points="'+pts+'" fill="none" stroke="var(--red)" stroke-width="2.2" vector-effect="non-scaling-stroke"/>'+
+   '</svg>'+
+   '<div class="meterlbl"><span>0%</span><span>average viewed: '+Math.round(v.avd*100)+'%</span><span>100% of video</span></div></div>'+
+  '<div class="field"><label>Traffic sources</label>'+
+   trows.map(r=>{const pct=r[1]/tmTotal*100;return'<div class="hbar"><div class="hl"><span>'+r[0]+'</span><b>'+pct.toFixed(1)+'%</b></div><div class="ht"><i style="width:'+pct+'%;background:'+r[2]+'"></i></div></div>';}).join("")+'</div>'+
+  '<div class="field"><label>Performance breakdown</label>'+
+   '<div style="font-size:13px;color:var(--dim);line-height:1.75">'+
+   'Pattern: <b style="color:var(--txt)">'+v.shape+'</b> · appeal '+v.appeal+'<br>'+
+   'Click-through: <b style="color:var(--txt)">'+(v.ctr*100).toFixed(1)+'%</b> (title '+v.titleScore+' · thumbnail '+v.thumbScore+')<br>'+
+   'Likes '+fmt(v.likes)+' · dislikes '+fmt(Math.round(v.dislikes))+' ('+(v.likes>0?Math.round(v.likes/(v.likes+Math.max(1,v.dislikes))*100):95)+'% like ratio)<br>'+
+   'Average viewed: <b style="color:var(--txt)">'+Math.round(v.avd*100)+'%</b> (editing '+v.editScore+')<br>'+
+   'SEO score: '+v.seoScore+' · tags: '+(v.tags.length?esc(v.tags.join(", ")):"none")+'<br>'+
+   (G.monetized?'Current RPM: <b style="color:var(--txt)">$'+rpmNow.toFixed(2)+'</b> per 1,000 views'+(v.limitedAds?" (limited)":"")+(v.claimDays>0?" (claimed: no ad revenue)":""):"Not earning ad revenue yet")+
+   '<br>Estimated views today: <b style="color:var(--txt)">'+fmt(est)+'</b></div></div>';
+ openModal("modalVideo");
+}
+
+/* ============================== WATCH APP ============================== */
+function ageTxt(day){const d=G.day-day;return d<=0?"today":(d===1?"1 day ago":d+" days ago");}
+function topicGrad(id){return{gaming:"linear-gradient(135deg,#3a1d4f,#7a3f9d)",vlog:"linear-gradient(135deg,#1d3a4f,#3f7a9d)",tutorial:"linear-gradient(135deg,#1d4f2a,#3f9d5c)",tech:"linear-gradient(135deg,#12283a,#2f6f9d)",comedy:"linear-gradient(135deg,#4f1d1d,#9d3f3f)",music:"linear-gradient(135deg,#2a1d4f,#5c3f9d)",food:"linear-gradient(135deg,#4f2a1d,#9d6a3f)",science:"linear-gradient(135deg,#123a3a,#3f8a8a)",news:"linear-gradient(135deg,#3a3a12,#8a8a3f)",irl:"linear-gradient(135deg,#4f3a12,#9d7a3f)"}[id]||"linear-gradient(135deg,#333,#555)";}
+function watchItems(){
+ const mine=G.videos.filter(v=>G.day-v.day<=45).map(v=>({key:"y"+v.id,v,chan:G.channelName||"Your channel",subs:G.subs,mine:true}));
+ const theirs=[];
+ for(const r of G.rivals)for(const v of r.videos){if(G.day-v.day<10&&G.day-v.day>=-21)theirs.push({key:"r:"+v.id,v,chan:r.name,subs:Math.floor(r.subsF),mine:false,rival:r});}
+ let pool=[...mine,...theirs];
+ if(G.watchTab==="mine")pool=pool.filter(x=>x.mine);
+ if(G.watchTab==="subs")pool=pool.filter(x=>!x.mine&&G.following.includes(x.rival.id));
+ pool.sort((a,b)=>{
+  const sa=(a.v.views+1)*Math.exp(-Math.max(0,G.day-a.v.day)/4)*(a.mine?0.9:1);
+  const sb=(b.v.views+1)*Math.exp(-Math.max(0,G.day-b.v.day)/4)*(b.mine?0.9:1);
+  return sb-sa;});
+ return pool.slice(0,18);
+}
+function watchCard(x){
+ const v=x.v;
+ return '<div class="wcard" data-wv="'+esc(x.key)+'">'+
+  '<div class="thumb" style="background:'+topicGrad(v.topic)+';height:118px;font-size:30px">'+topicById(v.topic).icon+
+   (v.format==="short"?'<span class="sfm">SHORT</span>':'<span class="dur">'+(v.lenMin<1?Math.round(v.lenMin*60)+"s":durStr(v.lenMin))+'</span>')+'</div>'+
+  '<div class="wt">'+esc(v.title)+'</div>'+
+  '<div class="wm">'+esc(x.chan)+'<br>'+fmt(v.views)+' views · '+ageTxt(v.day)+'</div></div>';
+}
+function renderWatch(){
+ const items=watchItems();
+ $("watchCount").textContent=items.length+" in the feed";
+ document.querySelectorAll("#watchTabs button").forEach(b=>b.classList.toggle("sel",b.dataset.wtab===G.watchTab));
+ $("watchFeed").innerHTML=items.map(watchCard).join("");
+ $("watchEmpty").textContent=items.length?"":"Nothing here yet. Upload something or let the rivals warm up.";
+}
+function seededRand(str){let s=0;for(let i=0;i<str.length;i++)s=(s*31+str.charCodeAt(i))&0x7fffffff;return()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};}
+function openWatchModal(key){
+ let body=null,rival=null,mine=false;
+ if(key.startsWith("y")){const id=+key.slice(1);body=G.videos.find(v=>v.id===id);mine=true;}
+ else{const vid=key.slice(2);for(const r of G.rivals){const v=r.videos.find(x=>x.id===vid);if(v){body=v;rival=r;break;}}}
+ if(!body)return true;
+ const grad=topicGrad(body.topic);
+ const rnd=seededRand(key+body.title);
+ const nc=mine?Math.min(6,Math.max(3,Math.round(Math.sqrt(body.commentsN||4)))):Math.min(7,Math.max(3,Math.round(Math.sqrt(body.comments||40))));
+ let chtml="";
+ const kinds=["pos","pos","q","neu","pos","q","neu"];
+ for(let i=0;i<nc;i++){
+  const kind=kinds[Math.floor(rnd()*kinds.length)];
+  const user=CMT_NAMES[Math.floor(rnd()*CMT_NAMES.length)];
+  const likes=Math.floor(rnd()*Math.max(4,(body.likes||body.views*0.03)/40));
+  chtml+='<div class="comment"><div class="av">'+(kind==="hate"?"👎":"🙂")+'</div><div class="cb"><div class="cu"><b>@'+esc(user)+'</b> · '+fmt(likes)+' likes</div><div class="ct">'+esc(CMT[kind][Math.floor(rnd()*CMT[kind].length)])+'</div></div></div>';
+ }
+ const liked=G.likedRv.includes(key);
+ const subbed=rival&&G.following.includes(rival.id);
+ $("wModalTitle").textContent="Watch";
+ $("wModalBody").innerHTML=
+  '<div class="thumb" style="background:'+grad+';height:200px;font-size:56px;border-radius:12px">'+topicById(body.topic).icon+'</div>'+
+  '<h3 style="margin:12px 0 4px;font-size:17px">'+esc(body.title)+'</h3>'+
+  '<div style="color:var(--dim);font-size:13px">'+fmt(body.views)+' views · '+ageTxt(body.day)+(mine?' · <span class="chip">your video</span>':'')+'</div>'+
+  '<div style="display:flex;align-items:center;gap:10px;margin:12px 0">'+
+   '<div style="width:36px;height:36px;border-radius:50%;background:'+grad+';display:flex;align-items:center;justify-content:center;font-weight:700">'+esc((mine?(G.channelName||"Y"):rival.name)[0])+'</div>'+
+   '<div style="flex:1"><b>'+esc(mine?(G.channelName||"Your channel"):rival.name)+'</b><div style="color:var(--faint);font-size:12px">'+fmt(mine?G.subs:rival.subsF)+' subscribers</div></div>'+
+   '<button class="btn '+(subbed?"":"primary")+'" data-sub="'+(mine?"self":rival.id)+'">'+(mine?"That's you":(subbed?"Subscribed ✓":"Subscribe"))+'</button>'+
+  '</div>'+
+  '<div style="display:flex;gap:8px;margin-bottom:12px">'+
+   '<button class="btn'+(liked?" gold":"")+'" data-wlike="'+esc(key)+'">👍 '+fmt(body.likes)+(liked?" · liked":"")+'</button>'+
+   (mine?'<button class="btn" data-openstudio="'+body.id+'">Open in Studio</button>':'')+
+  '</div>'+
+  '<div class="field"><label>Comments</label>'+chtml+'</div>';
+ openModal("modalWatch");
+ return true;
+}
+function wToggleLike(key){
+ const i=G.likedRv.indexOf(key);
+ if(i>=0)G.likedRv.splice(i,1);else G.likedRv.push(key);
+ if(key.startsWith("y")){const v=G.videos.find(x=>x.id===+key.slice(1));if(v){v.likes+=i>=0?-1:1;}}
+ saveGame();renderAll();openWatchModal(key);
+}
+function wToggleSub(rivalId){
+ if(rivalId==="self")return toast("You already have yourself subscribed. Twice would be greedy.","");
+ const i=G.following.indexOf(rivalId);
+ if(i>=0){G.following.splice(i,1);toast("Unsubscribed.","");}
+ else{G.following.push(rivalId);const r=rivalById(rivalId);toast("Subscribed to <b>"+esc(r.name)+"</b>. Their uploads will show in your Following feed.","good");}
+ saveGame();renderAll();
+ const lastKey=document.querySelector("[data-wlike]");
+ if(lastKey)openWatchModal(lastKey.dataset.wlike);
+}
+/* ============================== RIVALS & COLLAB ============================== */
+function tierLabel(r){return{small:"up-and-comer",mid:"rising",big:"established",huge:"giant"}[r.tier]||"";}
+function renderRivals(){
+ const rank=yourRank();
+ $("rankLine").textContent="You are #"+rank.rank+" of "+rank.of;
+ const sorted=[{me:true,subs:G.subs,name:G.channelName||"Your channel"},...G.rivals.map(r=>({me:false,r,subs:Math.floor(r.subsF)}))].sort((a,b)=>b.subs-a.subs);
+ $("rivalList").innerHTML=sorted.map((x,i)=>{
+  if(x.me)return '<div class="rrow me"><span class="rk">#'+(i+1)+'</span><div class="rav" style="background:linear-gradient(135deg,#b8860b,#e8b13a)">'+esc((G.channelName||"Y")[0])+'</div><div class="rmain"><b>'+esc(x.name)+'</b> <span class="chip mon">you</span><div class="rsub">'+fmt(x.subs)+' subscribers</div></div></div>';
+  const r=x.r;
+  const last=r.videos[0];
+  const cd=G.collabCooldowns[r.id]||0;
+  const cdLeft=cd-G.day;
+  const tooBig=r.subsF>G.subs*25;
+  const busy=G.collabPending&&rivalById(G.collabPending.rivalId)&&rivalById(G.collabPending.rivalId).id===r.id;
+  let cbtn;
+  if(busy)cbtn='<button class="btn small" disabled>Collab drops tomorrow</button>';
+  else if(cdLeft>0)cbtn='<button class="btn small" disabled title="They need space after your last ask">Cooling off · '+cdLeft+'d</button>';
+  else if(tooBig)cbtn='<button class="btn small" disabled title="You need more subs before they will take the call">Out of reach for now</button>';
+  else cbtn='<button class="btn small primary" data-collab="'+r.id+'">Propose collab · 15⚡</button>';
+  return '<div class="rrow"><span class="rk">#'+(i+1)+'</span>'+
+   '<div class="rav" style="background:'+topicGrad(r.topic)+'">'+topicById(r.topic).icon+'</div>'+
+   '<div class="rmain"><b>'+esc(r.name)+'</b>'+(G.following.includes(r.id)?' <span class="chip mon">following</span>':'')+'<div class="rsub">'+fmt(r.subsF)+' subs · '+tierLabel(r)+' · '+topicById(r.topic).name+(last?' · last upload "'+esc(last.title.length>34?last.title.slice(0,34)+"…":last.title)+'"':'')+'</div></div>'+
+   '<div class="ract">'+cbtn+'</div></div>';
+ }).join("");
+ const pend=G.collabPending?rivalById(G.collabPending.rivalId):null;
+ const offers=G.collabOffers.filter(o=>G.day-o.day<=5&&rivalById(o.rivalId));
+ $("collabCount").textContent=(offers.length?offers.length+" incoming":"no incoming")+(G.collabPending?" · 1 scheduled":"");
+ let desk="";
+ if(pend)desk+='<div class="rrow"><div class="rav" style="background:'+topicGrad(pend.topic)+'">'+topicById(pend.topic).icon+'</div><div class="rmain"><b>Collab with '+esc(pend.name)+'</b><div class="rsub">The joint video drops '+((G.collabPending.day<=G.day)?"today":"tomorrow")+'. Editing a two-channel cut takes the whole day.</div></div></div>';
+ desk+=offers.map(o=>{const r=rivalById(o.rivalId);return '<div class="rrow"><div class="rav" style="background:'+topicGrad(r.topic)+'">'+topicById(r.topic).icon+'</div><div class="rmain"><b>'+esc(r.name)+' wants to collab</b><div class="rsub">Their audience would meet yours tomorrow. Saying yes costs nothing but a day of focus.</div></div><div class="ract"><button class="btn small primary" data-caccept="'+o.id+'">Accept</button><button class="btn small" data-cdecline="'+o.id+'">Decline</button></div></div>';}).join("");
+ $("collabInbox").innerHTML=desk||'<div class="empty">No collab offers right now. Grow a bit and smaller channels will start asking.</div>';
+}
+function doCollab(rId){
+ const r=rivalById(rId);if(!r)return;
+ if(G.collabPending)return toast("A collab is already in the works.","bad");
+ if(G.energy<15)return toast("Proposing a collab takes 15 ⚡. Advance the day to rest.","bad");
+ if(r.subsF>G.subs*25)return toast(r.name+" only collabs with channels their own size. Keep growing.","bad");
+ G.energy-=15;
+ const chance=clamp(0.25+0.5*Math.pow(G.subs/(G.subs+r.subsF),0.7)+0.1*Math.min(3,G.collabCount),0.05,0.95);
+ if(Math.random()<chance){
+  G.collabPending={rivalId:rId,day:G.day+1};
+  G.collabCooldowns[rId]=G.day+8;
+  feed(r.name+" said yes. The collab video drops tomorrow.","gold");
+  toast("<b>"+esc(r.name)+" said yes!</b> The collab video drops tomorrow.","gold");
+ }else{
+  G.collabCooldowns[rId]=G.day+5;
+  feed(r.name+" passed on the collab this time. Their inbox is brutal.","");
+  toast(esc(r.name)+" passed this time. Try again in a few days.","");
+ }
+ saveGame();renderAll();
+}
+function stepCollabs(){
+ if(!G.collabPending||G.day<G.collabPending.day)return;
+ const r=rivalById(G.collabPending.rivalId);
+ G.collabPending=null;
+ if(!r)return;
+ const appeal=95+Math.round(Math.random()*20);
+ const shape=pickShape(clamp(appeal+30,0,150));
+ const v={
+  id:G.nextId++,title:(G.channelName||"You")+" × "+r.name+": the collab everyone asked for",
+  topic:r.topic,topicText:topicById(r.topic).name+" (collab with "+r.name+")",day:G.day,format:"long",lenMin:rnd(12,22),
+  titleScore:88,thumbScore:90,editScore:Math.max(60,G.skill*3+40),seoScore:70,hook:0,
+  tags:[],appeal,shape,
+  scale:scaleFor(appeal)*1.5,
+  cpm:topicById(r.topic).cpm*rnd(0.9,1.2),
+  ctr:rnd(0.09,0.135),avd:rnd(0.42,0.6),
+  likeRate:rnd(0.07,0.11),commentRate:rnd(0.01,0.02),
+  conv:0.008,impressions:0,views:0,likes:0,dislikes:0,commentsN:0,watchH:0,revenue:0,
+  dayNoise:1,boostDays:3,claimDays:0,limitedAds:false,
+  tmix:trafficMixV2(70,0.5,false),hist:[],dayViews:0
+ };
+ G.videos.push(v);G.uploads++;G.uploadsToday++;G.uploadsWeek++;
+ const subs=r.subsF*rnd(0.002,0.006);
+ addSubs(subs);
+ G.collabCount++;
+ const latest=G.videos.filter(x=>x.id!==v.id).sort((a,b)=>b.day-a.day)[0];
+ if(latest)latest.boostDays=Math.max(latest.boostDays,2);
+ feed("Collab with "+r.name+" is live. Their audience came over: +"+fmt(subs)+" subscribers.","gold");
+ toast("<b>Collab live!</b> "+esc(r.name)+"'s audience met yours: +"+fmt(subs)+" subs.","gold");
+ checkAchievements();
+}
+/* ============================== WIRING & INIT ============================== */
+function openModal(id){$(id).classList.add("open");}
+function closeModal(id){$(id).classList.remove("open");}
+function switchPage(p){
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.page===p));
+ document.querySelectorAll(".page").forEach(pg=>pg.classList.toggle("on",pg.id==="page-"+p));
+ if(p==="content")renderContent();
+ if(p==="watch")renderWatch();
+ if(p==="rivals")renderRivals();
+ if(p==="analytics")renderAnalytics();
+ if(p==="community")renderCommunity();
+ if(p==="monet")renderMonet();
+ if(p==="studio"){renderShop();renderTeam();}
+ if(p==="awards")renderAwards();
+ if(p==="dashboard")renderAll();
+}
+function wire(){
+ $("btnAdvance").addEventListener("click",advanceDay);
+ document.querySelectorAll("#nav button").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
+ document.querySelectorAll(".mclose").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
+ document.querySelectorAll(".modal-ov").forEach(ov=>ov.addEventListener("click",e=>{if(e.target===ov)ov.classList.remove("open");}));
+ $("btnCreate").addEventListener("click",openUpload);
+ $("btnCreateTop").addEventListener("click",openUpload);
+ $("sortViews").addEventListener("click",()=>{sortViewsOn=!sortViewsOn;G.sortMode=sortViewsOn?"views":"newest";renderContent();});
+ $("actPost").addEventListener("click",doCommunityPost);
+ $("actReply").addEventListener("click",doReplyComments);
+ $("actStudy").addEventListener("click",doStudy);
+ $("actPromote").addEventListener("click",doPromote);
+ $("actPoll").addEventListener("click",doPoll);
+ $("actSeries").addEventListener("click",doSeries);
+ $("actScout").addEventListener("click",doScout);
+ $("actShort").addEventListener("click",()=>openUpload("short"));
+ document.addEventListener("keydown",e=>{
+  if(e.code!=="Space")return;
+  const tag=(document.activeElement&&document.activeElement.tagName)||"";
+  if(tag==="INPUT"||tag==="TEXTAREA")return;
+  if(document.querySelector(".modal-ov.open"))return;
+  e.preventDefault();advanceDay();
+ });
+ $("btnStartGo").addEventListener("click",()=>{
+  const n=$("chNameInput").value.trim();
+  if(!n)return toast("Give your channel a name first.","bad");
+  G.channelName=n;$("chName").textContent=n;$("chChip").style.display="flex";
+  closeModal("modalStart");saveGame();
+  feed("Channel \""+n+"\" is live. First upload sets the tone.","gold");
+ });
+ // upload modal
+ $("fmtSeg").addEventListener("click",e=>{
+  const b=e.target.closest("[data-fmt]");if(!b)return;
+  pendingUpload.fmt=b.dataset.fmt;
+  document.querySelectorAll("#fmtSeg button").forEach(x=>x.classList.toggle("sel",x===b));
+  renderLenSeg();
+  $("hookField").style.display=pendingUpload.fmt==="short"?"block":"none";
+  $("uploadTitle").textContent=pendingUpload.fmt==="short"?"Create a Short":"Create video";
+  updateUploadCosts();
+ });
+ $("hookSlider").addEventListener("input",()=>{pendingUpload.hook=+$("hookSlider").value;$("hookVal").textContent=pendingUpload.hook+" / 10";});
+ $("lenSeg").addEventListener("click",e=>{
+  const b=e.target.closest("[data-len]");if(!b)return;
+  pendingUpload.len=+b.dataset.len;
+  document.querySelectorAll("#lenSeg button").forEach(x=>x.classList.toggle("sel",x===b));
+ });
+ $("topicInput").addEventListener("input",updateTopicState);
+ $("topicQuick").addEventListener("click",e=>{
+  const b=e.target.closest("[data-topic]");if(!b)return;
+  $("topicInput").value=b.dataset.name;updateTopicState();
+ });
+ $("tagsBox").addEventListener("click",e=>{
+  const c=e.target.closest("[data-tag]");if(!c)return;
+  const k=c.dataset.tag;
+  const i=pendingUpload.tags.indexOf(k);
+  if(i>=0)pendingUpload.tags.splice(i,1);
+  else{if(pendingUpload.tags.length>=5)return toast("Max 5 tags.","bad");pendingUpload.tags.push(k);}
+  renderTagsBox();updateDescScore();
+ });
+ $("titleInput").addEventListener("input",updateTitleMeter);
+ $("descInput").addEventListener("input",updateDescScore);
+ $("thumbSlider").addEventListener("input",updateUploadCosts);
+ $("editSlider").addEventListener("input",updateUploadCosts);
+ $("btnPublish").addEventListener("click",publishVideo);
+ // delegated clicks
+ document.body.addEventListener("click",e=>{
+  const buy=e.target.closest("[data-buy]");if(buy){buyEquipment(buy.dataset.buy);return;}
+  const hire=e.target.closest("[data-hire]");if(hire){hireTeam(hire.dataset.hire,"hire");return;}
+  const fire=e.target.closest("[data-fire]");if(fire){hireTeam(fire.dataset.fire,"fire");return;}
+  const acc=e.target.closest("[data-accept]");if(acc){acceptOffer(acc.dataset.accept);return;}
+  const dec=e.target.closest("[data-decline]");if(dec){declineOffer(dec.dataset.decline);return;}
+  const tg=e.target.closest("[data-toggle]");if(tg){toggleFeature(tg.dataset.toggle);return;}
+  const ch=e.target.closest("[data-ch]");if(ch){
+   const[kind,idStr]=ch.dataset.ch.split("-");const cid=+idStr;
+   if(kind==="heart")cmtHeart(cid);else if(kind==="pin")cmtPin(cid);else if(kind==="del")cmtDelete(cid);
+   return;
+  }
+  const apply=e.target.closest("#btnApplyMonet");if(apply){applyMonetization();return;}
+  const vid=e.target.closest("[data-vid]");if(vid){openVideoModal(+vid.dataset.vid);return;}
+  const wv=e.target.closest("[data-wv]");if(wv){openWatchModal(wv.dataset.wv);return;}
+  const wl=e.target.closest("[data-wlike]");if(wl){wToggleLike(wl.dataset.wlike);return;}
+  const sub=e.target.closest("[data-sub]");if(sub){wToggleSub(sub.dataset.sub);return;}
+  const os=e.target.closest("[data-openstudio]");if(os){closeModal("modalWatch");openVideoModal(+os.dataset.openstudio);return;}
+  const col=e.target.closest("[data-collab]");if(col){doCollab(col.dataset.collab);return;}
+  const ca=e.target.closest("[data-caccept]");if(ca){
+   const o=G.collabOffers.find(x=>x.id==ca.dataset.caccept);if(o){
+    if(!G.collabPending){const r=rivalById(o.rivalId);G.collabPending={rivalId:o.rivalId,day:G.day+1};G.collabCooldowns[o.rivalId]=G.day+8;
+     feed("Collab with "+r.name+" locked in. The joint video drops tomorrow.","gold");
+     toast("Collab locked in with <b>"+esc(r.name)+"</b>. Video drops tomorrow.","gold");}
+    else toast("You already have a collab scheduled.","bad");
+    G.collabOffers=G.collabOffers.filter(x=>x.id!==o.id);
+   }saveGame();renderAll();return;}
+  const cdl=e.target.closest("[data-cdecline]");if(cdl){
+   const o=G.collabOffers.find(x=>x.id==cdl.dataset.cdecline);if(o){
+    const r=rivalById(o.rivalId);
+    G.collabOffers=G.collabOffers.filter(x=>x.id!==o.id);
+    feed("You passed on collabing with "+r.name+". No harm done.","");}
+   saveGame();renderAll();return;}
+  const wt=e.target.closest("[data-wtab]");if(wt){G.watchTab=wt.dataset.wtab;renderWatch();return;}
+ });
+ // live number refresh
+ setInterval(renderLiveNumbers,1100);
+ // main tick: one in-game hour every 2 seconds
+ setInterval(tick,2000);
+}
+function resetGame(){
+ try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+ G=freshGame();saveGame();renderAll();switchPage("dashboard");
+ toast("New channel created. Good luck out there.","gold");
+}
+function init(){
+ if(!loadGame())G=freshGame();
+ if(!G.rivals||!G.rivals.length)G.rivals=makeRivals();
+ if(!G.hotKw||!G.hotKw.length)G.hotKw=rollHotKw();
+ sortViewsOn=G.sortMode==="views";
+ wire();renderAll();
+ if(G.channelName){$("chName").textContent=G.channelName;$("chChip").style.display="flex";}
+ else openModal("modalStart");
+ if(G.videos.length===0){
+  toast("<b>Welcome to CreatorSim Studio.</b> Create a video, then advance days. Impressions × click-through = views; editing drives retention; 1,000 subs + 4,000 watch hours unlocks monetization.","gold");
+ }
+}
+init();
+window.__test={G:()=>G,advanceDay,publishVideo,freshGame,accrue,dailyEstimate,tick,doStudy,doCommunityPost,doPromote,doPoll,doSeries,doScout,buyEquipment,hireTeam,renderAll,renderLenSeg,acceptOffer,algoComponents,algoScore,rivalPressure,algoWhy,classifyTopic,makeRivals,rivalsTick,yourRank,doCollab,stepCollabs,renderWatch,renderRivals,openWatchModal,renderAnalytics,watchItems,wToggleSub,wToggleLike,updateTopicState,checkAchievements,scoreTitle,scoreDesc,pickShape,makeRetention,applyMonetization,toggleFeature,cmtHeart,cmtPin,cmtDelete,resetGame,switchPage,genComments,openUpload,publishVideoState:()=>pendingUpload};
+</script>
+</body>
+</html>
